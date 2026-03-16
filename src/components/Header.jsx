@@ -557,11 +557,11 @@
 
 //   const navigationItems = [
 //     {
-//       name: "Horoscopes",
-//       path: "/best-astrologers",
-//       type: "link",
-//       hasmenu: horosType.length > 0,
-//       menu: horosType,
+      // name: "Horoscopes",
+      // path: "/best-astrologers",
+      // type: "link",
+      // hasmenu: horosType.length > 0,
+      // menu: horosType,
 //     },
 //     {
 //       name: "Chat / Call to Astrologer",
@@ -862,7 +862,7 @@ import {
 import { ChevronDown, Menu } from "lucide-react";
 import { GiStarShuriken } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import UserLogin from "./UserLogin";
@@ -948,7 +948,15 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [scrolled, setScrolled] = useState(false);
-
+  const location = useLocation();
+useEffect(() => {
+  if (location.pathname.includes("staticHoroschopes")) {
+    window.scrollTo({
+      top: 0,
+      behavior: "instant"
+    });
+  }
+}, [location.pathname]);
   useEffect(() => {
     document.dir = i18n.language === "ar" ? "rtl" : "ltr";
   }, [i18n.language]);

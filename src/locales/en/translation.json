@@ -279,5 +279,80 @@
     "years": "Years",
     "name": "{{name}}",
     "username": "@{{username}}"
-  }
+  },
+  
+  "zodiacSigns": "Zodiac Signs",
+
+  "time": {
+    "monthlyTitle": "March 2026 Monthly Horoscope",
+    "monthlyDesc": "What the stars have in store for you this month",
+    "yearlyTitle": "2026 Yearly Horoscope",
+    "yearlyDesc": "What the stars have in store for you this year"
+  },
+
+  "section": {
+    "career": "Career",
+    "finance": "Finance",
+    "love": "Love",
+    "health": "Health"
+  },
+
+  "bestDates": "Best Dates",
+
+  "noData": "No horoscope data found",
+
+  "zodiac": {
+    "aries": "Aries",
+    "taurus": "Taurus",
+    "gemini": "Gemini",
+    "cancer": "Cancer",
+    "leo": "Leo",
+    "virgo": "Virgo",
+    "libra": "Libra",
+    "scorpio": "Scorpio",
+    "sagittarius": "Sagittarius",
+    "capricorn": "Capricorn",
+    "aquarius": "Aquarius",
+    "pisces": "Pisces"
+  },
+ 
+   
+      "aries": {
+    "career": "From March 11th, when Jupiter turns direct, you'll start feeling that professional momentum you've been waiting for. Support from higher authorities becomes more tangible, and recognition in leadership roles is genuinely on the table. However, retrograde Mercury until March 21st asks you to slow down before signing anything or making major commitments. Double-check agreements, read the fine print, and don't let impatience cost you a great opportunity.",
+
+    "finance": "The financial picture for Aries this March is largely positive, especially through March 26th when Venus is exalted and bringing warmth to your income zone. Multiple income sources and support from your network will bolster your finances — thanks largely to that powerful four-planet conjunction. Jupiter going direct on the 11th is great news for financial confidence. Just be cautious about home renovation expenses or spontaneous spending creeping up later in the month.",
+
+    "love": "Your Aries love horoscope for March 2026 shows a gradual warming trend in your relationship. Venus transiting Aries on March 26th brings genuine harmony and the chance to rekindle connection with your partner. Before that date, the Sun-Rahu influence might make expressing emotions feel complicated — you might come across as more distant than you intend. Open, honest communication (not dramatic declarations) is what actually brings peace here.",
+
+    "health": "On the health front, manage stress proactively — the Sun's movement into Pisces brings added professional responsibilities, which can weigh on your wellbeing. Prioritize rest and don't skip your movement routine. For Aries students, Rahu-Ketu may create some distraction or overconfidence in academic settings. If you're drawn to technical or research subjects, Mars's influence brings enthusiasm and focus for exactly that kind of work."
+  },
+   "horoscopeData": {
+    "title": "Aries Monthly Horoscope March 2026: Courage, Career & Connection",
+    "description": "March is shaping up to be a genuinely exciting month for Aries, and I say that with real enthusiasm. Your Aries monthly horoscope for March 2026 is lit up with planetary energy — four planets lining up in Aquarius are basically throwing you a cosmic pep talk. Think of it as the universe saying: 'You've got this. Now go get it.' That said, the month has a few sharp edges too. Mercury is retrograde until March 21st, and the Sun-Rahu conjunction through mid-month could bring out your more stubborn side. But here's the thing about Aries — you thrive when there's something to push through."
+  },
+  
+ 
+  "all": "All",
+  "categories": "Categories",
+  "astrologyBlogs": "Astrology Blogs",
+  "noBlogs": "No blogs found",
+  "searchBlogs": "Search blog articles...",
+  "Web Stories": "Web Stories",
+  "Mythological Tales": "Mythological Tales",
+  "Daily Horoscope": "Daily Horoscope",
+  "Current Affairs": "Current Affairs",
+  "Entertainment": "Entertainment",
+  "Zodiac Signs": "Zodiac Signs",
+  "Numerology": "Numerology",
+  "Gemstones": "Gemstones",
+  "Festivals": "Festivals",
+  "Sports": "Sports",
+  "Kundli": "Kundli",
+  "Vedic": "Vedic",
+  "Vastu": "Vastu",
+  "Tarot": "Tarot"
+
+
+
+  
 }
