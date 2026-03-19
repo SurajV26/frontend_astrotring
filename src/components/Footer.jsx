@@ -301,9 +301,9 @@
 //               <a
 //                 href="#"
 //                 target="_blank"
-//                 className="flex items-center justify-center gap-3 bg-black text-white 
-//                   rounded-lg px-5 py-2.5 
-//                   hover:bg-gray-800 transition-all duration-300 
+//                 className="flex items-center justify-center gap-3 bg-black text-white
+//                   rounded-lg px-5 py-2.5
+//                   hover:bg-gray-800 transition-all duration-300
 //                   hover:scale-105 shadow-md"
 //               >
 //                 <img
@@ -321,9 +321,9 @@
 //               <a
 //                 href="#"
 //                 target="_blank"
-//                 className="flex items-center justify-center gap-3 bg-black text-white 
-//                   rounded-lg px-5 py-2.5 
-//                   hover:bg-gray-800 transition-all duration-300 
+//                 className="flex items-center justify-center gap-3 bg-black text-white
+//                   rounded-lg px-5 py-2.5
+//                   hover:bg-gray-800 transition-all duration-300
 //                   hover:scale-105 shadow-md"
 //               >
 //                 <FaApple size={20} />
@@ -345,14 +345,16 @@
 
 // export default Footer;
 
-
-
-
 import faviconlogo from "@/assets/logo.png";
+import { Trans } from "react-i18next";
 import { Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FaAnglesRight, FaApple } from "react-icons/fa6";
-import { TiSocialFacebook, TiSocialTwitter, TiSocialYoutube } from "react-icons/ti";
+import {
+  TiSocialFacebook,
+  TiSocialTwitter,
+  TiSocialYoutube,
+} from "react-icons/ti";
 import { SlSocialInstagram } from "react-icons/sl";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
@@ -371,56 +373,57 @@ const Footer = () => {
     }
   }, [horoscope, dispatch]);
 
-//   useEffect(() => {
-//     if (horoscope?.length > 0) {
-//       const set = new Set();
-//       const list = [];
-//       horoscope.forEach((ele) => {
-//         if (ele.type && !set.has(ele.type)) {
-//           if (ele.type.toLowerCase() === "weekly") return;
-//           set.add(ele.type);
-//           list.push({
-//           label: t(`footer.${ele.type.toLowerCase()}HoroscopeLabel`, {
-//   defaultValue: ele.type.charAt(0).toUpperCase() + ele.type.slice(1) + " Horoscope",
-// }),
-//             path: `/staticHoroschopes/${ele.type.toLowerCase()}`,
-//           });
-//         }
-//       });
-//       setHorosType(list);
-//     }
-//   }, [horoscope, t]);
-useEffect(() => {
-  if (horoscope?.length > 0) {
-    const set = new Set();
-    const list = [];
+  //   useEffect(() => {
+  //     if (horoscope?.length > 0) {
+  //       const set = new Set();
+  //       const list = [];
+  //       horoscope.forEach((ele) => {
+  //         if (ele.type && !set.has(ele.type)) {
+  //           if (ele.type.toLowerCase() === "weekly") return;
+  //           set.add(ele.type);
+  //           list.push({
+  //           label: t(`footer.${ele.type.toLowerCase()}HoroscopeLabel`, {
+  //   defaultValue: ele.type.charAt(0).toUpperCase() + ele.type.slice(1) + " Horoscope",
+  // }),
+  //             path: `/staticHoroschopes/${ele.type.toLowerCase()}`,
+  //           });
+  //         }
+  //       });
+  //       setHorosType(list);
+  //     }
+  //   }, [horoscope, t]);
+  useEffect(() => {
+    if (horoscope?.length > 0) {
+      const set = new Set();
+      const list = [];
 
-    horoscope.forEach((ele) => {
-      if (ele.type && !set.has(ele.type)) {
-        if (ele.type.toLowerCase() === "weekly") return;
+      horoscope.forEach((ele) => {
+        if (ele.type && !set.has(ele.type)) {
+          if (ele.type.toLowerCase() === "weekly") return;
 
-        set.add(ele.type);
+          set.add(ele.type);
 
-        const type = ele.type.toLowerCase();
+          const type = ele.type.toLowerCase();
 
-        list.push({
-          label: t(`footer.horoscopeTypes.${type}`, {
-            defaultValue:
-              ele.type.charAt(0).toUpperCase() + ele.type.slice(1) + " Horoscope",
-          }),
-          path: `/staticHoroschopes/${type}`,
-        });
-      }
-    });
+          list.push({
+            label: t(`footer.horoscopeTypes.${type}`, {
+              defaultValue:
+                ele.type.charAt(0).toUpperCase() +
+                ele.type.slice(1) +
+                " Horoscope",
+            }),
+            path: `/staticHoroschopes/${type}`,
+          });
+        }
+      });
 
-    setHorosType(list);
-  }
-}, [horoscope, t]);
+      setHorosType(list);
+    }
+  }, [horoscope, t]);
   return (
     <footer className="bg-gradient-to-b from-yellow-50 to-yellow-200 text-black pt-10">
       <div className="mx-auto px-2 md:px-10">
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-10 pb-12">
-
           {/* ABOUT */}
           <div>
             <Link to="/">
@@ -597,8 +600,23 @@ useEffect(() => {
               {t("footer.contactUs")}
             </h4>
 
-            <p className="text-sm text-black leading-relaxed mt-4 space-y-4">
+            {/* <p className="text-sm text-black leading-relaxed mt-4 space-y-4">
               {t("footer.contactText")}
+            </p> */}
+            <p className="text-sm text-black leading-relaxed mt-4">
+              <Trans
+                i18nKey="footer.contactText"
+                components={{
+                  whatsapp: (
+                    <a
+                      href="https://wa.me/919485628238?text=Hi%20I%20need%20help"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold hover:text-yellow-600"
+                    />
+                  ),
+                }}
+              />
             </p>
 
             <div className="mt-4">
@@ -612,13 +630,27 @@ useEffect(() => {
             </div>
 
             <div className="flex gap-3 mt-6">
-              <TiSocialFacebook size={18} className="hover:text-primary cursor-pointer" />
-              <SlSocialInstagram size={18} className="hover:text-primary cursor-pointer" />
-              <TiSocialTwitter size={18} className="hover:text-primary cursor-pointer" />
-              <TiSocialYoutube size={18} className="hover:text-primary cursor-pointer" />
+              <TiSocialFacebook
+                size={18}
+                className="hover:text-primary cursor-pointer"
+              />
+              <SlSocialInstagram
+                size={18}
+                className="hover:text-primary cursor-pointer"
+              />
+              <TiSocialTwitter
+                size={18}
+                className="hover:text-primary cursor-pointer"
+              />
+              <TiSocialYoutube
+                size={18}
+                className="hover:text-primary cursor-pointer"
+              />
             </div>
 
-            <h4 className="mt-6 font-semibold text-black text-lg">{t("footer.downloadApp")}</h4>
+            <h4 className="mt-6 font-semibold text-black text-lg">
+              {t("footer.downloadApp")}
+            </h4>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-4">
               <a
@@ -631,7 +663,9 @@ useEffect(() => {
                   alt="Google Play"
                   className="w-4 h-4"
                 />
-                <span className="text-sm font-semibold">{t("footer.googlePlay")}</span>
+                <span className="text-sm font-semibold">
+                  {t("footer.googlePlay")}
+                </span>
               </a>
 
               <a
@@ -640,11 +674,12 @@ useEffect(() => {
                 className="flex items-center justify-center gap-3 bg-black text-white rounded-lg px-5 py-2.5 hover:bg-gray-800 transition-all duration-300 hover:scale-105 shadow-md"
               >
                 <FaApple size={20} />
-                <span className="text-sm font-semibold">{t("footer.appStore")}</span>
+                <span className="text-sm font-semibold">
+                  {t("footer.appStore")}
+                </span>
               </a>
             </div>
           </div>
-
         </div>
       </div>
 
