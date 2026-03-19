@@ -1,5 +1,6 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import AstroRegisterFloat from "@/components/AstroRegisterFloat";
 import TopLogos from "@/components/TopLogos";
 import Disclaimer from "@/components/Disclaimer";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -10,6 +11,7 @@ import { ToastContainer } from "react-toastify";
 const Layout = () => {
   return (
     <>
+      <AstroRegisterFloat />
       <TopLogos />
       <Header />
       <main>
