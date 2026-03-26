@@ -34,7 +34,7 @@ export function AppSidebar() {
                                 className="h-8 w-8 rounded-md"
                                 alt="Logo"
                             />
-                            {openMobile && <span className="ml-2 font-bold text-lg">Astrologer</span> || open && <span className="ml-2 font-bold text-lg">Astrologer</span>}
+                            {openMobile && <span className="ml-2 font-bold text-lg">Astrotring</span> || open && <span className="ml-2 font-bold text-lg">Astrotring</span>}
                         </NavLink>
                     </SidebarMenuItem>
                 </SidebarMenu>

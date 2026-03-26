@@ -138,7 +138,7 @@ const App = () => {
 
 
 
-
+{/* astro route */}
             <Route path="/astro-login" element={<AstroLogin />} />
             <Route path="/astro-register" element={<AstroRegister />} />
             {/* <Route path="/blogs" element={<Blog />} />
