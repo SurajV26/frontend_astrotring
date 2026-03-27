@@ -304,8 +304,8 @@ h6 {
 input {
   box-shadow: none !important;
 }
-select {
-  width: 100% !important;
+Select {
+  width: 100%;
 }
 
 @keyframes bannerRotate {

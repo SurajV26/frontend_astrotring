@@ -850,7 +850,7 @@ import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { AstrologerRegister } from "@/redux/slice/AstroAuth";
 import { Link, useNavigate } from "react-router-dom";
-import { fileToBase64 } from "@/hooks/fileToBase64";  
+import { fileToBase64 } from "@/hooks/fileToBase64";
 
 // Language options
 const languages = [
@@ -935,7 +935,7 @@ const AstroRegister = () => {
   const [loadingCountries, setLoadingCountries] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [registrationCode, setRegistrationCode] = useState("");
-const [termsAccepted, setTermsAccepted] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   // Form state
   const [form, setForm] = useState({
@@ -1022,26 +1022,26 @@ const [termsAccepted, setTermsAccepted] = useState(false);
   };
   // Image change handler with validation
   const handleImageChange = async (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    if (!file.type.startsWith("image/")) {
-      toast.error("Please select an image file");
-      return;
-    }
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Image size must be less than 2MB");
-      return;
-    }
+    const file = e.target.files[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file");
+        return;
+      }
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error("Image size must be less than 2MB");
+        return;
+      }
 
-    try {
-      const base64 = await fileToBase64(file);
-      setProfileImage(base64);          // ✅ Base64 store
-      setImagePreview(URL.createObjectURL(file));
-    } catch (error) {
-      toast.error("Failed to process image");
+      try {
+        const base64 = await fileToBase64(file);
+        setProfileImage(base64);          // ✅ Base64 store
+        setImagePreview(URL.createObjectURL(file));
+      } catch (error) {
+        toast.error("Failed to process image");
+      }
     }
-  }
-};
+  };
 
   const handleSelect = (name, value) => {
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -1200,62 +1200,62 @@ const [termsAccepted, setTermsAccepted] = useState(false);
 
     // TnC validation
     if (!termsAccepted) {
-  newErrors.terms = "You must accept the Terms & Conditions to register.";
-}
+      newErrors.terms = "You must accept the Terms & Conditions to register.";
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   // Submit handler
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!validateForm()) {
-    toast.error("Please fill all the fields correctly before submitting");
-    return;
-  }
-
-  // ✅ JSON object banayein
-  const submitData = {
-    name: form.name.trim(),
-    email: form.email.trim(),
-    country_code: form.country_code,
-    mobile: form.mobile.trim(),
-    username: form.username.trim(),
-    password: form.password,
-    password_confirmation: form.confirmPassword,
-    expertise: form.expertise,
-    languages: form.languages,
-    category: form.categories,
-    experience: Number(form.experience),
-    daily_available_hours: Number(form.daily_available_hours),
-    is_family_astrologer: Number(form.is_family_astrologer),
-    family_astrology_details: form.is_family_astrologer === "1" ? form.family_astrology_details.trim() : null,
-    address: form.address.trim() || null,
-    pincode: form.pincode.trim() || null,
-    astro_education: form.astro_education,
-    profile_image: profileImage || null,   // ✅ Base64 string  directly
-    terms_accepted: termsAccepted ? 1 : 0,
-  };
-
-  try {
-    const astroData = await dispatch(AstrologerRegister(submitData)).unwrap();
-    setRegistrationCode(astroData?.code || astroData?.id || "N/A");
-    setShowSuccessModal(true);
-  } catch (error) {
-    if (error?.message) {
-      toast.error(error.message);
-    } else if (error?.error) {
-      toast.error(error.error);
-    } else if (typeof error === "string") {
-      toast.error(error);
-    } else {
-      toast.error("Registration failed. Please try again.");
+    if (!validateForm()) {
+      toast.error("Please fill all the fields correctly before submitting");
+      return;
     }
-    console.error("Registration error:", error);
-  }
-};
+
+    // ✅ JSON object banayein
+    const submitData = {
+      name: form.name.trim(),
+      email: form.email.trim(),
+      country_code: form.country_code,
+      mobile: form.mobile.trim(),
+      username: form.username.trim(),
+      password: form.password,
+      password_confirmation: form.confirmPassword,
+      expertise: form.expertise,
+      languages: form.languages,
+      category: form.categories,
+      experience: Number(form.experience),
+      daily_available_hours: Number(form.daily_available_hours),
+      is_family_astrologer: Number(form.is_family_astrologer),
+      family_astrology_details: form.is_family_astrologer === "1" ? form.family_astrology_details.trim() : null,
+      address: form.address.trim() || null,
+      pincode: form.pincode.trim() || null,
+      astro_education: form.astro_education,
+      profile_image: profileImage || null,   // ✅ Base64 string  directly
+      terms_accepted: termsAccepted ? 1 : 0,
+    };
+
+    try {
+      const astroData = await dispatch(AstrologerRegister(submitData)).unwrap();
+      setRegistrationCode(astroData?.code || astroData?.id || "N/A");
+      setShowSuccessModal(true);
+    } catch (error) {
+      if (error?.message) {
+        toast.error(error.message);
+      } else if (error?.error) {
+        toast.error(error.error);
+      } else if (typeof error === "string") {
+        toast.error(error);
+      } else {
+        toast.error("Registration failed. Please try again.");
+      }
+      console.error("Registration error:", error);
+    }
+  };
 
   return (
     <section className="py-10 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50 min-h-screen">
@@ -1337,10 +1337,10 @@ const [termsAccepted, setTermsAccepted] = useState(false);
                     )}
                   </div>
 
-                  {/* Mobile */}
+                  {/* Mobile number */}
                   <div className="space-y-2">
                     <Label>Mobile Number *</Label>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 ">
                       <Select
                         value={form.country_code}
                         onValueChange={(value) =>
@@ -1419,89 +1419,89 @@ const [termsAccepted, setTermsAccepted] = useState(false);
               </div>
 
               {/* Profile Photo */}
-             
 
-<div className="space-y-1.5 col-span-1 max-w-xs">
-  <Label className="text-sm flex items-center gap-1.5">
-    <Camera className="w-3.5 h-3.5" />
-    Profile Photo
-  </Label>
 
-  <div
-    onClick={() => document.getElementById('profile-upload')?.click()}
-    onDragOver={(e) => {
-      e.preventDefault();
-      e.currentTarget.classList.add('border-yellow-500', 'bg-yellow-50');
-    }}
-    onDragLeave={(e) => {
-      e.preventDefault();
-      e.currentTarget.classList.remove('border-yellow-500', 'bg-yellow-50');
-    }}
-    onDrop={(e) => {
-      e.preventDefault();
-      e.currentTarget.classList.remove('border-yellow-500', 'bg-yellow-50');
-      const file = e.dataTransfer.files[0];
-      if (file) handleImageChange({ target: { files: [file] } });
-    }}
-    className={`
+              <div className="space-y-1.5 col-span-1 max-w-xs">
+                <Label className="text-sm flex items-center gap-1.5">
+                  <Camera className="w-3.5 h-3.5" />
+                  Profile Photo
+                </Label>
+
+                <div
+                  onClick={() => document.getElementById('profile-upload')?.click()}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.add('border-yellow-500', 'bg-yellow-50');
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove('border-yellow-500', 'bg-yellow-50');
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.currentTarget.classList.remove('border-yellow-500', 'bg-yellow-50');
+                    const file = e.dataTransfer.files[0];
+                    if (file) handleImageChange({ target: { files: [file] } });
+                  }}
+                  className={`
       relative border border-dashed rounded-lg p-4
       transition-all duration-200 cursor-pointer
       ${imagePreview
-        ? 'border-green-300 bg-green-50/30'
-        : 'border-gray-300 bg-gray-50 hover:border-yellow-400 hover:bg-yellow-50/30'
-      }
+                      ? 'border-green-300 bg-green-50/30'
+                      : 'border-gray-300 bg-gray-50 hover:border-yellow-400 hover:bg-yellow-50/30'
+                    }
     `}
-  >
-    <input
-      id="profile-upload"
-      type="file"
-      accept="image/*"
-      onChange={handleImageChange}
-      className="hidden"
-    />
+                >
+                  <input
+                    id="profile-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
 
-    {imagePreview ? (
-  <div className="flex items-center justify-between gap-3">
-    <div className="flex items-center gap-3 min-w-0 flex-1">
-      <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
-        <img
-          src={imagePreview}
-          alt="Preview"
-          className="w-full h-full object-cover"
-        />
-      </div>
-      {/* ✅ Sirf mobile par truncate hoga, badi screen par poora dikhega */}
-      <span className="text-sm text-gray-600 truncate sm:truncate-none sm:whitespace-normal sm:overflow-visible max-w-[80px] sm:max-w-none">
-        Photo uploaded
-      </span>
-    </div>
-    <button
-      type="button"
-      onClick={(e) => {
-        e.stopPropagation();
-        setProfileImage(null);
-        setImagePreview("");
-        document.getElementById('profile-upload').value = "";
-      }}
-      className="text-red-500 hover:text-red-700 p-1 flex-shrink-0"
-    >
-      <X className="w-4 h-4" />
-    </button>
-  </div>
-) : (
-  <div className="flex items-center gap-2 text-sm flex-wrap sm:flex-nowrap">
-    <Upload className="w-5 h-5 text-gray-400 flex-shrink-0" />
-    {/* ✅ Sirf mobile par truncate hoga */}
-    <span className="text-gray-600 truncate sm:truncate-none sm:whitespace-normal flex-1 min-w-0">
-      Click or drag photo
-    </span>
-    <span className="text-gray-400 text-xs whitespace-nowrap flex-shrink-0">
-      (2MB max)
-    </span>
-  </div>
-)}
-  </div>
-</div>
+                  {imagePreview ? (
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
+                          <img
+                            src={imagePreview}
+                            alt="Preview"
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        {/* ✅ Sirf mobile par truncate hoga, badi screen par poora dikhega */}
+                        <span className="text-sm text-gray-600 truncate sm:truncate-none sm:whitespace-normal sm:overflow-visible max-w-[80px] sm:max-w-none">
+                          Photo uploaded
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setProfileImage(null);
+                          setImagePreview("");
+                          document.getElementById('profile-upload').value = "";
+                        }}
+                        className="text-red-500 hover:text-red-700 p-1 flex-shrink-0"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-2 text-sm flex-wrap sm:flex-nowrap">
+                      <Upload className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                      {/* ✅ Sirf mobile par truncate hoga */}
+                      <span className="text-gray-600 truncate sm:truncate-none sm:whitespace-normal flex-1 min-w-0">
+                        Click or drag photo
+                      </span>
+                      <span className="text-gray-400 text-xs whitespace-nowrap flex-shrink-0">
+                        (2MB max)
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* Professional Information */}
               <div className="space-y-4">
@@ -1901,34 +1901,34 @@ const [termsAccepted, setTermsAccepted] = useState(false);
               </div>
 
               {/* Terms and Conditions */}
-<div className="space-y-2">
-  <div className="flex items-start gap-2">
-    <input
-      type="checkbox"
-      id="terms"
-      checked={termsAccepted}
-      onChange={(e) => setTermsAccepted(e.target.checked)}
-      className="mt-0.3 cursor-pointer"
-    />
-    <label htmlFor="terms" className="text-xs text-gray-600" style={{ fontSize: '12px',color: '#4b5563' }}>
-      I have read and agree to the{" "}
-      <Link
-        to="/astrologer-serviceProvider-TnC"
-        target="_blank"
-        className="text-amber-600 hover:underline"
-      >
-        Terms & Conditions
-      </Link>{" "}
-      
-    </label>
-  </div>
-  {errors.terms && (
-    <p className="text-xs text-red-500 flex items-center gap-1">
-      <AlertCircle className="w-3 h-3" />
-      {errors.terms}
-    </p>
-  )}
-</div>
+              <div className="space-y-2">
+                <div className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="mt-0.3 cursor-pointer"
+                  />
+                  <label htmlFor="terms" className="text-xs text-gray-600" style={{ fontSize: '12px', color: '#4b5563' }}>
+                    I have read and agree to the{" "}
+                    <Link
+                      to="/astrologer-serviceProvider-TnC"
+                      target="_blank"
+                      className="text-amber-600 hover:underline"
+                    >
+                      Terms & Conditions
+                    </Link>{" "}
+
+                  </label>
+                </div>
+                {errors.terms && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {errors.terms}
+                  </p>
+                )}
+              </div>
 
               {/* Submit Button */}
               <div className="pt-6 border-t">

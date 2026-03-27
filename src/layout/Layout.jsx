@@ -14,7 +14,7 @@ const Layout = () => {
       <AstroRegisterFloat />
       <TopLogos />
       <Header />
-      <main>
+      <main >
         <Outlet />
       </main>
       <Footer />
