@@ -34,6 +34,8 @@ const AstroRegister = lazy(() => import("./components/AstroRegistration"));
 const HoroscopeDetails = lazy(
   () => import("./components/Horoscopes/HoroscopeDetails"),
 );
+
+
 const Horoscopes = lazy(() => import("./pages/Horoscopes"));
 const StaticHoroscopesMonthlyAndYearly = lazy(
   () =>
@@ -117,7 +119,7 @@ const App = () => {
             {/* <Route path='/chat-with-astrologer' element={<ChatWithAstro />} /> */}
             <Route path="/talk-to-astrologer" element={<CallwithAstro />} />
             <Route path="/astro-details/:id" element={<Astrodetails />} />
-            <Route path="/horoscopes/:date" element={<Horoscopes />} />
+            <Route path="/horoscopes/:date?" element={<Horoscopes />} />
             <Route
               path="/horoscopes/:time/:horos"
               element={<HoroscopeDetails />}
