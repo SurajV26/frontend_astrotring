@@ -12,163 +12,174 @@ export const getYearlyHoroscope = (zodiac) => {
 
 export const monthlyHoroscopes = {
   aries: {
-    title: "Aries Monthly Horoscope March 2026: Courage, Career & Connection",
-    description: "March is shaping up to be a genuinely exciting month for Aries, and I say that with real enthusiasm. Your Aries monthly horoscope for March 2026 is lit up with planetary energy — four planets lining up in Aquarius are basically throwing you a cosmic pep talk. Think of it as the universe saying: \"You've got this. Now go get it.\" That said, the month has a few sharp edges too. Mercury is retrograde until March 21st, and the Sun-Rahu conjunction through mid-month could bring out your more stubborn side. But here's the thing about Aries — you thrive when there's something to push through.",
-    love: "Your Aries love horoscope for March 2026 shows a gradual warming trend in your relationship. Venus transiting Aries on March 26th brings genuine harmony and the chance to rekindle connection with your partner. Before that date, the Sun-Rahu influence might make expressing emotions feel complicated — you might come across as more distant than you intend. Open, honest communication (not dramatic declarations) is what actually brings peace here.",
-    career: "From March 11th, when Jupiter turns direct, you'll start feeling that professional momentum you've been waiting for. Support from higher authorities becomes more tangible, and recognition in leadership roles is genuinely on the table. However, retrograde Mercury until March 21st asks you to slow down before signing anything or making major commitments. Double-check agreements, read the fine print, and don't let impatience cost you a great opportunity.",
-    finance: "The financial picture for Aries this March is largely positive, especially through March 26th when Venus is exalted and bringing warmth to your income zone. Multiple income sources and support from your network will bolster your finances — thanks largely to that powerful four-planet conjunction. Jupiter going direct on the 11th is great news for financial confidence. Just be cautious about home renovation expenses or spontaneous spending creeping up later in the month.",
-    health: "On the health front, manage stress proactively — the Sun's movement into Pisces brings added professional responsibilities, which can weigh on your wellbeing. Prioritize rest and don't skip your movement routine. For Aries students, Rahu-Ketu may create some distraction or overconfidence in academic settings. If you're drawn to technical or research subjects, Mars's influence brings enthusiasm and focus for exactly that kind of work.",
+    title: "You're walking into April with fire in your chest — but watch that the blaze doesn't burn the bridge you're standing on.",
+    description: "You feel excited and enthusiastic about your career this month, but overconfidence is the trap. Venus transits your sign until April 19th, bringing unexpected financial gains and a tendency to splurge on yourself. Obstacles around land and home begin to resolve. From April 11th, Mercury's low position brings work stress and irritability — patience becomes your most important tool. From April 14th, the Sun's transit delivers great financial gains, but ego clashes are a real risk.",
+    love: "A new friendship mid-month could deepen into romance. If you're committed, ego clashes are the main risk. Married Arians will experience some ups and downs but romantic moments follow patience. Avoid extramarital affairs. Your partner gains respect and recognition through a new accomplishment.",
+    career: "Saturn and Mars fire up your ambition at the start. A foreign company offer is on the table, and software and artistic roles deliver financial benefits. From April 11th, be careful — Mercury is in its lowest position. If you're seeking a transfer, this month opens your preferred location. Hard work on a new project pays off with real success and growth.",
+    finance: "Steady gains, including income from unexpected sources. Land investments are favoured before April 14th — get your father's input first. Loan approvals may be delayed by paperwork. From April 19th, Venus loosens your spending on luxuries, so set a conscious budget. Pending funds and old investments may return.",
+    health: "Full family support this month. An ancestral property dispute resolves by April 12th, in your favour. Monitor your father's health after April 14th. Watch blood pressure, eat mindfully, and drive carefully.",
+    watch_out: "Overconfidence is the Aries trap. The stars support your hustle — they do not support shortcuts or arrogance.",
     favourable_dates: {
-      career: [3, 7, 16, 19, 20, 28],
-      finance: [5, 6, 11, 25, 29],
-      love: [2, 11, 21, 23, 25]
+      career: [11, 14, 20, 23, 29],
+      finance: [6, 14, 23, 24, 29],
+      love: [5, 7, 14, 23, 28, 29]
     }
   },
   taurus: {
-    title: "Taurus Monthly Horoscope March 2026: Growth, Patience & New Opportunities",
-    description: "Taurus, March 2026 is bringing you a mix of fresh opportunity and important lessons in patience — two things your sign actually handles better than most. Your Taurus monthly horoscope for March 2026 shows a month full of meaningful movement: new career doors opening, finances requiring careful management, and relationships asking for honest, mature communication. A friend of mine who's a Taurus once told me, \"I don't need things to happen fast — I just need them to happen right.\" That's exactly the energy March rewards for you this year.",
-    love: "Your Taurus love horoscope this March calls for patience and maturity. The retrograde Mercury and Mars-Rahu transit create some emotional distance and communication gaps — particularly in the first half of the month. Quality time with your partner and transparent communication are your best tools right now. The good news: as the month progresses, connection deepens. Stay clear in your communication and trust that consistency builds the closeness you want.",
-    career: "The four-planet transit is bringing career momentum even if it doesn't feel lightning-fast. Jupiter's influence rewards hard work with results — promotions, role changes, and new project opportunities are all on the table, especially after mid-month. Exalted Venus brings new job-front support and a favorable window for role transitions. If you've been considering a career change, the second half of March is your best window to move on that.",
-    finance: "Retrograde Mercury with Rahu until March 21st creates some financial fog — particularly around travel expenses and impulsive spending. Jupiter going direct on the 11th improves your income prospects, and land or property investment looks genuinely favorable this month. Stock market moves after mid-month can yield good returns, but only with proper research. Don't rush any major financial decisions before March 21st.",
-    health: "Family relationships need gentle attention this month, especially with increased work travel pulling your focus away from home. Students should watch for distraction from social media and friends — Mercury retrograde can affect concentration and decision-making. Health-wise, be attentive to any stress building up from professional responsibilities. Simple self-care routines — consistent sleep, nutritious meals, short outdoor breaks — go a long way in March.",
+    title: "You begin April with momentum and you'll end it with money — but the middle stretch asks for patience and a careful hand.",
+    description: "At the start of the month you feel excited and drawn toward new research. Expenses increase, but commission-based income provides a counterbalance. From April 11th, Mercury in its lowest sign saps confidence and courage — avoid new ventures and big investments during this window. Jupiter's transit brings unexpected financial gains, improving your overall situation by month's end.",
+    love: "Work keeps you occupied early on, and your partner may feel sidelined — schedule quality time deliberately. Mercury–Rahu creates small confusions. Married Taureans experience early friction, then real understanding arrives as Sun–Mars–Saturn align mid-month. Be attentive to your partner's health.",
+    career: "Passion and hard work are your competitive edge. A foreign project lands from April 14th (Sun exaltation) with further opportunities in its wake. Marketing and finance roles shine. Avoid Mercury-influenced shortcuts — they could dent your reputation. Job-changers: the doors are open, especially for your preferred role.",
+    finance: "Obstacles early, but Jupiter brings unexpected financial gains near month's end — potentially through ancestral property or a dormant investment. Avoid the stock market. Spend with a plan. Land deals are favoured from mid-April.",
+    health: "Jupiter brings warmth and harmony at home. After April 11th, minor misunderstandings may flare into conflicts. Watch your diet — obesity and thyroid or diabetes conditions need consistent, not reactive, attention.",
+    watch_out: "The window between April 11th and 14th is the low point of the month. Keep commitments small and patience large.",
     favourable_dates: {
-      career: [5, 10, 11, 29],
-      finance: [1, 10, 11, 20, 29, 30],
-      love: [2, 20, 23, 29, 30]
+      career: [11, 14, 23, 25, 28],
+      finance: [5, 11, 14, 16, 23],
+      love: [2, 5, 6, 23, 24, 29]
     }
   },
   gemini: {
-    title: "Gemini Monthly Horoscope March 2026: Recognition, Romance & Smart Moves",
-    description: "If you're a Gemini, March 2026 is going to feel like a month where your quick mind and natural charm actually get the recognition they deserve. Your Gemini monthly horoscope for March 2026 shows leadership recognition, beautiful romantic energy, and the kind of professional momentum that makes all the past effort feel worthwhile. The twist? Mercury is retrograde until March 21st — and for a Gemini, a planet governing communication going backward is basically the universe asking you to think twice before you speak (or sign anything).",
-    love: "The Gemini love horoscope for March 2026 is genuinely warm. Exalted Venus brings pleasant romantic moments and the opportunity to resolve lingering misunderstandings with your partner. If you're committed, this is a beautiful month for rebuilding trust. Singles may meet someone meaningful during this period — and after March 11th, any past relationship fog begins to lift. Your connection with your partner could deepen significantly by month's end.",
-    career: "From March 11th, Jupiter going direct shines a spotlight on your name, fame, and leadership potential. Fields like design, beauty, travel, and creative industries are particularly favored through March 26th, thanks to exalted Venus. New projects, foreign deals, and high-profile contacts are genuinely available to you this month. If you've been eyeing a job change or role expansion, the timing is supportive — especially mid to late March.",
-    finance: "Your Gemini financial horoscope for March 2026 shows real income growth, with speculation (like the stock market or lottery) bringing potential gains — but only with smart, researched decisions. Avoid impulsive moves made under someone else's influence. Postpone real estate or land investments until after March 18th. And skip borrowing or lending this month — complications in repayment are a real risk right now.",
-    health: "Gemini students may find concentration scattered this month — Ketu's influence on your mind can pull you in too many directions at once. Short breaks outdoors and structured study schedules help restore focus. Competitive exam preparation benefits from consistent effort now. Family life is generally supportive and active. Watch your mental energy — Gemini tends to run hot cognitively, and March's busy planetary energy can amplify that tendency toward overthinking.",
+    title: "April gifts you with income spikes and Venus-fuelled romance — but also serves up a generous portion of 'don't trust that person blindly.'",
+    description: "Work struggles and anxiety loom until April 11th due to Rahu and Mercury. A Sun–Saturn conjunction demands discipline. Don't trust anyone blindly. A sudden income increase arrives, but disagreement with your father over important matters may surface. An auspicious home event resolves minor misunderstandings. If you've been considering a vehicle purchase, this month is finally your time.",
+    love: "Venus fills April with romantic energy — devote real time to your partner. A new romantic connection could form mid-month. Warning for married Geminis: third-party interference is a real risk this month. Keep your private life private. If you're unmarried, marriage proposals may arrive. Your spouse succeeds in their educational pursuits.",
+    career: "Mental stress around work arrives from April 14th via Sun–Saturn influence. This month brings a chance to restart previously abandoned work. A foreign project offer arrives with a firm deadline — meet it. Job-seekers may land their desired location. If your workplace has challenges right now, stay cautious and let this period pass.",
+    finance: "Commission and interest-based income are your financial bright spots. Stock market is favourable. The Sun's exaltation on April 14th unlocks gains through ancestral property or past investments. Monitor housing costs and unexpected child-related expenses. Media, art, and law work yields strong profit.",
+    health: "Minor family friction, particularly with your mother and possibly a brother. A month-end celebration clears the air. Chronic illness may flare — don't ignore recurring symptoms. Mind your diet; mental stress thrives when routine breaks down.",
+    watch_out: "'Don't trust anyone blindly' is the planetary directive this month — in business, partnerships, and personal life alike.",
     favourable_dates: {
-      career: [3, 7, 14, 23, 28],
-      finance: [3, 7, 11, 23, 25],
-      love: [3, 7, 16, 25, 29]
+      career: [14, 16, 19, 20, 23],
+      finance: [2, 5, 14, 16, 23, 25],
+      love: [5, 11, 14, 25, 29]
     }
   },
   cancer: {
-    title: "Cancer Monthly Horoscope March 2026: Creativity, Career Clarity & Heartfelt Moments",
-    description: "Cancer, March 2026 is a month that plays to your strengths — your intuition, your warmth, and your ability to create real emotional connection even in the most chaotic moments. Your Cancer monthly horoscope for March 2026 shows a month full of creative opportunities, career clarity, and meaningful personal moments. I always think of Cancers as the people who show up — not just for themselves, but for everyone around them. March rewards exactly that quality.",
-    love: "Your Cancer love horoscope this March is genuinely heartwarming. Your caring, honest approach brings real passion and renewed connection to your relationship. Quality time with your partner deepens your bond meaningfully. However, added responsibilities at work may limit the time you have for love — be intentional about carving out moments that matter. After March 26th, Venus's transit brings some additional spending on your partner, which could create minor financial stress — plan for it.",
-    career: "Your Cancer career horoscope for March 2026 shows real upward momentum, especially after March 11th when Jupiter turns direct. New job opportunities, a salary improvement, and professional recognition through consistent effort are all within reach. However, retrograde Mercury through March 21st asks you to hold off on hasty investments or rushed professional decisions. After that date, land, property, or stock market moves become much more favorable.",
-    finance: "The Cancer financial picture for March 2026 gradually stabilizes as the month progresses. Through March 15th, the Sun-Rahu conjunction may tempt unnecessary spending — keep a close tab on your budget during this window. After March 21st, investment moves become more favorable. Smart expense management now sets you up for the financial breathing room you want in the months ahead.",
-    health: "Cancer students may find academic expenses on the rise this month, creating some mental pressure. Retrograde Mercury demands extra effort before March 21st — those considering studying abroad will find new doors opening through this period. Health-wise, pay attention to your head and eyes this month. Nerve-related concerns might surface — rest, proper nutrition, and timely medical attention are your best tools. Family visits to religious places or peaceful environments bring genuine emotional relief.",
+    title: "The fog you've been living in lifts this month. April brings clarity, international connections, and a career moment that builds a new identity for you.",
+    description: "Past confusion clears and confidence returns. Financial gains come through genuine effort. Some travel problems are possible, including delays in abroad travel. Caution is needed around work, money, and family matters. A research reward increases your market prestige and opens a new professional identity.",
+    love: "April opens with potential for a new love connection. Mars–Saturn brings friction mid-month — keep expectations realistic to protect your harmony. Married Cancerians: watch for disagreements that spill over into the children's focus and education. Communication and lower expectations are the solution, not silence.",
+    career: "Dedication is your superpower — it overcomes every obstacle. Foreign company contacts are your biggest professional opportunity. New doors open in art, beauty, furniture, and IT. A promotion is possible through consistent effort. From April 19th, a female senior at work becomes a meaningful ally.",
+    finance: "Keep savings in focus — be deliberate about expenses from April 11th. Don't lend money this month. Stock market looks favourable. Land investment is cautioned (avoid putting it in your own name if possible). All ongoing work flows smoothly.",
+    health: "Family harmony prevails, with minor early friction that resolves quickly. Watch for nerve-related discomfort — back and leg pain connected to Mercury–Rahu. Be careful near heights. By month's end, mental resilience returns and health stabilises.",
+    watch_out: null,
     favourable_dates: {
-      career: [5, 11, 16, 28, 29],
-      finance: [2, 16, 25, 29, 30],
-      love: [2, 12, 24, 28, 30]
+      career: [2, 5, 14, 16, 25],
+      finance: [10, 11, 14, 23, 29],
+      love: [2, 5, 14, 20, 23, 29]
     }
   },
   leo: {
-    title: "Leo Monthly Horoscope March 2026: Confidence, Courage & Careful Choices",
-    description: "Leo, March 2026 is a month that speaks directly to your soul. This is a time of heightened confidence, leadership recognition, and the kind of bold opportunities that make Leos feel most alive. Your Leo monthly horoscope for March 2026 is rich with potential — but it also asks you to channel that natural royal energy with real wisdom. I've always thought Leos are at their best when they're leading from a place of genuine strength rather than ego. And March? March is going to test exactly that distinction — in the best possible way.",
-    love: "Your Leo love horoscope for March 2026 shows relationship stability building from mid-month onwards. After March 15th, lingering misunderstandings begin clearing up, and your confidence in expressing feelings returns beautifully. Before that, retrograde Jupiter through March 11th may create some ego friction or emotional distance. Open, patient communication is your most powerful relationship tool this month — more powerful than grand gestures.",
-    career: "After March 11th, Jupiter turns direct and your professional reputation gets a meaningful boost. Any profession linked to design, beauty, furniture, travel, or research is especially favored through March 26th. If you're starting or expanding a business, this is a promising window. Just be patient if you're salaried — Saturn asks for consistent performance before recognition arrives. Your disciplined approach builds a lasting reputation, even if results aren't immediate.",
-    finance: "Your Leo financial horoscope for March 2026 shows income improving alongside rising expenses — particularly through Mercury retrograde (until March 21st). Impulsive spending is a real risk this month, so budget proactively. Past loans or pending payments may finally come through with persistent effort. Be very cautious with real estate or speculative investments — Rahu with Mars creates unpredictable energy in those areas.",
-    health: "Leo students may struggle with focus in the first half of March — the Sun-Rahu conjunction creates overconfidence or confusion around missed opportunities. Research-oriented work and exploring new ideas, however, is genuinely favored this month. Health-wise, immunity gets a natural boost after March 15th thanks to the Sun's positive influence. Watch for skin-related sensitivities or allergies before that date due to Mercury retrograde — maintain good hygiene and stay on top of any developing health concerns.",
+    title: "You are coasting on ancestral luck and past-investment returns this month — just don't let Saturn and Mars convince you the grass is greener elsewhere.",
+    description: "Hard work and luck combine to raise your prestige early in April. Research work occupies the start of the month and you advance on your own strength. Ancestral property gain is strongly indicated. Income and profits improve across the board. From April 11th, Mercury asks you to watch expenses carefully.",
+    love: "Quality time with your partner heals old grievances and rebuilds emotional closeness. Single Leos: someone special is incoming. Married Leos: small arguments over everyday matters — a thoughtful surprise gift dissolves more tension than a long conversation.",
+    career: "A strong month — hard work yields visible success and boosted confidence. Work travel is productive. From April 19th, past investments deliver significant returns. Design and travel sectors are particularly favoured. The danger zone: Saturn–Mars may trigger impulsive thoughts about job changes. Stay grounded and maintain good relationships with your superiors.",
+    finance: "Multiple income sources are active. Religious travel, charitable giving, or a new property or vehicle investment are on the cards. After April 11th, pause new financial projects and hold major expenditures. Long-term stock investment is viable. External-work expenses are high — spend selectively.",
+    health: "A religious event at home brings the family together — remember to invite everyone to avoid awkwardness. Female-related interfamilial tension is possible. Watch your diet for stomach issues. Drive carefully and avoid verbal confrontations.",
+    watch_out: null,
     favourable_dates: {
-      career: [3, 6, 18, 21, 25],
-      finance: [6, 16, 20, 22, 30],
-      love: [5, 15, 23, 24, 30]
+      career: [7, 16, 19, 20, 23],
+      finance: [2, 11, 23, 25, 30],
+      love: [5, 11, 24, 29, 30]
     }
   },
   virgo: {
-    title: "Virgo Monthly Horoscope March 2026: Responsibility, Recognition & Real Progress",
-    description: "Virgo, March 2026 is a month that rewards your greatest strength — attention to detail — while also asking you to trust yourself more than usual. Your Virgo monthly horoscope for March 2026 shows new responsibilities landing on your desk, creative skills being recognized, and a financial landscape that rewards caution over impulse. A Virgo friend once told me, \"I don't just want to do a good job — I want to do the right job, well.\" March is a month that aligns perfectly with that philosophy.",
-    love: "Your Virgo love horoscope for March 2026 is defined by depth and intention. Saturn's influence on your love zone asks you to value your partner more consciously — moving past old grievances into a more mature, emotionally connected bond. Exalted Venus through March 26th brings warmth and the opportunity to rekindle romantic feeling. However, some tension with your partner due to Saturn's positioning may require patience — conscious communication is your most powerful relationship tool this month.",
-    career: "On the career front, this is a month of building rather than bursting. Retrograde Mercury with Rahu through March 21st increases the risk of communication gaps and misread situations — this is not the time for launching a new business or making significant investments without consulting senior advisors. From March 11th, Jupiter going direct helps you regain professional confidence. From March 15th, consistent effort starts bringing visible recognition and rewards. Your bond with colleagues also strengthens this month.",
-    finance: "Your Virgo financial horoscope for March 2026 calls for careful, measured decision-making. Retrograde Mercury can lead to extravagant spending on unnecessary things — your awareness is your best protection. Hold off on property or land investments until after March 11th. Speculation and stock market moves can bring returns this month if approached smartly. Long-standing loan situations start finding relief.",
-    health: "Virgo students need to fight overconfidence this month — it can genuinely cause academic setbacks. Disciplined study habits and self-control are your most important tools before March 21st. Those pursuing higher education will find consistent effort rewarded with long-term growth. Health-wise, the workload this month may lead to mental stress, back pain, or knee discomfort — especially with heavy travel or long hours. Prioritize rest and balance. A family celebration or get-together brings genuine emotional relief to an otherwise busy month.",
+    title: "April's headline for Virgo is simple: do not start, do not sign, do not invest — until you know exactly what you're doing. The opportunities at month's end are real. Preserve yourself to reach them.",
+    description: "Enthusiasm and self-confidence open the month positively. Mercury–Rahu confusion until April 11th: seek expert advice before acting. Debilitated Mercury for much of the month means new work and investments may not return expected benefits. Ketu brings new international travel opportunities. Connections with people improve noticeably. A new business opportunity surfaces at month's end.",
+    love: "A genuinely touching month — your partner surprises you with small, meaningful gestures. An old friend reconnects around mid-month, bringing warmth. Married Virgos: minor relationship stress as your partner's health diverts their energy. Offer support without expecting reciprocation right now.",
+    career: "A major project arrives, opening career improvement opportunities. Stay cautious — avoid major work decisions or job changes while Mercury is debilitated. Partnership work or major investments create challenges during this period. Job-seeking requires more effort than usual this month.",
+    finance: "Early-month investment in land is well-positioned for future returns. Do not invest in old vehicles — maintenance costs outweigh value. Skip loans and borrowing entirely. New financial opportunities arise — but track spending carefully.",
+    health: "Sibling friction is possible, but a family get-together resets the atmosphere. Your bond with your mother deepens this month. Your father's achievement brings joy home. Chronic illness needs consistent doctor attention — don't self-manage. Treat skin issues early.",
+    watch_out: "Delay. Patience is not weakness — it is your strategy. The month rewards those who wait for clarity.",
     favourable_dates: {
-      career: [2, 3, 6, 11, 24, 30],
-      finance: [3, 6, 12, 28, 30],
-      love: [2, 16, 25, 29, 30]
+      career: [2, 16, 25, 28],
+      finance: [2, 20, 23, 29, 30],
+      love: [7, 10, 11, 21, 29]
     }
   },
   libra: {
-    title: "Libra Monthly Horoscope March 2026: Balance, Breakthroughs & Big Opportunities",
-    description: "Libra, March 2026 is a month of gradual but meaningful growth — which honestly suits your nature perfectly. You're not one to rush into anything without weighing the options. And this month's energy is built exactly for that kind of thoughtful, intentional approach. Your Libra monthly horoscope for March 2026 shows rising professional opportunities, financial improvement, and emotional resilience. The early part of the month might feel like navigating through fog, but by mid-March, things clear up beautifully. Stay the course.",
-    love: "Your Libra love horoscope for March 2026 requires emotional balance and patience. Before March 15th, emotional distance or tension in your love life is possible — Mars, Rahu, and retrograde Mercury are creating some relational static. After that date, clarity arrives and relationships improve noticeably. A calm, polite approach to any issues — especially with your in-laws — goes a very long way. Emotional stability comes through communication, not avoidance.",
-    career: "From March 11th, Jupiter turning direct opens new career doors — particularly for job seekers and those considering business investments. From March 15th, your connections with higher authorities strengthen, and the Sun-Saturn transit boosts your social standing and professional visibility. Before mid-month, be cautious about new investments or partnerships — losses are possible. After that window, the trajectory becomes much more favorable. Maintain calm professionalism even when workplace dynamics feel tense.",
-    finance: "Your Libra financial horoscope for March 2026 shows gradual improvement, with your confidence in recovering loans or pending payments increasing this month. Land or property investments are supported with a long-term lens. However, keep expenses disciplined through March 15th — spending is elevated during this period. Speculation like lotteries or the stock market may not meet expectations, and casual lending or borrowing is best avoided entirely.",
-    health: "Libra students should maintain serious focus this month — four planets in your education house demand discipline. Competitive or government exam applicants can expect positive results after March 15th. Analytical and research subjects are particularly favored. Health-wise, control your language and emotional reactions in family settings to avoid unnecessary stress. Physical wellbeing improves when you stay consistent with exercise and balanced meals. Family bonds strengthen when you show up with genuine warmth.",
+    title: "Luck leans your way this month, Libra — but the planets also warn: your words will either open doors or slam them shut. Choose your sentences with care.",
+    description: "Luck is on your side and beneficial work finds you. Venus encourages self-organisation. Religious travel brings peace of mind. Sibling differences resolve and you help them financially. An abroad travel opportunity opens up. Mercury's debilitated position creates work challenges, but your dedication carries you forward.",
+    love: "A past connection may re-enter your life if you're single. Rahu creates relationship confusion — be honest rather than interpretive. Married Libras enjoy genuine love and harmony. From April 19th, pay closer attention to your partner's health.",
+    career: "International travel-linked opportunities are your biggest career story in April. Marketing, sales, and travel management all have strong momentum. After April 19th, partnership caution is high — someone may not have your best interests at heart. Avoid friction with colleagues; polite focus is your best strategy.",
+    finance: "Strong financial start to the month, but spending must be watched. Old land investments deliver gains — but new land or share investments are not advised now. Don't lend or borrow money. Your financial position is better maintained than grown this month.",
+    health: "Harsh speech is your relationship risk — your words land harder than you intend. Sibling friction may ripple into friendships. A home party lifts everyone's mood. Watch for digestive infections and liver-related concerns; consistent diet matters a great deal this April.",
+    watch_out: null,
     favourable_dates: {
-      career: [6, 12, 28, 30],
-      finance: [6, 15, 18, 24, 30],
-      love: [2, 12, 24, 28, 30]
+      career: [1, 11, 20, 21, 29],
+      finance: [7, 14, 23, 28, 29],
+      love: [5, 6, 24, 29, 30]
     }
   },
   scorpio: {
-    title: "Scorpio Monthly Horoscope March 2026: Ambition, Connection & Financial Growth",
-    description: "Scorpio, March 2026 is a month that plays to your natural intensity — in the best possible way. Your Scorpio monthly horoscope for March 2026 shows real professional momentum, overseas connections deepening, and financial stability building from mid-month onwards. The planets are genuinely working with your ambition this March. That said, a busy workload, some domestic friction, and the need for careful financial moves mean this is a month that rewards your famous Scorpio composure more than your more dramatic side.",
-    love: "Venus's favorable position makes March a passionate month for Scorpio in love. You'll feel expressive, affectionate, and emotionally engaged with your partner. Your spouse is particularly supportive of your professional goals this month — lean into that partnership energy. However, from March 15th, the Sun-Saturn conjunction in your love house may create ego friction or heated arguments. Honest, polite communication is your most powerful tool for maintaining harmony with your partner.",
-    career: "Career growth comes through networking, travel, and strategic professional outreach this month. Marketing efforts, sales-related work, and building high-level professional connections are all highlighted for Scorpio in March 2026. However, Ketu's transit in your job house asks you not to rush any decisions — job changes are not favored right now. From March 15th, Saturn's influence alongside the Sun may bring some work pressure or misunderstandings with superiors. Stay focused and avoid office politics entirely.",
-    finance: "From March 11th, Jupiter supports your financial stability and income growth. If you've been seeking a loan, this month brings approval possibilities. Land or property investments look favorable and can bring future security. However, controlling expenses is a real challenge this month — plan your budget carefully. Speculative investments after March 15th need extra caution and research before acting.",
-    health: "Scorpio students should avoid over-reliance on social media and travel distractions, especially after March 15th. A structured study schedule and reduced screen time are your best academic strategies. Competitive exam prep benefits from focused, disciplined effort right now. Health-wise, watch for low blood pressure, skin sensitivities, or nerve-related discomfort — retrograde Mercury with Rahu can bring these up. Rest, proper diet, and medical attention when needed will keep you moving forward in good health.",
+    title: "April brings you an inheritance, a spark for secretive research, and one of the better marriage months you'll have all year — wrapped in a tight April 11th deadline.",
+    description: "Your direct communication style resonates well with others. Jupiter sparks a sudden interest in secretive subjects or research work. Inheritance from your father arrives. From April 11th, Mercury's debilitation means important decisions should be paused. Travel abroad is ideal before April 19th. Work — both education and business-related — completes on time. An old friend reunion brings genuine happiness.",
+    love: "Trust issues may create distance in an existing love relationship. Married Scorpios, however, have a beautiful month: short trips with your spouse, thoughtful surprises, and genuine financial and emotional partnership. Your spouse truly has your back right now.",
+    career: "A foreign company project offer opens April with exciting potential. Design, beauty, or art partnerships are viable. Work is complicated by paperwork issues linked to debilitated Mercury — detailed review is essential. Job promotion is likely if you avoid changing jobs after April 14th, which risks boss-level conflict.",
+    finance: "A sudden financial windfall may prompt a gold investment. Home renovation costs arrive. Avoid stock market and new loans this period. From April 22nd, any money received should go toward reducing existing debt — disciplined debt reduction is April's smartest financial move for Scorpio.",
+    health: "Don't travel alone to high altitudes. After April 14th, blood-related matters need active attention. Family rapport is key; your mother's support is meaningful and available. Religious outings and small gatherings ease household tensions.",
+    watch_out: null,
     favourable_dates: {
-      career: [2, 11, 20, 28, 30],
-      finance: [5, 21, 25, 28],
-      love: [3, 5, 20, 25, 30]
+      career: [7, 11, 23, 25, 30],
+      finance: [2, 20, 23, 29, 30],
+      love: [11, 16, 28, 29, 30]
     }
   },
   sagittarius: {
-    title: "Sagittarius Monthly Horoscope March 2026: Courage, Clarity & Career Wins",
-    description: "Sagittarius, March 2026 is a month that honors your love of growth, adventure, and meaningful connection. Your Sagittarius monthly horoscope for March 2026 shows rising confidence, career momentum from mid-month, and a financial landscape that actually rewards your natural optimism — when paired with a little careful planning. I think of Sagittarians as the people who turn every challenge into a story worth telling. March gives you some great material — and some genuinely bright moments worth celebrating.",
-    love: "Your Sagittarius love horoscope for March 2026 offers a chance to bring clarity and renewed energy into your relationship. Addressing unresolved issues early in the month prevents them from growing. After mid-March, emotional distance caused by Mars and Rahu begins easing. Patient, clear communication is your relationship superpower this month. Your natural optimism and sense of adventure bring genuine warmth to your connection when you let it.",
-    career: "After March 11th, professional momentum picks up significantly. Partnerships, collaborations, and new projects bring smooth results and a reputation boost. If you've been considering a job change, March supports a positive transition into a better professional environment. Be cautious with business decisions before March 21st due to Mercury retrograde — consult experts before major investments. Your bond with seniors remains cordial, and maintaining professionalism will keep it that way.",
-    finance: "March brings financial relief for Sagittarius — Saturn helps reduce unnecessary expenses, and your savings ability improves meaningfully this month. Ancestral property matters may bring favorable long-term outcomes. Exalted Venus alongside Saturn may push you to spend more than planned on property — stay aware of that tendency. Avoid stock market or lottery moves without expert consultation.",
-    health: "Sagittarius students will find March productive for research, new knowledge projects, and competitive exam preparation — especially from March 11th onwards. Stay disciplined in the early part of the month when Rahu and Mars create some restless energy. Family relationships are harmonious and meaningful this March. Spending time with siblings deepens emotional bonds. Monitor your parents' health and your own diet and daily routine carefully — those with thyroid, diabetes, or chest concerns should be particularly attentive.",
+    title: "April asks you to face your weaknesses honestly — and then do something about them. The rewards for self-awareness are disproportionately large this month.",
+    description: "You identify your weaknesses and work to overcome them. Career and family balance remains a challenge. Mercury–Rahu confusion until April 11th makes important decisions difficult — wait them out. Religious activities call to you. Saturn, Sun, and Mars create domestic ups and downs, but patience and self-confidence prevent major problems.",
+    love: "Venus brings warmth and cordial energy to your relationship, but tensions arise between April 11th and April 19th — misunderstandings can fracture married harmony during this window. Stay emotionally available and patient. Your spouse's new achievement lifts the household mood.",
+    career: "Invest in business before April 11th — after that, Mercury debilitation makes decisions risky. A foreign project is coming; a trusted friend's support makes it stronger. Praise from superiors is forthcoming. From April 19th, Venus boosts salary and promotion possibilities, and an abroad assignment is possible. A strong month for job-seekers.",
+    finance: "Unnecessary family expenses drain resources. Repay loans only after April 19th. Long-term stock market investment is viable before the 19th. Avoid property purchase this month. Financial relief arrives through an old investment or your father — at exactly the right time.",
+    health: "Family arguments cause mental distress — choose your battles. Land disputes may intensify. Your mother's support feels absent at times, leading to anxiety. Watch for blood-related issues and throat or chest infections. Your words have outsized impact at home right now — use them carefully.",
+    watch_out: null,
     favourable_dates: {
-      career: [2, 5, 15, 20, 25],
-      finance: [3, 16, 21, 29, 30],
-      love: [6, 15, 18, 24, 30]
+      career: [7, 11, 21, 23, 25],
+      finance: [5, 9, 21, 24, 30],
+      love: [2, 16, 25, 29, 30]
     }
   },
   capricorn: {
-    title: "Capricorn Monthly Horoscope March 2026: Discipline, Design & Decisive Growth",
-    description: "Capricorn, if there's one sign built for a month that rewards discipline and smart decision-making, it's you. Your Capricorn monthly horoscope for March 2026 shows a month where hard work gets recognized, creative fields shine brightly, and love brings genuine warmth — if you stay grounded and patient. My Capricorn friend describes her approach to every month as \"knowing what I can control and focusing exclusively on that.\" March 2026 is built for exactly that mindset.",
-    love: "Exalted Venus brings romance, warmth, and emotional closeness to your Capricorn love life in March 2026. Your bond with your partner strengthens naturally, and if you've been feeling lonely, new connection possibilities emerge after March 26th. A minor communication gap with your spouse — influenced by Mars and Rahu — might surface mid-month. Address it calmly rather than letting it build. Your steady Capricorn reliability is actually what your partner needs most right now.",
-    career: "If you're working in design, beauty, or fashion, March is your standout month — exalted Venus until March 26th brings financial gains and meaningful new professional connections in these fields. Private sector employees will feel motivated and appreciated by seniors. Be cautious about new investments or job changes this month — the planetary setup doesn't favor rushed decisions in those areas. Those seeking government jobs should act before mid-month for the best outcome.",
-    finance: "Your Capricorn financial horoscope for March 2026 calls for real caution. Multiple planets transiting your wealth house can trigger unplanned spending that strains your budget. Retrograde Mercury makes lending or borrowing especially risky — avoid both. Avoid real estate or land investments this month. Keep speculative moves minimal and researched. Focus on arranging funds thoughtfully for any new ventures rather than improvising.",
-    health: "Capricorn students have a productive month — especially those in sports, competitive activities, or research-oriented academic fields. Professional courses started this month can reward you with long-term career benefits. Health needs genuine attention: Mars's influence may leave you feeling low-energy, and excessive travel after March 15th can cause fatigue or leg pain. Proper nutrition — iron, vitamins, and consistent hydration — supports your vitality. If you have heart-related concerns, take medical advice proactively.",
+    title: "April's recurring note for Capricorn is this: your ego is not your ally this month. Your humility — in relationships, in spending, in decisions — unlocks the month's real rewards.",
+    description: "Mercury–Rahu transit brings unnecessary arguments — avoid promises and showing off. Financial ups and downs are likely. Spiritual inclinations bring real peace of mind. Egoistic behaviour causes friction with loved ones. Self-spending may exceed expectations.",
+    love: "A surprise gift for your partner sets a positive early tone. From April 19th, a significant new relationship connection is possible for singles. Married Capricorns: your spouse may be anxious about work — your financial and emotional backing is exactly what they need. Minor discord is possible but short-lived. Your spouse's new achievement brings genuine home happiness.",
+    career: "Frequent work travel brings promising foreign contracts. Beauty, design, clothing, and IT sectors are your strongest arenas. From April 11th, review every document before signing. A good window for finding a new job, especially in engineering, marketing, teaching, advertising, art, or cosmetics. Partners are helpful throughout.",
+    finance: "Financial volatility continues, with Rahu adding minor surprise expenses. Family responsibilities push costs up. An ancestral property dispute resolves before April 14th and you receive your share. Land or house investment is best done before April 19th. Vehicle expenses are possible. Stock market is viable.",
+    health: "Generally cordial home atmosphere, with sibling tension arriving around April 11th. Financial generosity toward family members increases your own expenses — set a limit. Treat skin conditions proactively. Leg weakness and back pain are possible. Manage stress through entertainment and rest.",
+    watch_out: null,
     favourable_dates: {
-      career: [7, 16, 19, 20, 30],
-      finance: [3, 5, 11, 25, 29],
-      love: [2, 11, 23, 25, 30]
+      career: [5, 7, 14, 16, 21],
+      finance: [2, 5, 6, 23, 24, 29],
+      love: [5, 7, 11, 14, 23]
     }
   },
   aquarius: {
-    title: "Aquarius Monthly Horoscope March 2026: Auspicious Beginnings & Bold Decisions",
-    description: "Aquarius, March 2026 is genuinely one of the more auspicious months in your recent astrological calendar. Your Aquarius monthly horoscope for March 2026 shows powerful planetary activity happening right in your sign — boosting your stamina, confidence, and ability to make bold, meaningful decisions. People around you will naturally seek your guidance this month. That's not an accident — the planetary energy is putting your vision front and center.",
-    love: "Your Aquarius love horoscope for March 2026 starts with an interesting twist — until March 11th, retrograde Jupiter might bring someone from your past back into your orbit, offering a chance to rekindle something old. After that, your current relationship blooms with harmony and quality time. Singles may meet a potential life partner during this period. For those married, maintain open communication to prevent ego clashes from creating unnecessary friction.",
-    career: "After March 15th, your career prospects really accelerate. New business deals materialize, foreign connections bring fresh opportunities, and travel-related work opens meaningful doors. Sales, management, and marketing roles are especially favored. If you're salaried and feeling an urge to change roles, channel that energy into performing at your absolute best first — the recognition and possible salary increment will follow your dedication.",
-    finance: "Financially, March brings steady income and improving stability for Aquarius. Exalted Venus encourages spending on home renovation, vehicle upkeep, or meaningful personal experiences — which is fine, as long as you balance it with savings discipline. Land and property investments become more favorable after March 26th. Stock market moves look better after March 21st. Maintain the balance between enjoying your money and protecting your future.",
-    health: "Aquarius students focused on government opportunities or competitive exams have a strong month — especially those with disciplined study habits. Research and academic pursuits supported by reputed institutions look promising from March 11th. Family life requires mindful attention from March 15th when the Sun-Saturn transit creates some domestic stress. Start your day with movement — morning walks or exercise create the mental clarity that helps navigate both family and professional demands with grace.",
+    title: "Mercury and Rahu make April feel like decision-making through fog — until Jupiter clears a path and you discover what you actually want.",
+    description: "Confusion and stress may affect decision-making due to Rahu–Mercury transit. Jupiter develops new desires. From April 11th, minor family arguments may arise due to Mercury's exalted position. Avoid rash driving. You will overcome distraction and laziness and find your focus again. Enthusiasm and confidence return. Travel proves beneficial.",
+    love: "A new partner may enter your world — express your feelings before the moment passes. A financial disagreement is possible, so address money matters early and clearly. Married Aquarians enjoy mutual empathy. If your partner becomes emotional, listen first, fix second. After April 14th, your partner actively supports your finances.",
+    career: "Business activity is high and momentum is building. April 11th is specifically good for business investment. From April 14th, support from a younger sibling or friend boosts your finances. A meaningful job offer arrives — the salary and position match your efforts. Praise from seniors and new project opportunities are ahead. Avoid a passive approach.",
+    finance: "Saturn and Mars create financial volatility — high moments and tight moments in the same month. A salary increase from April 10th provides relief and helps with old debts. Land investment is favourable. Home purchase dreams are achievable this year. Watch for unexpected vehicle costs.",
+    health: "A work win creates a celebratory home atmosphere — a party or gathering is on the cards. After April 14th, plan a short trip with elder siblings. Be cautious while travelling — an accident risk is specifically noted. Monitor your parents' health proactively.",
+    watch_out: "Distraction is the enemy. Unnecessary things are pulling at your attention — identify them and redirect with intention.",
     favourable_dates: {
-      career: [3, 8, 17, 22, 26],
-      finance: [3, 4, 22, 23, 30],
-      love: [3, 6, 12, 21, 22, 24]
+      career: [6, 14, 23, 25, 29],
+      finance: [11, 14, 20, 23, 29],
+      love: [5, 11, 12, 20, 23]
     }
   },
   pisces: {
-    title: "Pisces Monthly Horoscope March 2026: Creativity, Growth & Intuitive Action",
-    description: "Pisces, March 2026 is a month asking you to channel your natural depth into focused, purposeful action. Your Pisces monthly horoscope for March 2026 shows creative energy opening career doors, financial improvement building gradually, and love life offering some genuinely romantic moments. I think of Pisces as the sign that feels everything first and then figures out what to do with it. March rewards the version of you that lets that deep feeling inform clear, intentional action.",
-    love: "Your Pisces love horoscope for March 2026 is romantically rich. You'll feel emotionally connected and even consider deepening your commitment with your partner — moving the relationship to a more meaningful level. However, third-party interference or misunderstandings could create tension if you're not proactive about open communication. Patience and honest dialogue are your relationship's best allies this month.",
-    career: "Jupiter going direct on March 11th brings the clarity and focus that makes this an ideal time for business decisions and new professional investments. Venus supports gains through decoration, beauty, marketing, and creative pursuits throughout the month. For those planning job changes, mid-to-late March brings promising opportunities. Patience through slow progress in the early part of the month is crucial — things genuinely pick up from March 15th.",
-    finance: "Your Pisces financial horoscope for March 2026 shows mixed early results that gradually improve. Delayed or stuck payments may finally come through, improving your cash flow meaningfully. Long-term stock market investments look favorable during this period. However, the Sun-Rahu transit may tempt unnecessary spending — keep your budget clear and conscious. Avoid major property purchases or financial commitments before March 21st.",
-    health: "Pisces students need to actively manage motivation this month — interest in studies may waver, potentially causing missed opportunities. Recognizing this tendency early and creating structure around your study routine makes a real difference. Post-March 15th, competitive exam results look promising. Health-wise, watch for throat-related issues before March 21st due to Rahu-Mercury's placement. Toward month's end, fatigue may surface — proper rest, hydration, and nutritious food will restore your energy and keep you moving forward with that characteristically warm Pisces heart.",
+    title: "Saturn and Mars are both in your sign — which means you have more raw energy than usual. The question is whether you channel it or let it create noise.",
+    description: "Enthusiasm and excitement at work are high due to Saturn and Mars transiting Pisces — but watch your speech. Work-related travel brings stress and extra expenses. From April 10th, religious trips bring mental peace. Competitive exam candidates need to watch rivals carefully. The Sun's exalted position from April 14th creates real prize or award potential. All tasks are completable on time with your current level of energy.",
+    love: "Travel brings a meaningful new connection. If you've been holding feelings back, consider sharing them after April 19th — a female friend can help navigate it. Married Pisceans enjoy a genuinely cordial month. After April 11th, be patient with home-related matters and manage anger to preserve the goodwill you've built.",
+    career: "Business decisions made this month are likely to yield good profits, and current losses or delays begin resolving. Colleagues cooperate well on new projects. From April 19th, a younger sibling or friend provides financial or practical support for your work. Teaching, entertainment, consulting, food, and tourism are your strongest sectors. Hard-working employees see meaningful progress beginning this month.",
+    finance: "Save actively this month — build reserves. Venus brings a surprise windfall from an unexpected source. Spend on religious travel rather than impulse purchases. Be precise with land and property deals after April 11th — Mercury's position demands care; carelessness costs you. Stock market offers mid-month gains. Old investments are delivering.",
+    health: "Peace and harmony at home, with a minor misunderstanding post-April 14th. A religious trip with parents is well-starred. Health is generally good, but cold, cough, and phlegm are likely — dress warmly and take preventive care.",
+    watch_out: null,
     favourable_dates: {
-      career: [3, 9, 12, 21, 23],
-      finance: [2, 3, 5, 9, 12, 23],
-      love: [3, 5, 6, 12, 30]
+      career: [3, 6, 9, 12, 21],
+      finance: [2, 6, 21, 24, 30],
+      love: [5, 9, 18, 21, 28]
     }
   }
 };
-
 
 
 // src/data/yearlyData.js

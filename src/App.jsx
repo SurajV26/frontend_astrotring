@@ -119,7 +119,7 @@ const App = () => {
             {/* <Route path='/chat-with-astrologer' element={<ChatWithAstro />} /> */}
             <Route path="/talk-to-astrologer" element={<CallwithAstro />} />
             <Route path="/astro-details/:id" element={<Astrodetails />} />
-            <Route path="/horoscopes/:date?" element={<Horoscopes />} />
+            <Route path="/horoscopes/:date" element={<Horoscopes />} />
             <Route
               path="/horoscopes/:time/:horos"
               element={<HoroscopeDetails />}
