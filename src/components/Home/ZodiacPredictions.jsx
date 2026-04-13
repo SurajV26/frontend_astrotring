@@ -19,35 +19,35 @@ import { useTranslation } from 'react-i18next';
 
 
 // const zodiacSigns = [
-//   { name: 'Aries', img: ariesImg, path: '/staticHoroschopes/monthly/aries' },
-//   { name: 'Aquarius', img: aquariusImg, path: '/staticHoroschopes/monthly/aquarius' },
-//   { name: 'Cancer', img: cancerImg, path: '/staticHoroschopes/monthly/cancer' },
-//   { name: 'Capricorn', img: capricornImg, path: '/staticHoroschopes/monthly/capricorn' },
-//   { name: 'Gemini', img: geminiImg, path: '/staticHoroschopes/monthly/gemini' },
-//   { name: 'Leo', img: leoImg, path: '/staticHoroschopes/monthly/leo' },
-//   { name: 'Libra', img: libraImg, path: '/staticHoroschopes/monthly/libra' },
-//   { name: 'Pisces', img: piscesImg, path: '/staticHoroschopes/monthly/pisces' },
-//   { name: 'Sagittarius', img: sagittariusImg, path: '/staticHoroschopes/monthly/sagittarius' },
-//   { name: 'Scorpio', img: scorpioImg, path: '/staticHoroschopes/monthly/scorpio' },
-//   { name: 'Taurus', img: taurusImg, path: '/staticHoroschopes/monthly/taurus' },
-//   { name: 'Virgo', img: virgoImg, path: '/staticHoroschopes/monthly/virgo' },
+//   { name: 'Aries', img: ariesImg, path: '/findHoroschope/monthly/aries' },
+//   { name: 'Aquarius', img: aquariusImg, path: '/findHoroschope/monthly/aquarius' },
+//   { name: 'Cancer', img: cancerImg, path: '/findHoroschope/monthly/cancer' },
+//   { name: 'Capricorn', img: capricornImg, path: '/findHoroschope/monthly/capricorn' },
+//   { name: 'Gemini', img: geminiImg, path: '/findHoroschope/monthly/gemini' },
+//   { name: 'Leo', img: leoImg, path: '/findHoroschope/monthly/leo' },
+//   { name: 'Libra', img: libraImg, path: '/findHoroschope/monthly/libra' },
+//   { name: 'Pisces', img: piscesImg, path: '/findHoroschope/monthly/pisces' },
+//   { name: 'Sagittarius', img: sagittariusImg, path: '/findHoroschope/monthly/sagittarius' },
+//   { name: 'Scorpio', img: scorpioImg, path: '/findHoroschope/monthly/scorpio' },
+//   { name: 'Taurus', img: taurusImg, path: '/findHoroschope/monthly/taurus' },
+//   { name: 'Virgo', img: virgoImg, path: '/findHoroschope/monthly/virgo' },
   
 // ];
 
 
 const zodiacSigns = [
-  { key: 'aries', img: ariesImg, path: '/staticHoroschopes/monthly/aries' },
-  { key: 'aquarius', img: aquariusImg, path: '/staticHoroschopes/monthly/aquarius' },
-  { key: 'cancer', img: cancerImg, path: '/staticHoroschopes/monthly/cancer' },
-  { key: 'capricorn', img: capricornImg, path: '/staticHoroschopes/monthly/capricorn' },
-  { key: 'gemini', img: geminiImg, path: '/staticHoroschopes/monthly/gemini' },
-  { key: 'leo', img: leoImg, path: '/staticHoroschopes/monthly/leo' },
-  { key: 'libra', img: libraImg, path: '/staticHoroschopes/monthly/libra' },
-  { key: 'pisces', img: piscesImg, path: '/staticHoroschopes/monthly/pisces' },
-  { key: 'sagittarius', img: sagittariusImg, path: '/staticHoroschopes/monthly/sagittarius' },
-  { key: 'scorpio', img: scorpioImg, path: '/staticHoroschopes/monthly/scorpio' },
-  { key: 'taurus', img: taurusImg, path: '/staticHoroschopes/monthly/taurus' },
-  { key: 'virgo', img: virgoImg, path: '/staticHoroschopes/monthly/virgo' },
+  { key: 'aries', img: ariesImg, path: '/findHoroschope/monthly/aries' },
+  { key: 'aquarius', img: aquariusImg, path: '/findHoroschope/monthly/aquarius' },
+  { key: 'cancer', img: cancerImg, path: '/findHoroschope/monthly/cancer' },
+  { key: 'capricorn', img: capricornImg, path: '/findHoroschope/monthly/capricorn' },
+  { key: 'gemini', img: geminiImg, path: '/findHoroschope/monthly/gemini' },
+  { key: 'leo', img: leoImg, path: '/findHoroschope/monthly/leo' },
+  { key: 'libra', img: libraImg, path: '/findHoroschope/monthly/libra' },
+  { key: 'pisces', img: piscesImg, path: '/findHoroschope/monthly/pisces' },
+  { key: 'sagittarius', img: sagittariusImg, path: '/findHoroschope/monthly/sagittarius' },
+  { key: 'scorpio', img: scorpioImg, path: '/findHoroschope/monthly/scorpio' },
+  { key: 'taurus', img: taurusImg, path: '/findHoroschope/monthly/taurus' },
+  { key: 'virgo', img: virgoImg, path: '/findHoroschope/monthly/virgo' },
 ];
 
 const ZodiacPredictions = () => {

@@ -80,7 +80,7 @@ const messages = [
   },
   {
     text: "अपनी ज्योतिष यात्रा शुरू करने के लिए विशेष प्रारंभिक ऑफ़र",
-    link: "/staticHoroschopes/monthly"
+    link: "/findHoroschope/monthly"
   },
   {
     text: "Begin Your Astro Journey with Exclusive Introductory Offers",

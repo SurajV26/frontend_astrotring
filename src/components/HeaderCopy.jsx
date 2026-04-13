@@ -218,8 +218,8 @@ const Header = () => {
           : "bg-white border-b border-gray-100"
         }`}
     >
-        <Link to={"/staticHoroschopes/monthly"}><button>month</button></Link>
-      <Link to={"/staticHoroschopes/yearly"}><button>year</button></Link>
+        <Link to={"/findHoroschope/monthly"}><button>month</button></Link>
+      <Link to={"/findHoroschope/yearly"}><button>year</button></Link>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 md:h-20">
           

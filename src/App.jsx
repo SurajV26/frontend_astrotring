@@ -90,8 +90,8 @@ const App = () => {
   //   window.scrollTo(0, 0);
   // }, [path]);
   useEffect(() => {
-    if (!path.includes("/staticHoroschopes/") && !path.includes("/services")) {
-      window.scrollTo(0, 0);
+    if (!path.includes("/findHoroschope/") && !path.includes("/services")) {
+     window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
     }
   }, [path]);
 
@@ -119,13 +119,17 @@ const App = () => {
             {/* <Route path='/chat-with-astrologer' element={<ChatWithAstro />} /> */}
             <Route path="/talk-to-astrologer" element={<CallwithAstro />} />
             <Route path="/astro-details/:id" element={<Astrodetails />} />
+
+            {/* this old rote is not in use from now for horocopes */}
             <Route path="/horoscopes/:date" element={<Horoscopes />} />
             <Route
               path="/horoscopes/:time/:horos"
               element={<HoroscopeDetails />}
             />
+
+            {/* this route is used for horoscope */}
             <Route
-              path="/staticHoroschopes/:timePeriod/:zodiac?"
+              path="/findHoroschope/:timePeriod/:zodiac?"
               element={<StaticHoroscopesMonthlyAndYearly />}
             />
 

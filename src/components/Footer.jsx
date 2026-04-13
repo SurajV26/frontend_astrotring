@@ -412,7 +412,7 @@ const Footer = () => {
                 ele.type.slice(1) +
                 " Horoscope",
             }),
-            path: `/staticHoroschopes/${type}`,
+            path: `/findHoroschope/${type}`,
           });
         }
       });

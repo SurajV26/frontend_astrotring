@@ -614,7 +614,7 @@
 //                 ele.type.charAt(0).toUpperCase() +
 //                 ele.type.slice(1) +
 //                 " Horoscope",
-//               path: `/staticHoroschopes/${ele.type.toLowerCase()}`,
+//               path: `/findHoroschope/${ele.type.toLowerCase()}`,
 //             });
 //           }
 //         });
@@ -950,7 +950,7 @@ const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 useEffect(() => {
-  if (location.pathname.includes("staticHoroschopes")) {
+  if (location.pathname.includes("findHoroschope")) {
     window.scrollTo({
       top: 0,
       behavior: "instant"
@@ -1051,7 +1051,7 @@ useEffect(() => {
 
           horos.push({
             label: `${t(ele.type.toLowerCase())} ${t("horoscope")}`,
-            path: `/staticHoroschopes/${ele.type.toLowerCase()}`,
+            path: `/findHoroschope/${ele.type.toLowerCase()}`,
           });
         }
       });

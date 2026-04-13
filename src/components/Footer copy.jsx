@@ -45,7 +45,7 @@ const Footer = () => {
                 ele.type.charAt(0).toUpperCase() +
                 ele.type.slice(1) +
                 " Horoscope",
-              path: `/staticHoroschopes/${ele.type.toLowerCase()}`,
+              path: `/findHoroschope/${ele.type.toLowerCase()}`,
             });
           }
         });
