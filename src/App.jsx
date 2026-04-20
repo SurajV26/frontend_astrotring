@@ -16,7 +16,6 @@ import Marriage from "./pages/FooterMahurat/Marriage";
 import BhumiPuja from "./pages/FooterMahurat/BhumiPuja";
 import GrihaPravesh from "./pages/FooterMahurat/GrihaPravesh";
 import Mundan from "./pages/FooterMahurat/Mundan";
-// import AstrologerServiceProviderTermsAndConditionsPage from "./pages/legal/AstrologerServiceProviderTermsAndConditionsPage";
 
 
 
@@ -91,7 +90,7 @@ const App = () => {
   // }, [path]);
   useEffect(() => {
     if (!path.includes("/findHoroschope/") && !path.includes("/services")) {
-     window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
     }
   }, [path]);
 
@@ -144,7 +143,7 @@ const App = () => {
 
 
 
-{/* astro route */}
+            {/* astro route */}
             <Route path="/astro-login" element={<AstroLogin />} />
             <Route path="/astro-register" element={<AstroRegister />} />
             {/* <Route path="/blogs" element={<Blog />} />
@@ -162,7 +161,7 @@ const App = () => {
             <Route path="/griha-pravesh-muhurat" element={<GrihaPravesh />} />
             <Route path="/mundan-muhurat" element={<Mundan />} />
           </Route>
-{/* Dashboard starts from here */}
+          {/* Dashboard starts from here */}
           <Route path="/dashboard" element={<AstroLayout />}>
             <Route path="/dashboard/profile" element={<Dashboard />} />
             <Route path="/dashboard/update-astro" element={<UpdateAstro />} />
