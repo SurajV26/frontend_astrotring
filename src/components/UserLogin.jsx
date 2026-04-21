@@ -730,7 +730,7 @@ const UserLogin = ({ ele }) => {
 
     try {
       await dispatch(userLogin(parsed.data)).unwrap();
-      toast.success(t("loginSuccess"));
+      toast.success(t("You are logged in"));
       await dispatch(userProfile()).unwrap();
       setOpen(false);
     } catch {
@@ -742,30 +742,30 @@ const UserLogin = ({ ele }) => {
     e.preventDefault();
 
     if (!termsAccepted) {
-    setErrors({ 
-      fields: { terms: ["You must accept the Terms & Conditions to sign up."] }, 
-      form: "" 
-    });
-    return;
-  }
+      setErrors({
+        fields: { terms: ["You must accept the Terms & Conditions to sign up."] },
+        form: ""
+      });
+      return;
+    }
     const parsed = signupSchema.safeParse(form);
 
     if (!parsed.success) {
       setErrors({ fields: parsed.error.flatten().fieldErrors, form: t("fixErrors") });
       return;
     }
-     
+
 
     const submitData = {
       ...parsed.data,
       password_confirmation: parsed.data.confirmPassword,
       profile_image: profileImage || null,
-       terms_accepted: termsAccepted ? 1 : 0, 
+      terms_accepted: termsAccepted ? 1 : 0,
     };
 
     try {
       await dispatch(userRegister(submitData)).unwrap();
-      toast.success(t("registerSuccess"));
+      toast.success(t("Register successful, please login"));
       setMode("login");
       setProfileImage(null);
       setImagePreview("");
@@ -804,13 +804,13 @@ const UserLogin = ({ ele }) => {
             <form onSubmit={handleLogin} className="space-y-4 mt-4">
               <div className="space-y-2">
                 <Label>{t("username")}</Label>
-                <Input name="username" placeholder={t("usernamePlaceholder")} onChange={handleChange} />
+                <Input name="username" placeholder={t("Enter Your Username")} onChange={handleChange} />
                 {errors.fields.username && <p className="text-red-600 text-sm">{errors.fields.username[0]}</p>}
               </div>
 
               <div className="space-y-2">
                 <Label>{t("password")}</Label>
-                <Input type="password" name="password" placeholder={t("passwordPlaceholder")} onChange={handleChange} />
+                <Input type="password" name="password" placeholder={t("Enter Your Password")} onChange={handleChange} />
                 {errors.fields.password && <p className="text-red-600 text-sm">{errors.fields.password[0]}</p>}
               </div>
 
@@ -838,7 +838,12 @@ const UserLogin = ({ ele }) => {
 
           {mode === "signup" && (
             <form onSubmit={handleSignup} className="space-y-3 mt-4">
-              <Input name="name" placeholder={t("name")} onChange={handleChange} />
+              <Input name="name" placeholder={t("Enter Your Name")} onChange={handleChange} />
+               <Input
+                name="username"
+                placeholder="Enter Your Username"
+                onChange={handleChange}
+              />
               <Input name="email" placeholder={t("email")} onChange={handleChange} />
               <div className="flex gap-2">
                 <Input name="country_code" placeholder="+91" className="w-1/3" onChange={handleChange} />
@@ -848,13 +853,12 @@ const UserLogin = ({ ele }) => {
               {/* Profile Photo Upload */}
               <div className="space-y-1.5">
                 <Label className="text-sm flex text-gray-800  items-center gap-1.5">
-                   {t("profilePhoto")}
+                  {t("profilePhoto")}
                 </Label>
                 <div
                   onClick={() => document.getElementById('user-profile-upload')?.click()}
-                  className={`relative border border-dashed rounded-lg p-3 cursor-pointer transition-all duration-200 ${
-                    imagePreview ? "border-green-300 bg-green-50/30" : "border-gray-300 bg-gray-50 hover:border-yellow-400 hover:bg-yellow-50/30"
-                  }`}
+                  className={`relative border border-dashed rounded-lg p-3 cursor-pointer transition-all duration-200 ${imagePreview ? "border-green-300 bg-green-50/30" : "border-gray-300 bg-gray-50 hover:border-yellow-400 hover:bg-yellow-50/30"
+                    }`}
                 >
                   <input id="user-profile-upload" type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                   {imagePreview ? (
@@ -883,43 +887,43 @@ const UserLogin = ({ ele }) => {
               <Input type="password" name="confirmPassword" placeholder={t("confirmPassword")} onChange={handleChange} />
 
               {/* Terms & Conditions Checkbox */}
-<div className="space-y-1">
-  <div className="flex items-start gap-2">
-    <input
-      type="checkbox"
-      id="terms"
-      checked={termsAccepted}
-      onChange={(e) => setTermsAccepted(e.target.checked)}
-      className="mt-1 cursor-pointer"
-    />
-    <label htmlFor="terms" className="text-xs text-gray-600" style={{ fontSize: '12px',color: '#4b5563' }}>
-      I have read and agree to the{" "}
-      <Link
-        to="/terms-conditions"
-        target="_blank"
-        className="text-amber-600 hover:underline"
-       
-      >
-        Terms & Conditions
-      </Link>{" "}
-      and{" "}
-      <Link
-        to="/privacy-policy"
-        target="_blank"
-        className="text-amber-600 hover:underline"
-      >
-        Privacy Policy
-      </Link>
-      .
-    </label>
-  </div>
-  {errors.fields.terms && (
-    <p className="text-xs text-red-500 flex items-center gap-1">
-      <AlertCircle className="w-3 h-3" />
-      {errors.fields.terms}
-    </p>
-  )}
-</div>
+              <div className="space-y-1">
+                <div className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="mt-1 cursor-pointer"
+                  />
+                  <label htmlFor="terms" className="text-xs text-gray-600" style={{ fontSize: '12px', color: '#4b5563' }}>
+                    I have read and agree to the{" "}
+                    <Link
+                      to="/terms-conditions"
+                      target="_blank"
+                      className="text-amber-600 hover:underline"
+
+                    >
+                      Terms & Conditions
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      to="/privacy-policy"
+                      target="_blank"
+                      className="text-amber-600 hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>
+                    .
+                  </label>
+                </div>
+                {errors.fields.terms && (
+                  <p className="text-xs text-red-500 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" />
+                    {errors.fields.terms}
+                  </p>
+                )}
+              </div>
 
               <Button className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all" disabled={loading}>
                 {loading ? t("creating") : t("signUp")}
