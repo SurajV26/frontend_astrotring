@@ -1018,8 +1018,8 @@ useEffect(() => {
         hasmenu: false,
       },
       {
-        name: t("store"),
-        path: "https://store.astrotring.com",
+        name: t("shop"),
+        path: "https://astrotring.shop",
         hasmenu: false,
       },
       {
@@ -1098,7 +1098,7 @@ useEffect(() => {
                 ) : (
                   <Link
                     to={item.path}
-                    target={item.name === t("store") ? "_blank" : "_self"}
+                    target={item.name === t("shop") ? "_blank" : "_self"}
                     className="text-sm font-medium flex items-center transition-colors hover:text-[#070707cc]"
                   >
                     <GiStarShuriken className="text-primary size-4 me-2" />
