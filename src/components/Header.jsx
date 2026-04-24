@@ -1018,7 +1018,7 @@ useEffect(() => {
         hasmenu: false,
       },
       {
-        name: t("shop"),
+        name: t("Shop"),
         path: "https://astrotring.shop",
         hasmenu: false,
       },
