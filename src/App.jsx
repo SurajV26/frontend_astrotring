@@ -149,7 +149,7 @@ const App = () => {
             {/* <Route path="/blogs" element={<Blog />} />
             <Route path="/blogs/:id" element={<BlogDetails />} /> */}
             <Route path="/blogs" element={<Blog />} />
-            <Route path="/blogs/:slug" element={<BlogDetails />} />
+            <Route path="/blogs/:slug?" element={<BlogDetails />} />
             <Route path="/services/:slug?" element={<ServiceDetail />} />
 
             {/* all muhurt's are here */}

@@ -15,6 +15,7 @@ const BlogDetails = () => {
   // fetch blogs
   const fetchBlogs = async () => {
     const res = await axios.get("https://astro.astrotring.com/api/blogs");
+    console.log("blogdetails", res)
 
     setBlogs(res.data.data);
 
@@ -87,7 +88,7 @@ const BlogDetails = () => {
 
             <h1 className="text-4xl font-bold mb-4">{blog.name}</h1>
 
-            <div className="flex gap-6 text-sm text-gray-500 mb-8">
+            {/* <div className="flex gap-6 text-sm text-gray-500 mb-8">
               <div className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 {formatDate(blog.date)}
@@ -97,7 +98,7 @@ const BlogDetails = () => {
                 <Clock className="w-4 h-4" />
                 {calculateReadTime(blog.description)}
               </div>
-            </div>
+            </div> */}
 
             <div className="w-full max-w-[1026px] mx-auto mb-10 rounded-xl overflow-hidden">
               <img
@@ -154,11 +155,11 @@ const BlogDetails = () => {
             <div>
               <h3 className="text-xl font-bold mb-4">Categories</h3>
 
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col gap-2">
                 {categories.map((cat) => (
                   <Link
                     key={cat.id}
-                    to={`/blogs?category=${cat.id}`}
+                    to={`/blogs/${cat.slug}`}
                     className="px-3 py-1 bg-yellow-50 rounded-full hover:bg-primary hover:text-white text-sm"
                   >
                     {cat.name}

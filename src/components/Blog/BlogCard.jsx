@@ -36,16 +36,16 @@ export default function BlogCard({ blog }) {
         </div>
 
         <CardHeader>
-          <CardTitle className="text-md line-clamp-2">{blog.title}</CardTitle>
+          <CardTitle className="text-md line-clamp-1">{blog.title}</CardTitle>
 
-          <CardDescription className="flex items-center gap-2 text-xs">
+          {/* <CardDescription className="flex items-center gap-2 text-xs">
             <Calendar className="w-4 h-4" />
 
             {formatDate(blog.date)}
-          </CardDescription>
+          </CardDescription> */}
         </CardHeader>
 
-        <CardFooter>
+        <CardFooter className="pb-4">
           <Button className="w-full">Read More</Button>
         </CardFooter>
       </Card>

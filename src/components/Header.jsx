@@ -1013,12 +1013,12 @@ useEffect(() => {
         menu: horosType,
       },
       {
-        name: t("chatAstrologer"),
+        name: t("chatAstrologer"), 
         path: "/talk-to-astrologer",
         hasmenu: false,
       },
       {
-        name: t("Shop"),
+        name: t("shop"),
         path: "https://astrotring.shop",
         hasmenu: false,
       },

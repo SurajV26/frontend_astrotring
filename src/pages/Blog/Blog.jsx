@@ -201,6 +201,7 @@ const Blog = () => {
       }
 
       const res = await axios.get(url);
+      console.log("blogs", res)
 
       const translatedBlogs = res.data.data.map((blog) => ({
         ...blog,
@@ -330,4 +331,4 @@ const Blog = () => {
   );
 };
 
-export default Blog;
+export default Blog; 

@@ -206,7 +206,7 @@ const Banner = () => {
           </Link>
 
           <Link
-            to="https://store.adkrayons.com/product"
+            to="https://astrotring.shop"
             target="_blank"
             data-twe-ripple-init
             data-twe-ripple-color="light"
@@ -233,7 +233,7 @@ const Banner = () => {
 
               <div className="leading-tight">
                 <div className="font-semibold text-[11px] sm:text-sm">
-                  {t("store")}
+                  {t("shop")}
                 </div>
 
                 <div className="text-[9px] sm:text-xs opacity-90">
