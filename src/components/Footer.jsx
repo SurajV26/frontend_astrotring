@@ -262,12 +262,12 @@
 //             <div className="mt-4 space-y-4">
 //               <div className="flex items-center gap-3 text-sm text-black ">
 //                 <a
-//                   href="mailto:mail@astrotring.com"
+//                   href="mailto:care@astrotring.com"
 //                   className="flex items-center gap-3 text-sm text-black hover:text-primary transition"
 //                 >
 //                   <Mail className="size-8 border border-gray-900 p-1.5 rounded-full" />
 //                   <span className="underline  hover:text-bg-yellow-200 transition px-1 rounded duration-300 hover:translate-x-1">
-//                     mail@astrotring.com
+//                     care@astrotring.com
 //                   </span>
 //                 </a>
 //               </div>
@@ -621,11 +621,11 @@ const Footer = () => {
 
             <div className="mt-4">
               <a
-                href="mailto:mail@astrotring.com"
+                href="mailto:care@astrotring.com"
                 className="flex items-center gap-3 text-sm text-black hover:text-primary"
               >
                 <Mail className="size-8 border border-gray-900 p-1.5 rounded-full" />
-                mail@astrotring.com
+                care@astrotring.com
               </a>
             </div>
 
