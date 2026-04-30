@@ -153,11 +153,11 @@ const App = () => {
             <Route path="/services/:slug?" element={<ServiceDetail />} />
 
             {/* all muhurt's are here */}
-            <Route path="/annanprashan-muhurat" element={<Annanprashan />} />
-            <Route path="/aamkaran-muhurat" element={<Namkaran />} />
+            <Route path="/annaprashan-muhurat" element={<Annanprashan />} />
+            <Route path="/namkaran-muhurat" element={<Namkaran />} />
             <Route path="/car-bike-muhurat" element={<CarBike />} />
             <Route path="/marriage-muhurat" element={<Marriage />} />
-            <Route path="/bhumiPuja-muhurat" element={<BhumiPuja />} />
+            <Route path="/bhoomi-pujan-muhurat" element={<BhumiPuja />} />
             <Route path="/griha-pravesh-muhurat" element={<GrihaPravesh />} />
             <Route path="/mundan-muhurat" element={<Mundan />} />
           </Route>

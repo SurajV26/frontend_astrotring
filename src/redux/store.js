@@ -4,6 +4,7 @@ import HoroscopeReducer from "./slice/HoroscopesSlice";
 import AstroAuthReducer from "./slice/AstroAuth";
 import languageReducer from "./slice/LanguageSlice";
 import WalletReducer from "./slice/walletSlice";
+import blogReducer from './slice/BlogSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     astroAuth: AstroAuthReducer,
     language: languageReducer,
     wallet: WalletReducer,
+    blog: blogReducer,
   },
 });

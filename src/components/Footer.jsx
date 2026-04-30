@@ -458,7 +458,7 @@ const Footer = () => {
             <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <Link
-                  to="/annanprashan-muhurat"
+                  to="/annaprashan-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
                   <FaAnglesRight /> {t("footer.annanprashanMuhurat")}
@@ -466,7 +466,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/aamkaran-muhurat"
+                  to="/namkaran-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
                   <FaAnglesRight /> {t("footer.naamkaranMuhurat")}
@@ -490,7 +490,7 @@ const Footer = () => {
               </li>
               <li>
                 <Link
-                  to="/bhumiPuja-muhurat"
+                  to="/bhoomi-pujan-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
                   <FaAnglesRight /> {t("footer.bhoomiPujanMuhurat")}

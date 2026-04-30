@@ -27,10 +27,10 @@ export default function BlogCard({ blog }) {
           <img
             src={blog.img}
             alt={blog.title}
-            className="w-full h-full object-cover"
+            className="w-full h-full "
           />
 
-          <Badge className="absolute top-3 right-3 bg-white text-slate-800">
+          <Badge className="absolute top-3 left-3 bg-white text-slate-800">
             {blog.category}
           </Badge>
         </div>
@@ -38,11 +38,11 @@ export default function BlogCard({ blog }) {
         <CardHeader>
           <CardTitle className="text-md line-clamp-1">{blog.title}</CardTitle>
 
-          {/* <CardDescription className="flex items-center gap-2 text-xs">
+          <CardDescription className="flex items-center gap-2 text-xs">
             <Calendar className="w-4 h-4" />
 
             {formatDate(blog.date)}
-          </CardDescription> */}
+          </CardDescription>
         </CardHeader>
 
         <CardFooter className="pb-4">
