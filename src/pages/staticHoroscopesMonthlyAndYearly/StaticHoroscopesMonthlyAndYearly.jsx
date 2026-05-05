@@ -39,11 +39,11 @@ const ZODIAC_SIGNS = [
 
 const TIME_PERIOD_INFO = {
   monthly: {
-    title: 'April 2025 Monthly Horoscope',
+    title: 'Monthly Horoscope',
     description: 'What the stars have in store for you this month',
   },
   yearly: {
-    title: '2026 Yearly Horoscope',
+    title: 'Yearly Horoscope',
     description: 'What the stars have in store for you this year',
   },
 };
@@ -52,7 +52,8 @@ const TIME_PERIOD_INFO = {
 const sectionIcons = {
   career: '💼',
   finance: '💰',
-  love: '❤️',
+  love : '❤️',
+  relations  : '❤️',
   health: '🧘',
   family: '👨‍👩‍👧‍👦',
   students: '🎓',
@@ -76,7 +77,7 @@ const SectionCard = ({ title, text, dates, isMonthly }) => {
           <div className="flex flex-wrap gap-2 mt-2">
             {dates.map((date) => (
               <span key={date} className="bg-orange-50 text-orange-700 px-3 py-1 rounded-full text-xs font-medium border border-orange-100">
-                {date} Mar
+                {date}
               </span>
             ))}
           </div>
@@ -135,6 +136,8 @@ const StaticHoroscopesMonthlyAndYearly = () => {
         watch_out: currentHoroscope.warning || null,
       }
     : null;
+
+    console.log("horoscopeData",horoscopeData)
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">

@@ -34,10 +34,10 @@ export const getHoroscopeById = createAsyncThunk(
 );
 
 const initialState = {
-    horoscope: null,        // ⬅️ original field – stays the same
-    allList: [],            // new (for building idMap)
-    idMap: {},              // new (key: "monthly-aries" -> id)
-    currentHoroscope: null, // new (detailed data from getHoroscopeById)
+    horoscope: null,        
+    allList: [],            
+    idMap: {},              
+    currentHoroscope: null, 
     loading: false,
     error: null,
 };

@@ -16,6 +16,7 @@ import Marriage from "./pages/FooterMahurat/Marriage";
 import BhumiPuja from "./pages/FooterMahurat/BhumiPuja";
 import GrihaPravesh from "./pages/FooterMahurat/GrihaPravesh";
 import Mundan from "./pages/FooterMahurat/Mundan";
+import GoogleTagManager from "./components/common/GoogleTagManager";
 
 
 
@@ -105,6 +106,8 @@ const App = () => {
   return (
     <>
       <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
+
+       <GoogleTagManager /> 
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Home />} />
