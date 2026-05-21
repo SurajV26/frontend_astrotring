@@ -171,30 +171,6 @@
 //           <Button
 //             size="sm"
 //             disabled={!is_online}
-//             className="flex-1 bg-green-600 hover:bg-green-700 text-white rounded-full h-9 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-//           >
-//             <IoCall className="w-4 h-4 mr-1" />
-//             Call
-//           </Button>
-//           <Button
-//             size="sm"
-//             disabled={!is_online}
-//             className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-full h-9 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-//           >
-//             <IoIosChatbubbles className="w-4 h-4 mr-1" />
-//             Chat
-//           </Button>
-//         </div>
-//       </CardContent>
-//     </Card>
-//   );
-// }
-
-
-
-
-
-
 import React from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -202,7 +178,6 @@ import { Star, Clock, User, Phone, MessageCircle, Languages } from "lucide-react
 import { useNavigate } from "react-router-dom";
 import { IoIosChatbubbles } from "react-icons/io";
 import { IoCall } from "react-icons/io5";
-import { useTranslation } from "react-i18next";
 
 export default function CallCard({
   call_price,
@@ -221,13 +196,12 @@ export default function CallCard({
   username,
 }) {
   const navigate = useNavigate();
-  const { t } = useTranslation();
 
   const totalOrders = total_call_duration_sec + total_chat_duration_sec;
   const displayRating = rating.toFixed(1);
 
   const formatPrice = (price) => {
-    if (price === 0) return t("callCard.free");
+    if (price === 0) return "Free";
     return `₹${price}/min`;
   };
 
@@ -267,7 +241,7 @@ export default function CallCard({
               <div className="flex items-center gap-1.5 mt-1 mb-1 ml-2">
                 <div className={`w-2.5 h-2.5 rounded-full ${is_online ? "bg-green-500" : "bg-red-500"}`} />
                 <span className={`text-xs font-medium ${is_online ? "text-green-600" : "text-red-600"}`}>
-                  {is_online ? t("callCard.online") : t("callCard.offline")}
+                  {is_online ? "Online" : "Offline"}
                 </span>
               </div>
             </div>
@@ -297,7 +271,7 @@ export default function CallCard({
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Clock className="w-4 h-4 text-gray-500" />
               <span>
-                {experience} {experience === 1 ? t("callCard.year") : t("callCard.years")}
+                {experience} {experience === 1 ? "Year" : "Years"}
               </span>
             </div>
 
@@ -315,7 +289,7 @@ export default function CallCard({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Phone className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium text-gray-700">{t("callCard.call")}</span>
+              <span className="text-sm font-medium text-gray-700">Call</span>
             </div>
             <span className="text-sm font-semibold text-green-600">{formatPrice(call_price)}</span>
           </div>
@@ -323,7 +297,7 @@ export default function CallCard({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <MessageCircle className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">{t("callCard.chat")}</span>
+              <span className="text-sm font-medium text-gray-700">Chat</span>
             </div>
             <span className="text-sm font-semibold text-blue-600">{formatPrice(chat_price)}</span>
           </div>
@@ -341,7 +315,7 @@ export default function CallCard({
             className="flex-1 bg-green-600 hover:bg-green-700 text-white rounded-full h-9 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <IoCall className="w-4 h-4 mr-1" />
-            {t("callCard.call")}
+            Call
           </Button>
 
           <Button
@@ -354,7 +328,7 @@ export default function CallCard({
             className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white rounded-full h-9 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <IoIosChatbubbles className="w-4 h-4 mr-1" />
-            {t("callCard.chat")}
+            Chat
           </Button>
         </div>
       </CardContent>

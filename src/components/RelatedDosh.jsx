@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { servicesData } from "@/data/servicesData";
+import { servicesData } from "@/data/services/servicesData";
 
 const RelatedDosh = () => {
   const { slug } = useParams();
@@ -24,11 +24,11 @@ const RelatedDosh = () => {
           >
             <img
               src={item.img}
-              alt={item.slug}
+              alt={item.title}
               className="w-12 h-12 object-contain"
             />
             <span className="text-sm font-medium text-gray-800">
-              {item.slug}
+              {item.title}
             </span>
           </Link>
         ))}

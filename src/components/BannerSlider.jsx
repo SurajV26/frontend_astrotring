@@ -1,16 +1,12 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
 
 const BannerSlider = () => {
-  const { t, i18n } = useTranslation();
-  const isRTL = i18n.language.startsWith("ar");
-
   const items = [
-    t("freeKundli"),
-    t("kundliMatching"),
-    t("compatibility"),
-    t("horoscopes"),
-    t("chatAstrologer"),
+    "Free Kundli",
+    "Kundli Matching",
+    "Compatibility",
+    "Horoscopes",
+    "Chat / Call to Astrologer",
   ];
 
   return (
@@ -47,9 +43,7 @@ const BannerSlider = () => {
 
       <div className="w-full overflow-hidden py-2 sm:py-3 md:py-4 bg-gradient-to-r from-yellow-200/90 via-orange-400/80 to-amber-300/90 backdrop-blur-md mt-4">
         <div
-          className={`flex w-max items-center ${
-            isRTL ? "scrollright" : "scrollleft"
-          }`}
+          className="flex w-max items-center scrollleft"
         >
           {[...items, ...items, ...items].map((item, index) => (
             <div

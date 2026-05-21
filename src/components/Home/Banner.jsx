@@ -6,15 +6,10 @@ import { Link } from "react-router-dom";
 
 import outercircle1 from "@/assets/outercircle1.png";
 import innerganesh from "@/assets/innerganesh.png";
-import { useTranslation } from "react-i18next";
 // import bannerVideo from "@/assets/bannerVideo.mp4"
 const Banner = () => {
-  // const { t } = useTranslation();
-  const { t, i18n } = useTranslation();
   const [banners, setBanners] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const isRTL = i18n.language === "ar";
 
   useEffect(() => {
     fetch("https://astro.astrotring.com/api/banners?type=astro")
@@ -51,7 +46,7 @@ const Banner = () => {
           <div
             className="flex h-full transition-transform duration-700 ease-in-out"
             style={{
-              transform: `translateX(${isRTL ? currentIndex * 100 : -currentIndex * 100}%)`,
+              transform: `translateX(${-currentIndex * 100}%)`,
             }}
           >
             {banners.map((item) => (
@@ -193,11 +188,11 @@ const Banner = () => {
 
               <div className="leading-tight">
                 <div className="font-semibold text-[11px] sm:text-sm">
-                  {t("talk")}
+                  Talk
                 </div>
 
                 <div className="text-[9px] sm:text-xs opacity-90">
-                  {t("talkWithAstrologer")}
+                  Talk with astrologer
                 </div>
               </div>
             </div>
@@ -233,11 +228,11 @@ const Banner = () => {
 
               <div className="leading-tight">
                 <div className="font-semibold text-[11px] sm:text-sm">
-                  {t("shop")}
+                  Shop
                 </div>
 
                 <div className="text-[9px] sm:text-xs opacity-90">
-                  {t("buyProducts")}
+                  Buy your products
                 </div>
               </div>
             </div>
