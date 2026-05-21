@@ -614,7 +614,6 @@ import { Link, useNavigate } from "react-router-dom";
 import ForgotPassword from "./ForgotPasswordUser";
 import { fileToBase64 } from "@/hooks/fileToBase64";
 import { Camera, Upload, X } from "lucide-react";
-import { useTranslation } from "react-i18next";
 
 /* ---------------- ZOD SCHEMAS ---------------- */
 
@@ -640,7 +639,6 @@ const signupSchema = z
 /* ---------------- COMPONENT ---------------- */
 
 const UserLogin = ({ ele }) => {
-  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { user, error, loading } = useSelector((state) => state.userAuth);
   const navigate = useNavigate();
@@ -692,12 +690,12 @@ const UserLogin = ({ ele }) => {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      toast.error(t("invalidImage"));
+      toast.error("Invalid image file");
       return;
     }
 
     if (file.size > 2 * 1024 * 1024) {
-      toast.error(t("imageSizeLimit"));
+      toast.error("Image size must be less than 2MB");
       return;
     }
 
@@ -706,7 +704,7 @@ const UserLogin = ({ ele }) => {
       setProfileImage(base64);
       setImagePreview(URL.createObjectURL(file));
     } catch {
-      toast.error(t("imageProcessingFailed"));
+      toast.error("Image processing failed");
     }
   };
 
@@ -723,18 +721,18 @@ const UserLogin = ({ ele }) => {
     if (!parsed.success) {
       setErrors({
         fields: parsed.error.flatten().fieldErrors,
-        form: t("fixErrors"),
+        form: "Please fix the errors above",
       });
       return;
     }
 
     try {
       await dispatch(userLogin(parsed.data)).unwrap();
-      toast.success(t("You are logged in"));
+      toast.success("You are logged in");
       await dispatch(userProfile()).unwrap();
       setOpen(false);
     } catch {
-      setErrors({ fields: {}, form: t("somethingWentWrong") });
+      setErrors({ fields: {}, form: "Something went wrong. Please try again." });
     }
   };
 
@@ -751,7 +749,7 @@ const UserLogin = ({ ele }) => {
     const parsed = signupSchema.safeParse(form);
 
     if (!parsed.success) {
-      setErrors({ fields: parsed.error.flatten().fieldErrors, form: t("fixErrors") });
+      setErrors({ fields: parsed.error.flatten().fieldErrors, form: "Please fix the errors above" });
       return;
     }
 
@@ -765,12 +763,12 @@ const UserLogin = ({ ele }) => {
 
     try {
       await dispatch(userRegister(submitData)).unwrap();
-      toast.success(t("Register successful, please login"));
+      toast.success("Registration successful. Please login.");
       setMode("login");
       setProfileImage(null);
       setImagePreview("");
     } catch {
-      setErrors({ fields: {}, form: t("somethingWentWrong") });
+      setErrors({ fields: {}, form: "Something went wrong. Please try again." });
     }
   };
 
@@ -782,17 +780,17 @@ const UserLogin = ({ ele }) => {
         <DialogTrigger asChild>
           <Button className="flex gap-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-3xl shadow-lg hover:shadow-xl transition-all">
             <User />
-            {ele?.name || t("account")}
+            {ele?.name || "Account"}
           </Button>
         </DialogTrigger>
 
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-center text-2xl text-black">
-              {mode === "login" ? t("login") : t("createAccount")}
+              {mode === "login" ? "Login" : "Create Account"}
             </DialogTitle>
             <DialogDescription className="sr-only">
-              {mode === "login" ? t("loginDesc") : t("signupDesc")}
+              {mode === "login" ? "Login to your account" : "Create a new account"}
             </DialogDescription>
           </DialogHeader>
 
@@ -803,14 +801,14 @@ const UserLogin = ({ ele }) => {
           {mode === "login" && (
             <form onSubmit={handleLogin} className="space-y-4 mt-4">
               <div className="space-y-2">
-                <Label>{t("username")}</Label>
-                <Input name="username" placeholder={t("Enter Your Username")} onChange={handleChange} />
+                <Label>Username</Label>
+                <Input name="username" placeholder="Enter Your Username" onChange={handleChange} />
                 {errors.fields.username && <p className="text-red-600 text-sm">{errors.fields.username[0]}</p>}
               </div>
 
               <div className="space-y-2">
-                <Label>{t("password")}</Label>
-                <Input type="password" name="password" placeholder={t("Enter Your Password")} onChange={handleChange} />
+                <Label>{"Password"}</Label>
+                <Input type="password" name="password" placeholder="Enter Your Password" onChange={handleChange} />
                 {errors.fields.password && <p className="text-red-600 text-sm">{errors.fields.password[0]}</p>}
               </div>
 
@@ -819,18 +817,18 @@ const UserLogin = ({ ele }) => {
                   onClick={() => { setMode("forgot"); setUserType("user"); }}
                   className="text-orange-600 text-sm hover:underline"
                 >
-                  {t("forgotPassword")}
+                  Forgot Password?
                 </span>
               </div>
 
               <Button className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all" disabled={loading}>
-                {loading ? t("loggingIn") : t("login")}
+                {loading ? "Logging in..." : "Login"}
               </Button>
 
               <p className="text-center text-sm">
-                {t("dontHaveAccount")}{" "}
+                Don't have an account?{" "}
                 <span onClick={() => { setMode("signup"); setErrors({ fields: {}, form: "" }); }} className="cursor-pointer text-orange-600 hover:underline">
-                  {t("signUp")}
+                  {"Sign Up"}
                 </span>
               </p>
             </form>
@@ -838,22 +836,22 @@ const UserLogin = ({ ele }) => {
 
           {mode === "signup" && (
             <form onSubmit={handleSignup} className="space-y-3 mt-4">
-              <Input name="name" placeholder={t("Enter Your Name")} onChange={handleChange} />
+              <Input name="name" placeholder="Enter Your Name" onChange={handleChange} />
                <Input
                 name="username"
                 placeholder="Enter Your Username"
                 onChange={handleChange}
               />
-              <Input name="email" placeholder={t("email")} onChange={handleChange} />
+              <Input name="email" placeholder="Email" onChange={handleChange} />
               <div className="flex gap-2">
                 <Input name="country_code" placeholder="+91" className="w-1/3" onChange={handleChange} />
-                <Input name="mobile" placeholder={t("mobile")} className="w-2/3" onChange={handleChange} />
+                <Input name="mobile" placeholder="Mobile Number" className="w-2/3" onChange={handleChange} />
               </div>
 
               {/* Profile Photo Upload */}
               <div className="space-y-1.5">
                 <Label className="text-sm flex text-gray-800  items-center gap-1.5">
-                  {t("profilePhoto")}
+                  Profile Photo
                 </Label>
                 <div
                   onClick={() => document.getElementById('user-profile-upload')?.click()}
@@ -867,7 +865,7 @@ const UserLogin = ({ ele }) => {
                         <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-sm flex-shrink-0">
                           <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                         </div>
-                        <span className="text-xs text-gray-600 truncate max-w-[100px]">{t("photoUploaded")}</span>
+                        <span className="text-xs text-gray-600 truncate max-w-[100px]">Photo uploaded</span>
                       </div>
                       <button type="button" onClick={(e) => { e.stopPropagation(); removeImage(); }} className="text-red-500 hover:text-red-700 p-0.5">
                         <X className="w-3.5 h-3.5" />
@@ -876,15 +874,15 @@ const UserLogin = ({ ele }) => {
                   ) : (
                     <div className="flex items-center gap-2 text-xs">
                       <Upload className="w-4 h-4 text-gray-400" />
-                      <span className="text-gray-600 truncate">{t("clickOrDragPhoto")}</span>
+                      <span className="text-gray-600 truncate">Click or drag photo here</span>
                       <span className="text-gray-400 whitespace-nowrap">(2MB)</span>
                     </div>
                   )}
                 </div>
               </div>
 
-              <Input type="password" name="password" placeholder={t("password")} onChange={handleChange} />
-              <Input type="password" name="confirmPassword" placeholder={t("confirmPassword")} onChange={handleChange} />
+              <Input type="password" name="password" placeholder={"Password"} onChange={handleChange} />
+              <Input type="password" name="confirmPassword" placeholder="Confirm Password" onChange={handleChange} />
 
               {/* Terms & Conditions Checkbox */}
               <div className="space-y-1">
@@ -926,13 +924,13 @@ const UserLogin = ({ ele }) => {
               </div>
 
               <Button className="w-full bg-gradient-to-r from-yellow-500 to-yellow-600 text-white rounded-lg shadow-lg hover:shadow-xl transition-all" disabled={loading}>
-                {loading ? t("creating") : t("signUp")}
+                {loading ? "Creating account..." : "Sign Up"}
               </Button>
 
               <p className="text-center text-sm">
-                {t("alreadyHaveAccount")}{" "}
+                Already have an account?{" "}
                 <span onClick={() => { setMode("login"); setErrors({ fields: {}, form: "" }); }} className="cursor-pointer text-orange-600 hover:underline">
-                  {t("login")}
+                  {"Login"}
                 </span>
               </p>
             </form>

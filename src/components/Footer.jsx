@@ -346,7 +346,6 @@
 // export default Footer;
 
 import faviconlogo from "@/assets/logo.png";
-import { Trans } from "react-i18next";
 import { Mail } from "lucide-react";
 import { Link } from "react-router-dom";
 import { FaAnglesRight, FaApple } from "react-icons/fa6";
@@ -356,13 +355,11 @@ import {
   TiSocialYoutube,
 } from "react-icons/ti";
 import { SlSocialInstagram } from "react-icons/sl";
-import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
 import { getHoroscope } from "@/redux/slice/HoroscopesSlice";
 
 const Footer = () => {
-  const { t } = useTranslation();
   const { horoscope } = useSelector((state) => state.horoscope);
   const [horosType, setHorosType] = useState([]);
   const dispatch = useDispatch();
@@ -373,25 +370,6 @@ const Footer = () => {
     }
   }, [horoscope, dispatch]);
 
-  //   useEffect(() => {
-  //     if (horoscope?.length > 0) {
-  //       const set = new Set();
-  //       const list = [];
-  //       horoscope.forEach((ele) => {
-  //         if (ele.type && !set.has(ele.type)) {
-  //           if (ele.type.toLowerCase() === "weekly") return;
-  //           set.add(ele.type);
-  //           list.push({
-  //           label: t(`footer.${ele.type.toLowerCase()}HoroscopeLabel`, {
-  //   defaultValue: ele.type.charAt(0).toUpperCase() + ele.type.slice(1) + " Horoscope",
-  // }),
-  //             path: `/staticHoroschopes/${ele.type.toLowerCase()}`,
-  //           });
-  //         }
-  //       });
-  //       setHorosType(list);
-  //     }
-  //   }, [horoscope, t]);
   useEffect(() => {
     if (horoscope?.length > 0) {
       const set = new Set();
@@ -406,12 +384,7 @@ const Footer = () => {
           const type = ele.type.toLowerCase();
 
           list.push({
-            label: t(`footer.horoscopeTypes.${type}`, {
-              defaultValue:
-                ele.type.charAt(0).toUpperCase() +
-                ele.type.slice(1) +
-                " Horoscope",
-            }),
+            label: ele.type.charAt(0).toUpperCase() + ele.type.slice(1) + " Horoscope",
             path: `/findHoroschope/${type}`,
           });
         }
@@ -419,7 +392,7 @@ const Footer = () => {
 
       setHorosType(list);
     }
-  }, [horoscope, t]);
+  }, [horoscope]);
   return (
     <footer className="bg-gradient-to-b from-yellow-50 to-yellow-200 text-black pt-10">
       <div className="mx-auto px-2 md:px-10">
@@ -429,13 +402,13 @@ const Footer = () => {
             <Link to="/">
               <img src={faviconlogo} className="h-12 mb-4" alt="Logo" />
             </Link>
-            <p className="text-sm leading-relaxed">{t("footer.aboutText")}</p>
+            <p className="text-sm leading-relaxed">AstroTring offers accurate Vedic astrology insights including kundli matching, horoscope predictions, and expert astrologer consultations to guide important life decisions. Our platform blends ancient astrological wisdom with modern technology to provide guidance on love, marriage, career, health, and finance.</p>
           </div>
 
           {/* HOROSCOPE + SHUBH MUHURAT */}
           <div>
             <h4 className="font-semibold text-lg border-b border-yellow-500 pb-1 inline-block">
-              {t("footer.horoscope")}
+              Horoscope
             </h4>
 
             <ul className="mt-4 space-y-2 text-sm">
@@ -452,7 +425,7 @@ const Footer = () => {
             </ul>
 
             <h4 className="font-semibold text-lg border-b border-yellow-500 pb-1 mt-6 inline-block">
-              {t("footer.shubhMuhurat", { year: new Date().getFullYear() })}
+              Shubh Muhurat {new Date().getFullYear()}
             </h4>
 
             <ul className="mt-4 space-y-2 text-sm">
@@ -461,7 +434,7 @@ const Footer = () => {
                   to="/annaprashan-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.annanprashanMuhurat")}
+                  <FaAnglesRight /> Annanprashan Muhurat
                 </Link>
               </li>
               <li>
@@ -469,7 +442,7 @@ const Footer = () => {
                   to="/namkaran-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.naamkaranMuhurat")}
+                  <FaAnglesRight /> Naamkaran Muhurat
                 </Link>
               </li>
               <li>
@@ -477,7 +450,7 @@ const Footer = () => {
                   to="/car-bike-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.carBikeMuhurat")}
+                  <FaAnglesRight /> Car/Bike Muhurat
                 </Link>
               </li>
               <li>
@@ -485,7 +458,7 @@ const Footer = () => {
                   to="/marriage-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.marriageMuhurat")}
+                  <FaAnglesRight /> Marriage Muhurat
                 </Link>
               </li>
               <li>
@@ -493,7 +466,7 @@ const Footer = () => {
                   to="/bhoomi-pujan-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.bhoomiPujanMuhurat")}
+                  <FaAnglesRight /> Bhoomi Pujan Muhurat
                 </Link>
               </li>
               <li>
@@ -501,7 +474,7 @@ const Footer = () => {
                   to="/griha-pravesh-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.grihaPraveshMuhurat")}
+                  <FaAnglesRight /> Griha Pravesh Muhurat
                 </Link>
               </li>
               <li>
@@ -509,7 +482,7 @@ const Footer = () => {
                   to="/mundan-muhurat"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.mundanMuhurat")}
+                  <FaAnglesRight /> Mundan Muhurat
                 </Link>
               </li>
             </ul>
@@ -518,7 +491,7 @@ const Footer = () => {
           {/* ASTROLOGER + CORPORATE */}
           <div>
             <h4 className="font-semibold text-lg border-b border-yellow-500 pb-1 inline-block">
-              {t("footer.astrologer")}
+              Astrologer
             </h4>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
@@ -526,7 +499,7 @@ const Footer = () => {
                   to="/astro-login"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.astroLogin")}
+                  <FaAnglesRight /> Astrologer Login
                 </Link>
               </li>
               <li>
@@ -534,7 +507,7 @@ const Footer = () => {
                   to="/astro-register"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.astroRegister")}
+                  <FaAnglesRight /> Astrologer Registration
                 </Link>
               </li>
               <li>
@@ -542,13 +515,13 @@ const Footer = () => {
                   to="/blogs"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.blogs")}
+                  <FaAnglesRight /> Astrology Blogs
                 </Link>
               </li>
             </ul>
 
             <h4 className="font-semibold text-lg border-b border-yellow-500 pb-1 mt-6 inline-block">
-              {t("footer.corporateInfo")}
+              Corporate Info
             </h4>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
@@ -556,7 +529,7 @@ const Footer = () => {
                   to="/refund-policy"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.refundPolicy")}
+                  <FaAnglesRight /> Refund & Cancellation
                 </Link>
               </li>
               <li>
@@ -564,7 +537,7 @@ const Footer = () => {
                   to="/terms-conditions"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.termsConditions")}
+                  <FaAnglesRight /> Terms & Conditions
                 </Link>
               </li>
               <li>
@@ -572,7 +545,7 @@ const Footer = () => {
                   to="/privacy-policy"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.privacyPolicy")}
+                  <FaAnglesRight /> Privacy Policy
                 </Link>
               </li>
               <li>
@@ -580,7 +553,7 @@ const Footer = () => {
                   to="/disclaimer"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.disclaimer")}
+                  <FaAnglesRight /> Disclaimer
                 </Link>
               </li>
               <li>
@@ -588,7 +561,7 @@ const Footer = () => {
                   to="/shipping-policy"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
-                  <FaAnglesRight /> {t("footer.shippingPolicy")}
+                  <FaAnglesRight /> Shipping Policy
                 </Link>
               </li>
             </ul>
@@ -597,26 +570,16 @@ const Footer = () => {
           {/* CONTACT */}
           <div>
             <h4 className="font-semibold text-lg border-b border-yellow-500 pb-1 inline-block">
-              {t("footer.contactUs")}
+              Contact Us
             </h4>
 
-            {/* <p className="text-sm text-black leading-relaxed mt-4 space-y-4">
-              {t("footer.contactText")}
-            </p> */}
             <p className="text-sm text-black leading-relaxed mt-4">
-              <Trans
-                i18nKey="footer.contactText"
-                components={{
-                  whatsapp: (
-                    <a
-                      href="https://wa.me/919485628238?text=Hi%20I%20need%20help"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold hover:text-yellow-600"
-                    />
-                  ),
-                }}
-              />
+              We are available 24x7 on chat support, <a
+                href="https://wa.me/919485628238?text=Hi%20I%20need%20help"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold hover:text-yellow-600"
+              >click to start chat</a>
             </p>
 
             <div className="mt-4">
@@ -649,7 +612,7 @@ const Footer = () => {
             </div>
 
             <h4 className="mt-6 font-semibold text-black text-lg">
-              {t("footer.downloadApp")}
+              Download Our App
             </h4>
 
             <div className="flex flex-col sm:flex-row gap-3 mt-4">
@@ -664,7 +627,7 @@ const Footer = () => {
                   className="w-4 h-4"
                 />
                 <span className="text-sm font-semibold">
-                  {t("footer.googlePlay")}
+                  Google Play
                 </span>
               </a>
 
@@ -675,7 +638,7 @@ const Footer = () => {
               >
                 <FaApple size={20} />
                 <span className="text-sm font-semibold">
-                  {t("footer.appStore")}
+                  App Store
                 </span>
               </a>
             </div>
@@ -684,7 +647,7 @@ const Footer = () => {
       </div>
 
       <div className="bg-black text-center text-white py-4">
-        © {new Date().getFullYear()} Astrotring. {t("footer.allRightsReserved")}
+        © {new Date().getFullYear()} Astrotring. All Rights Reserved.
       </div>
     </footer>
   );

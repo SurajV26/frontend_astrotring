@@ -83,7 +83,7 @@ export const GetAllAstrologer = createAsyncThunk(
     try {
       const res = await api.get("/astro");
       const allastro = res.data.data;
-      // console.log("all astro data from astro auth",allastro)
+      console.log("all astro data from astro auth",allastro)
 
       const onlineastro = allastro.filter((astro) => astro.is_online);
       const offlineastro = allastro.filter((astro) => !astro.is_online);

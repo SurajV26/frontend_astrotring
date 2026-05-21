@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -9,12 +10,8 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa6";
-import { useTranslation } from "react-i18next";
 
 const Slider = ({ children, slideCount }) => {
-  const { i18n } = useTranslation();
-  const isRTL = i18n.language.startsWith("ar");
-
   const prevRef = useRef(null);
   const nextRef = useRef(null);
 
@@ -31,7 +28,7 @@ const Slider = ({ children, slideCount }) => {
         bg-primary text-black shadow-md rounded-full w-10 h-10
         md:flex hidden items-center justify-center"
       >
-        {isRTL ? <FaArrowRight /> : <FaArrowLeft />}
+        <FaArrowLeft />
       </button>
 
       {/* Next Button */}
@@ -41,19 +38,16 @@ const Slider = ({ children, slideCount }) => {
         bg-primary text-black shadow-md rounded-full w-10 h-10
         md:flex hidden items-center justify-center"
       >
-        {isRTL ? <FaArrowLeft /> : <FaArrowRight />}
+        <FaArrowRight />
       </button>
 
       <Swiper
-        key={i18n.language}
-        dir={isRTL ? "rtl" : "ltr"}
         modules={[Navigation, Pagination, Autoplay]}
         spaceBetween={20}
         loop={shouldLoop}
         autoplay={{
           delay: 2500,
           disableOnInteraction: false,
-          reverseDirection: isRTL,
         }}
         pagination={{ clickable: true }}
         onBeforeInit={(swiper) => {
