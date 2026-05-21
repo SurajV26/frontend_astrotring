@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name"> Astrotring</string>
+    <string name="title_activity_main"> Astrotring</string>
+    <string name="package_name">com.astrotring.app</string>
+    <string name="custom_url_scheme">com.astrotring.app</string>
+</resources>
