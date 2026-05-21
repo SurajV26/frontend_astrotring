@@ -1,6 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "Astrotring.apk"
+        }
+    }
+
     namespace = "com.astrotring.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
