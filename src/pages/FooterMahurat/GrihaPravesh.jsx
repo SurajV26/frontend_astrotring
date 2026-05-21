@@ -1,12 +1,12 @@
 import HeadWithLogo from "@/components/HeadWithLogo";
-import MuhuratLayout from "@/layout/MuhuratLayout";
+import MuhuratCard from "@/components/common/MuhuratCard";
 import React from "react";
 
 const GrihaPravesh = () => {
   const year = new Date().getFullYear();
 
   return (
-    <MuhuratLayout className="py-10">
+    <MuhuratCard className="py-10">
       <div className="container mx-auto max-w-4xl space-y-8">
         <HeadWithLogo title={`Griha Pravesh Muhurat ${year}`} />
 
@@ -485,7 +485,7 @@ const GrihaPravesh = () => {
           Panchang {year}
         </p>
       </div>
-    </MuhuratLayout>
+    </MuhuratCard>
   );
 };
 

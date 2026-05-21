@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import ComponentHead from "@/components/ComponentHead";
-import { servicesData } from "@/data/servicesData";
+import { servicesData } from "@/data/services/servicesData";
 
 const Services = () => {
   return (

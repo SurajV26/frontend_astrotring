@@ -1,12 +1,12 @@
 import HeadWithLogo from "@/components/HeadWithLogo";
-import MuhuratLayout from "@/layout/MuhuratLayout";
+import MuhuratCard from "@/components/common/MuhuratCard";
 import React from "react";
 
 const CarBike = () => {
   const year = new Date().getFullYear();
 
   return (
-    <MuhuratLayout className="py-10">
+    <MuhuratCard className="py-10">
       <div className="container mx-auto max-w-4xl space-y-8">
         <HeadWithLogo title={`Car / Bike Muhurat ${year}`} />
 
@@ -301,7 +301,7 @@ const CarBike = () => {
           {year} | Akshaya Tritiya {year}
         </p>
       </div>
-    </MuhuratLayout>
+    </MuhuratCard>
   );
 };
 
