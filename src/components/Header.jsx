@@ -432,8 +432,7 @@
 // import { getHoroscope } from "@/redux/slice/HoroscopesSlice";
 // import { AstrologerLogout, AstrologerProfile } from "@/redux/slice/AstroAuth";
 // import { userLogout, userProfile } from "@/redux/slice/UserAuth";
-// import LanguageSwitcher from "@/components/LanguageSwitcher";
-
+// 
 // Mobile Navigation Section Component (unchanged)
 // const MobileNavSection = ({ navItems }) => {
 //   const [openIndex, setOpenIndex] = useState(null);
@@ -862,15 +861,13 @@ import {
 import { ChevronDown, Menu } from "lucide-react";
 import { GiStarShuriken } from "react-icons/gi";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom"; // changed this line
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import UserLogin from "./UserLogin";
 import { getHoroscope } from "@/redux/slice/HoroscopesSlice";
 import { AstrologerLogout, AstrologerProfile } from "@/redux/slice/AstroAuth";
 import { userLogout, userProfile } from "@/redux/slice/UserAuth";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { useTranslation } from "react-i18next";
 
 const MobileNavSection = ({ navItems }) => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -937,7 +934,6 @@ const MobileNavSection = ({ navItems }) => {
 };
 
 const Header = () => {
-  const { t, i18n } = useTranslation();
   const [openMenu, setOpenMenu] = useState({ row: null, index: null });
   const [horosType, setHorosType] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -953,13 +949,10 @@ useEffect(() => {
   if (location.pathname.includes("findHoroschope")) {
     window.scrollTo({
       top: 0,
-      behavior: "instant"
+      behavior: "smooth"
     });
   }
 }, [location.pathname]);
-  useEffect(() => {
-    document.dir = i18n.language === "ar" ? "rtl" : "ltr";
-  }, [i18n.language]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -1007,28 +1000,28 @@ useEffect(() => {
   const navigationItems = useMemo(
     () => [
       {
-        name: t("horoscopes"),
+        name: "Horoscopes",
         path: "/best-astrologers",
         hasmenu: horosType.length > 0,
         menu: horosType,
       },
       {
-        name: t("chatAstrologer"), 
+        name: "Chat with Astrologer", 
         path: "/talk-to-astrologer",
         hasmenu: false,
       },
       {
-        name: t("shop"),
+        name: "Shop",
         path: "https://astrotring.shop",
         hasmenu: false,
       },
       {
-        name: t("blogs"),
+        name: "Blogs",
         path: "/blogs",
         hasmenu: false,
       },
     ],
-    [t, horosType]
+    [horosType]
   );
 
   useEffect(() => {
@@ -1050,7 +1043,7 @@ useEffect(() => {
           horosSet.add(ele.type);
 
           horos.push({
-            label: `${t(ele.type.toLowerCase())} ${t("horoscope")}`,
+            label: `${ele.type.charAt(0).toUpperCase() + ele.type.slice(1)} Horoscope`,
             path: `/findHoroschope/${ele.type.toLowerCase()}`,
           });
         }
@@ -1058,7 +1051,7 @@ useEffect(() => {
 
       setHorosType(horos);
     }
-  }, [horoscope, t]);
+  }, [horoscope]);
 
   return (
     <header
@@ -1074,7 +1067,7 @@ useEffect(() => {
           <GiStarShuriken className="text-primary size-4 me-2 hidden md:block" />
 
           <Link to="/" className="text-sm font-medium hover:text-[#070707cc] transition-colors">
-            {t("home")}
+            Home
           </Link>
 
           <nav className="hidden lg:flex items-center space-x-6">
@@ -1098,7 +1091,7 @@ useEffect(() => {
                 ) : (
                   <Link
                     to={item.path}
-                    target={item.name === t("shop") ? "_blank" : "_self"}
+                    target={item.name === "Shop" ? "_blank" : "_self"}
                     className="text-sm font-medium flex items-center transition-colors hover:text-[#070707cc]"
                   >
                     <GiStarShuriken className="text-primary size-4 me-2" />
@@ -1130,8 +1123,6 @@ useEffect(() => {
         </div>
 
         <div className="hidden lg:flex items-center space-x-4">
-          <LanguageSwitcher className="bg-transparent text-sm font-normal" />
-
           {astrologer?.name || user?.name ? (
             <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
               <DropdownMenuTrigger asChild>
@@ -1156,11 +1147,11 @@ useEffect(() => {
                 <DropdownMenuSeparator />
 
                 <DropdownMenuItem onClick={moveToDashboard}>
-                  {t("dashboard")}
+                  {"Dashboard"}
                 </DropdownMenuItem>
 
                 <DropdownMenuItem onClick={logout}>
-                  {t("logout")}
+                  {"Logout"}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -1179,22 +1170,17 @@ useEffect(() => {
             <SheetContent side="right" className="w-80">
 
               <SheetHeader>
-                <SheetTitle>{t("")}</SheetTitle>
+                <SheetTitle>Menu</SheetTitle>
               </SheetHeader>
 
               <ScrollArea className="h-[calc(100vh-8rem)] mt-6">
 
                 <MobileNavSection navItems={navigationItems} />
 
-                <div className="mt-4 px-2">
-                  <LanguageSwitcher className="w-full justify-start" />
-                </div>
-
                 {/* Mobile Account */}
                 <div className="mt-3  p-1 space-y-2">
 
                   {astrologer?.name || user?.name ? (
-
                     <>
                       <div className="flex items-center gap-3 px-2">
                         <Avatar className="h-8 w-8">
@@ -1217,7 +1203,7 @@ useEffect(() => {
                           className="w-full justify-start"
                           onClick={moveToDashboard}
                         >
-                          {t("dashboard")}
+                          {"Dashboard"}
                         </Button>
                       </SheetClose>
 
@@ -1227,7 +1213,7 @@ useEffect(() => {
                           className="w-full justify-start text-red-500"
                           onClick={logout}
                         >
-                          {t("logout")}
+                          {"Logout"}
                         </Button>
                       </SheetClose>
 

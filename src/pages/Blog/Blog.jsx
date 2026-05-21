@@ -149,19 +149,12 @@
 //         </div>
 //       </div>
 //     </section>
-//   );
-// };
-
-// export default Blog;
-
-
 import BlogCard from "@/components/Blog/BlogCard";
 import HeadWithLogo from "@/components/HeadWithLogo";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useEffect, useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
 import {
   getAllBlog,
   getBlogCategory,
@@ -171,7 +164,6 @@ import Loader from "@/components/common/Loader";
 import { useSearchParams } from "react-router-dom";
 
 const Blog = () => {
-  const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const { blogs, category, loading, error } = useSelector((state) => state.blog);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
@@ -181,12 +173,12 @@ const Blog = () => {
   const [search, setSearch] = useState("");
   const isFirstRender = useRef(true);
 
-  // Prepare categories with "All" option and translation
+  // Prepare categories with "All" option
   const translatedCategories = [
-    { id: "All", name: t("all") },
+    { id: "All", name: "All" },
     ...(category || []).map((cat) => ({
       ...cat,
-      name: t(cat.name),
+      name: cat.name,
     })),
   ];
 
@@ -195,14 +187,14 @@ const Blog = () => {
     if (categoryFromUrl && categoryFromUrl !== "All") {
       setSelectedCategory(categoryFromUrl);
     }
-  }, [categoryFromUrl]);
+  }, []);
 
-  // ✅ Fetch categories on mount and language change only
+  // Fetch categories on mount and language change only
   useEffect(() => {
     dispatch(getBlogCategory());
-  }, [dispatch, i18n.language]);
+  }, [dispatch]);
 
-  // ✅ Fetch blogs when selectedCategory changes
+  // Fetch blogs when selectedCategory changes
   useEffect(() => {
     // Skip on first render if we already have blogs from initial load
     if (isFirstRender.current) {
@@ -244,13 +236,13 @@ const Blog = () => {
       <div className="container">
         {/* HERO HEADER */}
         <div className="text-center mb-12">
-          <HeadWithLogo className="mb-4" title={t("astrologyBlogs")} />
+          <HeadWithLogo className="mb-4" title="Astrology Blogs" />
         </div>
 
         {/* SEARCH BAR */}
         <div className="max-w-xl mx-auto mb-10">
           <Input
-            placeholder={t("searchBlogs")}
+            placeholder="Search blog articles..."
             className="h-12 rounded-full shadow-sm border-gray-300"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -276,7 +268,7 @@ const Blog = () => {
           {/* CATEGORY SIDEBAR */}
           <div className="lg:col-span-1 hidden lg:block">
             <div className="bg-white shadow-sm rounded-xl p-5 sticky top-28">
-              <h3 className="font-semibold mb-4 text-lg">{t("categories")}</h3>
+              <h3 className="font-semibold mb-4 text-lg">Categories</h3>
               <ScrollArea className="h-[420px] pr-3">
                 <ul className="space-y-2">
                   {translatedCategories.map((cat) => (
@@ -301,7 +293,7 @@ const Blog = () => {
           {/* BLOG GRID */}
           <div className="lg:col-span-3">
             {loading ? (
-              <Loader data={t("loading")} />
+              <Loader data="Loading..." />
             ) : filteredBlogs.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredBlogs.map((blog) => (
@@ -319,7 +311,7 @@ const Blog = () => {
               </div>
             ) : (
               <div className="text-center py-20 text-gray-500">
-                {t("noBlogs")}
+                No blogs found
               </div>
             )}
           </div>
