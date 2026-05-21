@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { servicesData } from "@/data/servicesData";
+import { servicesData } from "@/data/services/servicesData";
 
 const RelatedDosh = () => {
   const { slug } = useParams();

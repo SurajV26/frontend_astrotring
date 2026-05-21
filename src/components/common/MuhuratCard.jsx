@@ -11,7 +11,7 @@ const relatedPages = [
   { name: "Mundan Muhurat", link: "/mundan-muhurat" },
 ];
 
-const MuhuratLayout = ({ children }) => {
+const MuhuratCard = ({ children }) => {
   return (
     <section className="py-10">
       <div className="container mx-auto px-4">
@@ -42,4 +42,4 @@ const MuhuratLayout = ({ children }) => {
   );
 };
 
-export default MuhuratLayout;
+export default MuhuratCard;

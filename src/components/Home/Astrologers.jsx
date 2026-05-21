@@ -12,7 +12,7 @@ const Astrologers = () => {
       <div className="container">
       <ComponentHead heading="Top Astrologers" title="Connect with our expert astrologers for guidance" />
       <div className="relative pt-10">
-      <Slider slideCount={4}>
+      <Slider slideCount={3}>
         {allastrologers?.map((astro) => (
           <CallCard key={astro.id} {...astro} />
         ))}

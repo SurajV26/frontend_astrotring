@@ -13,7 +13,7 @@ const ServiceDetail = () => {
   useEffect(() => {
     const loadMarkdown = async () => {
       try {
-        const file = await import(`../content/services/${currentSlug}.md?raw`);
+        const file = await import(`../data/services/${currentSlug}.md?raw`);
         setContent(file.default);
       } catch (err) {
         setContent("# Service Not Found");
