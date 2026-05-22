@@ -7,10 +7,9 @@
   "theme_color": "#FFFEF7",
   "icons": [
     {
-      "src": "../icons/icon-48.webp",
-      "type": "image/png",
-      "sizes": "48x48",
-      "purpose": "any maskable"
+      "src": "/manifestIcon.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
     },
     {
       "src": "../icons/icon-72.webp",
@@ -46,7 +45,7 @@
       "src": "../icons/icon-512.webp",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "type": "image/jpeg"
     }
   ]
 }
