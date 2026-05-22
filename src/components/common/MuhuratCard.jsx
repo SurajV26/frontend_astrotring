@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const relatedPages = [
+export const allMahuratData = [
   { name: "Annaprashan Muhurat", link: "/annaprashan-muhurat" },
   { name: "Namkaran Muhurat", link: "/namkaran-muhurat" },
   { name: "Car / Bike Muhurat", link: "/car-bike-muhurat" },
@@ -25,7 +25,7 @@ const MuhuratCard = ({ children }) => {
             <h3 className="text-lg font-semibold mb-4">Related Muhurat</h3>
 
             <div className="space-y-2">
-              {relatedPages.map((item, index) => (
+              {allMahuratData.map((item, index) => (
                 <Link
                   key={index}
                   to={item.link}

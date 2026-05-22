@@ -28,6 +28,8 @@ import { getHoroscope } from "@/redux/slice/HoroscopesSlice";
 import { AstrologerLogout, AstrologerProfile } from "@/redux/slice/AstroAuth";
 import { userLogout, userProfile } from "@/redux/slice/UserAuth";
 import logo from "../assets/logo.png"
+import {servicesData} from "@/data/services/servicesData"
+import {allMahuratData} from "@/components/common/MuhuratCard"
 
 const MobileNavSection = ({ navItems }) => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -157,11 +159,20 @@ useEffect(() => {
     navigate("/dashboard/profile");
   };
 
+const doshData = servicesData.map((service) => ({
+  label: service.title,
+  path: `/services/${service.slug}`,
+}));
+const mahuratData = allMahuratData.map((mahurat)=>({
+  label:mahurat.name,
+  path:mahurat.link
+}))
+
   const navigationItems = useMemo(
     () => [
       {
         name: "Horoscopes",
-        path: "/best-astrologers",
+        path: "/findHoroschope/yearly",
         hasmenu: horosType.length > 0,
         menu: horosType,
       },
@@ -179,6 +190,18 @@ useEffect(() => {
         name: "Blogs",
         path: "/blogs",
         hasmenu: false,
+      },
+      {
+        name: "Doshas",
+        path: "/services/mangal-dosh",
+        hasmenu: true,
+        menu: doshData,
+      },
+      {
+        name: "Muhurat",
+        path: "/annaprashan-muhurat",
+        hasmenu: true,
+        menu: mahuratData,
       },
     
     ],
@@ -265,15 +288,15 @@ useEffect(() => {
                 {item.hasmenu &&
                   openMenu.row === 2 &&
                   openMenu.index === index && (
-                    <div className="absolute left-0 top-full mt-0 w-56 rounded-md border bg-popover p-1 shadow-md">
+                    <div className="absolute left-0 top-full mt-0 min-w-56 w-max rounded-md border bg-popover p-1 shadow-md">
                       <ScrollArea className="max-h-96">
                         {item.menu.map((menuItem, idx) => (
                           <Link
                             key={idx}
                             to={menuItem.path}
-                            className="px-3 py-2 text-sm rounded-sm flex items-center hover:bg-primary/70 hover:text-black"
+                            className="px-3 py-2 text-sm rounded-sm flex whitespace-nowrap items-center hover:bg-primary/70 hover:text-black"
                           >
-                            <GiStarShuriken className="size-4 me-2" />
+                            <GiStarShuriken className="size-4 me-2 shrink-0" />
                             {menuItem.label}
                           </Link>
                         ))}

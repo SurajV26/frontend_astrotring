@@ -4,9 +4,6 @@ import { MoveRight, Phone, ShoppingBag } from "lucide-react";
 import { IoIosChatbubbles } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-import outercircle1 from "@/assets/outercircle1.png";
-import innerganesh from "@/assets/innerganesh.png";
-// import bannerVideo from "@/assets/bannerVideo.mp4"
 const Banner = () => {
   const [banners, setBanners] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
