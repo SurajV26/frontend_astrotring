@@ -1,5 +1,5 @@
 import { Calendar, HistoryIcon, Home, Inbox, Search, Settings, Wallet } from "lucide-react";
-import faviconlogo from "@/assets/favicon.png";
+import faviconlogo from "/favicon.png";
 import {
     Sidebar,
     SidebarContent,
