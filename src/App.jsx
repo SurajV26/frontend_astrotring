@@ -9,13 +9,13 @@ import AstroLayout from "./layout/AstroLayout";
 import { AstrologerProfile, GetAllAstrologer } from "./redux/slice/AstroAuth";
 import Astrodetails from "./components/Astrodetails";
 import { userProfile } from "./redux/slice/UserAuth";
-import Annanprashan from "./pages/FooterMahurat/Annanprashan";
-import Namkaran from "./pages/FooterMahurat/Namkaran";
-import CarBike from "./pages/FooterMahurat/CarBike";
-import Marriage from "./pages/FooterMahurat/Marriage";
-import BhumiPuja from "./pages/FooterMahurat/BhumiPuja";
-import GrihaPravesh from "./pages/FooterMahurat/GrihaPravesh";
-import Mundan from "./pages/FooterMahurat/Mundan";
+// import Annanprashan from "./pages/FooterMahurat/Annanprashan";
+// import Namkaran from "./pages/FooterMahurat/Namkaran";
+// import CarBike from "./pages/FooterMahurat/CarBike";
+// import Marriage from "./pages/FooterMahurat/Marriage";
+// import BhumiPuja from "./pages/FooterMahurat/BhumiPuja";
+// import GrihaPravesh from "./pages/FooterMahurat/GrihaPravesh";
+// import Mundan from "./pages/FooterMahurat/Mundan";
 import GoogleTagManager from "./components/common/GoogleTagManager";
 
 
@@ -63,6 +63,22 @@ const RefundPolicyPage = lazy(() => import("./pages/legal/RefundPolicyPage"));
 const ShippingPolicyPage = lazy(() => import("./pages/legal/ShippingPolicyPage"));
 const TermsAndConditionsPage = lazy(() => import("./pages/legal/TermsAndConditionsPage"));
 const AstrologerServiceProviderTermsAndConditionsPage = lazy(() => import("./pages/legal/AstrologerServiceProviderTermsAndConditionsPage"));
+
+// all mahurat 
+const Annanprashan = lazy(() => import("./pages/FooterMahurat/Annanprashan"));
+
+const Namkaran = lazy(() => import("./pages/FooterMahurat/Namkaran"));
+
+const CarBike = lazy(() => import("./pages/FooterMahurat/CarBike"));
+
+const Marriage = lazy(() => import("./pages/FooterMahurat/Marriage"));
+
+const BhumiPuja = lazy(() => import("./pages/FooterMahurat/BhumiPuja"));
+
+const GrihaPravesh = lazy(() => import("./pages/FooterMahurat/GrihaPravesh"));
+
+const Mundan = lazy(() => import("./pages/FooterMahurat/Mundan"));
+
 
 const App = () => {
   const path = useLocation().pathname;
