@@ -1,6 +1,6 @@
 import React from 'react'
 import ComponentHead from '../ComponentHead'
-import faviconlogo from "@/assets/favicon.png";
+import faviconlogo from "/favicon.png";
 import { Card, CardContent } from '../ui/card';
 import { Label } from '../ui/label';
 import { Input } from '../ui/input';
