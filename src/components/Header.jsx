@@ -181,16 +181,7 @@ const mahuratData = allMahuratData.map((mahurat)=>({
         path: "/talk-to-astrologer",
         hasmenu: false,
       },
-      {
-        name: "Shop",
-        path: "https://astrotring.shop",
-        hasmenu: false,
-      },
-      {
-        name: "Blogs",
-        path: "/blogs",
-        hasmenu: false,
-      },
+      
       {
         name: "Doshas",
         path: "/services/mangal-dosh",
@@ -202,6 +193,16 @@ const mahuratData = allMahuratData.map((mahurat)=>({
         path: "/annaprashan-muhurat",
         hasmenu: true,
         menu: mahuratData,
+      },
+      {
+        name: "Shop",
+        path: "https://astrotring.shop",
+        hasmenu: false,
+      },
+      {
+        name: "Blogs",
+        path: "/blogs",
+        hasmenu: false,
       },
     
     ],

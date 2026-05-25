@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import lowerLogo from "/lowerLogo.jpeg";
+import lowerLogo from "/lowerLogo.png";
 import upperLogo from "/upperLogo.jpeg";
 
 const messages = [

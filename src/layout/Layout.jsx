@@ -11,7 +11,7 @@ import { ToastContainer } from "react-toastify";
 const Layout = () => {
   return (
     <>
-      <AstroRegisterFloat />
+      {/* <AstroRegisterFloat /> */}
       <TopLogos />
       <Header />
       <main >
