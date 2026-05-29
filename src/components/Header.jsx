@@ -244,12 +244,12 @@ const mahuratData = allMahuratData.map((mahurat)=>({
       ${
         scrolled
           ? "bg-white/60 backdrop-blur-lg shadow-lg border sm:rounded-full sm:border-amber-500"
-          : "bg-white"
+          : "bg-white/60 backdrop-blur-lg shadow-lg border sm:rounded-full sm:border-amber-500"
       }`}
     >
       <div className="container mx-auto px-4  flex py-2 items-center justify-between  gap-6">
          <Link to="/" className="text-sm font-medium hover:text-[#070707cc] transition-colors">
-            <img src={logo} alt="Logo" className="h-10" />
+            <img src={logo} alt="Logo" className="h-8" />
           </Link>
         <div className="flex items-center space-x-6">
           
