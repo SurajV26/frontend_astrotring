@@ -86,7 +86,7 @@ const TopLogos = () => {
   return (
     <div
       className={`w-full overflow-hidden transition-all duration-500 ease-in-out
-      ${isVisible ? "max-h-72" : "max-h-0 py-0"}`}
+      ${isVisible ? "max-h-72 mb-2" : "max-h-0 py-0"}`}
     >
       {/* Slider Patti */}
       <div className="w-full bg-black flex items-center px-3 py-2 shadow-lg">
@@ -128,7 +128,7 @@ const TopLogos = () => {
       </div>
 
       {/* Logo Section */}
-      <div className="flex flex-col items-center justify-center bg-gradient-to-b from-yellow-50 to-white pt-6 ">
+      {/* <div className="flex flex-col items-center justify-center bg-gradient-to-b from-yellow-50 to-white pt-6 ">
 
         <div className="animate-spin-slow mb-2 w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20">
           <img
@@ -144,7 +144,7 @@ const TopLogos = () => {
           className="h-8 sm:h-10 md:h-12 w-auto object-contain"
         />
 
-      </div>
+      </div> */}
     </div>
   );
 };
