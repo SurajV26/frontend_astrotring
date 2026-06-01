@@ -37,7 +37,7 @@ const ZodiacPredictions = () => {
     <section className="py-10 bg-gradient-to-b from-orange-50 to-yellow-50">
       <div className="container mx-auto px-4">
         <h3 className="font-bold text-center mb-12 bg-clip-text">
-          Monthly Predictions
+          Monthly Predictions As Per Moon Signs
         </h3>
 
         <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4 md:gap-6">
