@@ -6,7 +6,7 @@ import Disclaimer from "@/components/Disclaimer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import React from "react";
 import { Outlet } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+
 
 const Layout = () => {
   return (
@@ -20,6 +20,7 @@ const Layout = () => {
       <Footer />
       <Disclaimer />
       <WhatsAppButton />
+    
     </>
   );
 };

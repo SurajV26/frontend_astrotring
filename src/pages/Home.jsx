@@ -1,3 +1,4 @@
+
 import BannerSlider from '@/components/BannerSlider'
 import Astrologers from '@/components/Home/Astrologers'
 import Banner from '@/components/Home/Banner'

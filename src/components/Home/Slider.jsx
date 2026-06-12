@@ -26,7 +26,7 @@ const Slider = ({ children, slideCount }) => {
         ref={prevRef}
         className="absolute lg:-left-8 -left-2 top-1/2 z-10 -translate-y-1/2
         bg-primary text-black shadow-md rounded-full w-10 h-10
-        md:flex hidden items-center justify-center"
+        md:flex hidden items-center justify-center cursor-pointer"
       >
         <FaArrowLeft />
       </button>
@@ -36,7 +36,7 @@ const Slider = ({ children, slideCount }) => {
         ref={nextRef}
         className="absolute lg:-right-8 -right-2 top-1/2 z-10 -translate-y-1/2
         bg-primary text-black shadow-md rounded-full w-10 h-10
-        md:flex hidden items-center justify-center"
+        md:flex hidden items-center justify-center cursor-pointer"
       >
         <FaArrowRight />
       </button>

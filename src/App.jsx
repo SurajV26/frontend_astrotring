@@ -17,6 +17,7 @@ import { userProfile } from "./redux/slice/UserAuth";
 // import GrihaPravesh from "./pages/FooterMahurat/GrihaPravesh";
 // import Mundan from "./pages/FooterMahurat/Mundan";
 import GoogleTagManager from "./components/common/GoogleTagManager";
+import AIChatBot from "./components/AIChatBot/AIChatBot";
 
 
 
@@ -179,7 +180,15 @@ const App = () => {
             <Route path="/bhoomi-pujan-muhurat" element={<BhumiPuja />} />
             <Route path="/griha-pravesh-muhurat" element={<GrihaPravesh />} />
             <Route path="/mundan-muhurat" element={<Mundan />} />
+
+
+            {/* royte for ai chatbot */}
           </Route>
+            <Route path="/ai-chat" element={<AIChatBot />} />
+
+
+
+
           {/* Dashboard starts from here */}
           <Route path="/dashboard" element={<AstroLayout />}>
             <Route path="/dashboard/profile" element={<Dashboard />} />
