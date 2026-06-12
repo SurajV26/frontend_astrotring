@@ -204,6 +204,11 @@ const mahuratData = allMahuratData.map((mahurat)=>({
         path: "/blogs",
         hasmenu: false,
       },
+      {
+        name: "Ask AI",
+        path: "/ai-chat",
+        hasmenu: false,
+      },
     
     ],
     [horosType]
@@ -240,7 +245,7 @@ const mahuratData = allMahuratData.map((mahurat)=>({
 
   return (
     <header
-      className={`sticky top-3 z-50 w-full sm:w-[90%] mx-auto transition-all duration-300 ease-in-out
+      className={`sticky top-0 sm:top-3 z-50 w-full sm:w-[90%] mx-auto transition-all duration-300 ease-in-out
       ${
         scrolled
           ? "bg-white/60 backdrop-blur-lg shadow-lg border sm:rounded-full sm:border-amber-500"
