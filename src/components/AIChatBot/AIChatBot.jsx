@@ -14,9 +14,15 @@ import {
 const AIChatBot = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { selectedTopic, topics, isFetchingTopics, sessionId, messages, isLoading, error } = useSelector(
-    (state) => state.aiChat
-  );
+  const {
+    selectedTopic,
+    topics,
+    isFetchingTopics,
+    sessionId,
+    messages,
+    isLoading,
+    error,
+  } = useSelector((state) => state.aiChat);
 
   const [input, setInput] = useState("");
   const bottomRef = useRef();
@@ -36,7 +42,9 @@ const AIChatBot = () => {
     if (newTopic === selectedTopic) return;
     const result = await dispatch(startSession(newTopic));
     if (startSession.fulfilled.match(result)) {
-      await dispatch(fetchChatHistory({ sessionId: result.payload, topic: newTopic }));
+      await dispatch(
+        fetchChatHistory({ sessionId: result.payload, topic: newTopic }),
+      );
     }
   };
 
@@ -103,7 +111,9 @@ const AIChatBot = () => {
             {messages.map((msg, idx) => (
               <div
                 key={idx}
-                className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+                className={`flex ${
+                  msg.sender === "user" ? "justify-end" : "justify-start"
+                }`}
               >
                 <span
                   className={`inline-block px-4 py-2 rounded-lg max-w-[80%] text-sm ${
@@ -156,7 +166,9 @@ const AIChatBot = () => {
                 Send
               </button>
             </div>
-            {error && <p className="text-xs text-center text-red-500 mt-1">{error}</p>}
+            {error && (
+              <p className="text-xs text-center text-red-500 mt-1">{error}</p>
+            )}
           </div>
         </div>
       </div>
