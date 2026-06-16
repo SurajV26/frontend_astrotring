@@ -8,6 +8,8 @@ export const fetchTopics = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get("/user/ai-chat/topics");
+
+      console.log("fetchTopicsai", response);
       const topics = response.data?.data ?? [];
       return topics;
     } catch (error) {
@@ -23,6 +25,8 @@ export const startSession = createAsyncThunk(
   async (topic, { rejectWithValue }) => {
     try {
       const response = await api.post("/user/ai-chat/start-session", { topic });
+
+      console.log("startSessionai", response);
       const sessionId = response.data?.session_id || response.data?.data?.id;
       if (!sessionId) throw new Error("No session ID returned");
       return sessionId;
@@ -41,7 +45,7 @@ export const sendChatMessage = createAsyncThunk(
         message,
       });
 
-      console.log("sendChatMessage",response)
+      console.log("sendChatMessageai",response)
       const reply =
         response.data?.reply ||
         response.data?.message ||
@@ -49,7 +53,7 @@ export const sendChatMessage = createAsyncThunk(
       return { reply };
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Failed to send message",
+        error.response?.data,
       );
     }
   },
@@ -60,6 +64,7 @@ export const closeSession = createAsyncThunk(
   async (sessionId, { rejectWithValue }) => {
     try {
       await api.post(`/user/ai-chat/close-session/${sessionId}`);
+      
       return sessionId;
     } catch (error) {
       return rejectWithValue(
@@ -169,7 +174,7 @@ const aiChatSlice = createSlice({
       })
       .addCase(sendChatMessage.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload;
+        state.error = action.payload?.message;
         state.messages.push({
           sender: "assistant",
           message: "Sorry, something went wrong. Please try again.",
@@ -202,6 +207,7 @@ const aiChatSlice = createSlice({
       .addCase(fetchChatHistory.rejected, (state, action) => {
         state.isLoadingHistory = false;
         state.error = action.payload;
+        
         state.messages = []; // fallback to empty array
       });
   },

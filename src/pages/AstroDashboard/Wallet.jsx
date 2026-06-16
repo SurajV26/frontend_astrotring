@@ -1,6 +1,6 @@
 // src/pages/WalletDashboard.jsx
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchWalletDetails,
   fetchRechargeHistory,
@@ -9,23 +9,48 @@ import {
   clearWalletError,
   createRazorpayOrder,
   verifyRazorpayPayment,
-} from '../../redux/slice/walletSlice';
-import { Wallet, TrendingUp, TrendingDown, Phone, MessageSquare, DollarSign, ArrowUpRight, ArrowDownRight, Calendar, Clock, IndianRupee, PlusCircle, CreditCard, X } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { toast } from 'react-toastify';
-import Loader from '@/components/common/Loader';
+} from "../../redux/slice/walletSlice";
+import {
+  Wallet,
+  TrendingUp,
+  TrendingDown,
+  Phone,
+  MessageSquare,
+  DollarSign,
+  ArrowUpRight,
+  ArrowDownRight,
+  Calendar,
+  Clock,
+  IndianRupee,
+  PlusCircle,
+  CreditCard,
+  X,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "react-toastify";
+import Loader from "@/components/common/Loader";
 
 const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY_ID;
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
-    if (document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]')) {
+    if (
+      document.querySelector(
+        'script[src="https://checkout.razorpay.com/v1/checkout.js"]',
+      )
+    ) {
       resolve(true);
       return;
     }
-    const script = document.createElement('script');
-    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
@@ -34,15 +59,16 @@ const loadRazorpayScript = () => {
 
 const WalletDashboard = () => {
   const dispatch = useDispatch();
-  const { details, rechargeHistory, payoutHistory, loading, error } = useSelector((state) => state.wallet);
+  const { details, rechargeHistory, payoutHistory, loading, error } =
+    useSelector((state) => state.wallet);
   const { isLoggedIn } = useSelector((state) => state.userAuth);
-  const [role, setRole] = useState(localStorage.getItem('role_id'));
-  const [amount, setAmount] = useState('');
+  const [role, setRole] = useState(localStorage.getItem("role_id"));
+  const [amount, setAmount] = useState("");
   const [adding, setAdding] = useState(false);
   const [showAddMoney, setShowAddMoney] = useState(false);
-  const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [withdrawAmount, setWithdrawAmount] = useState("");
   const [withdrawing, setWithdrawing] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -60,13 +86,13 @@ const WalletDashboard = () => {
 
   const formatCurrency = (amount) => `₹${parseFloat(amount).toFixed(2)}`;
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -74,14 +100,14 @@ const WalletDashboard = () => {
     e.preventDefault();
     const numAmount = parseFloat(amount);
     if (isNaN(numAmount) || numAmount <= 0) {
-      toast.error('Please enter a valid amount');
+      toast.error("Please enter a valid amount");
       return;
     }
 
     setAdding(true);
     try {
       const orderData = await dispatch(createRazorpayOrder(numAmount)).unwrap();
-      const { order_id, amount: orderAmount, currency = 'INR' } = orderData;
+      const { order_id, amount: orderAmount, currency = "INR" } = orderData;
       if (!order_id) throw new Error("Order ID missing");
 
       const scriptLoaded = await loadRazorpayScript();
@@ -94,35 +120,39 @@ const WalletDashboard = () => {
         key: RAZORPAY_KEY,
         amount: amountInPaise,
         currency,
-        name: 'AstroTring',
+        name: "AstroTring",
         description: `Add ₹${numAmount} to wallet`,
         order_id,
         handler: async (response) => {
           try {
-            await dispatch(verifyRazorpayPayment({
-              paymentData: {
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-              },
-              amount: numAmount,
-            })).unwrap();
+            await dispatch(
+              verifyRazorpayPayment({
+                paymentData: {
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                },
+                amount: numAmount,
+              }),
+            ).unwrap();
             toast.success(`₹${numAmount} added to wallet successfully!`);
-            setAmount('');
+            setAmount("");
             setShowAddMoney(false);
           } catch (err) {
-            toast.error('Payment verification failed. Please contact support.');
+            toast.error("Payment verification failed. Please contact support.");
           }
         },
-        modal: { ondismiss: () => toast.info('Payment cancelled') },
-        prefill: { name: '', email: '', contact: '' },
-        theme: { color: '#ea580c' },
+        modal: { ondismiss: () => toast.info("Payment cancelled") },
+        prefill: { name: "", email: "", contact: "" },
+        theme: { color: "#ea580c" },
       };
       const razorpay = new window.Razorpay(options);
-      razorpay.on('payment.failed', () => toast.error('Payment failed. Please try again.'));
+      razorpay.on("payment.failed", () =>
+        toast.error("Payment failed. Please try again."),
+      );
       razorpay.open();
     } catch (err) {
-      toast.error(err.message || 'Failed to initiate payment');
+      toast.error(err.message || "Failed to initiate payment");
     } finally {
       setAdding(false);
     }
@@ -132,23 +162,23 @@ const WalletDashboard = () => {
     e.preventDefault();
     const numAmount = parseFloat(withdrawAmount);
     if (isNaN(numAmount) || numAmount <= 0) {
-      toast.error('Please enter a valid withdrawal amount');
+      toast.error("Please enter a valid withdrawal amount");
       return;
     }
     if (details && numAmount > parseFloat(details.balance)) {
-      toast.error('Insufficient balance');
+      toast.error("Insufficient balance");
       return;
     }
 
     setWithdrawing(true);
     try {
       await dispatch(createPayoutRequest(numAmount)).unwrap();
-      toast.success('Withdrawal request submitted successfully');
-      setWithdrawAmount('');
+      toast.success("Withdrawal request submitted successfully");
+      setWithdrawAmount("");
       dispatch(fetchWalletDetails());
-      if (role === '2') dispatch(fetchPayoutHistory());
+      if (role === "2") dispatch(fetchPayoutHistory());
     } catch (err) {
-      toast.error(err || 'Failed to submit withdrawal request');
+      toast.error(err || "Failed to submit withdrawal request");
     } finally {
       setWithdrawing(false);
     }
@@ -166,23 +196,49 @@ const WalletDashboard = () => {
   if (!details && !loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-red-500">Failed to load wallet data. Please try again later.</p>
+        <p className="text-red-500">
+          Failed to load wallet data. Please try again later.
+        </p>
       </div>
     );
   }
 
   const walletData = details;
-  const isUser = role === '3';
-  const isAstrologer = role === '2';
+  const isUser = role === "3";
+  const isAstrologer = role === "2";
 
   const userStats = [
-    { icon: DollarSign, title: "Total Added", value: formatCurrency(walletData.total_added ?? 0), colorClass: "text-blue-600", borderColor: "border-blue-200 bg-blue-50" },
-    { icon: ArrowDownRight, title: "Total Spent", value: formatCurrency(walletData.total_spent ?? 0), colorClass: "text-red-600", borderColor: "border-red-200 bg-red-50" }
+    {
+      icon: DollarSign,
+      title: "Total Added",
+      value: formatCurrency(walletData.total_added ?? 0),
+      colorClass: "text-blue-600",
+      borderColor: "border-blue-200 bg-blue-50",
+    },
+    {
+      icon: ArrowDownRight,
+      title: "Total Spent",
+      value: formatCurrency(walletData.total_spent ?? 0),
+      colorClass: "text-red-600",
+      borderColor: "border-red-200 bg-red-50",
+    },
   ];
 
   const astrologerStats = [
-    { icon: TrendingUp, title: "Total Earned", value: formatCurrency(walletData.total_earned ?? 0), colorClass: "text-green-600", borderColor: "border-green-200 bg-green-50" },
-    { icon: TrendingDown, title: "Total Withdrawn", value: formatCurrency(walletData.total_withdrawn ?? 0), colorClass: "text-orange-600", borderColor: "border-orange-200 bg-orange-50" }
+    {
+      icon: TrendingUp,
+      title: "Total Earned",
+      value: formatCurrency(walletData.total_earned ?? 0),
+      colorClass: "text-green-600",
+      borderColor: "border-green-200 bg-green-50",
+    },
+    {
+      icon: TrendingDown,
+      title: "Total Withdrawn",
+      value: formatCurrency(walletData.total_withdrawn ?? 0),
+      colorClass: "text-orange-600",
+      borderColor: "border-orange-200 bg-orange-50",
+    },
   ];
 
   const statsToShow = isUser ? userStats : isAstrologer ? astrologerStats : [];
@@ -196,7 +252,9 @@ const WalletDashboard = () => {
             <Wallet className="w-7 h-7 sm:w-8 sm:h-8 text-primary" />
             Wallet Dashboard
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">Track your earnings, spending, and wallet balance</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            Track your earnings, spending, and wallet balance
+          </p>
         </div>
 
         {/* Main Balance Card with improved Add Money section */}
@@ -235,10 +293,14 @@ const WalletDashboard = () => {
               {/* Enhanced Add Money form */}
               {isUser && showAddMoney && (
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 sm:p-5 border border-primary/20 shadow-sm mt-2">
-                  
-                  <form onSubmit={handleAddMoney} className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-end">
+                  <form
+                    onSubmit={handleAddMoney}
+                    className="flex flex-col sm:flex-row gap-3 sm:gap-4 items-end"
+                  >
                     <div className="flex-1 w-full">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Add Funds to Wallet (₹)</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Add Funds to Wallet (₹)
+                      </label>
                       <input
                         type="number"
                         placeholder="Enter amount"
@@ -255,21 +317,35 @@ const WalletDashboard = () => {
                       disabled={adding}
                       className="w-full sm:w-auto px-6 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 disabled:opacity-50 flex items-center justify-center gap-2 transition"
                     >
-                      {adding ? 'Processing...' : <><CreditCard className="w-4 h-4" /> Pay Now</>}
+                      {adding ? (
+                        "Processing..."
+                      ) : (
+                        <>
+                          <CreditCard className="w-4 h-4" /> Pay Now
+                        </>
+                      )}
                     </button>
                   </form>
-                  <p className="text-xs text-gray-500 mt-3">Secure payment via Razorpay</p>
+                  <p className="text-xs text-gray-500 mt-3">
+                    Secure payment via Razorpay
+                  </p>
                 </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 pt-3 border-t border-primary/10">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground">Last Updated</p>
-                  <p className="text-sm font-medium">{formatDate(walletData.updated_at)}</p>
+                  <p className="text-sm font-medium">
+                    {formatDate(walletData.updated_at)}
+                  </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground">Account Created</p>
-                  <p className="text-sm font-medium">{formatDate(walletData.created_at)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Account Created
+                  </p>
+                  <p className="text-sm font-medium">
+                    {formatDate(walletData.created_at)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -288,23 +364,23 @@ const WalletDashboard = () => {
         {/* Tabs - responsive horizontal scroll on mobile */}
         <div className="flex overflow-x-auto whitespace-nowrap border-b gap-4 pb-0.5">
           <button
-            onClick={() => setActiveTab('overview')}
-            className={`pb-2 px-1 ${activeTab === 'overview' ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground'}`}
+            onClick={() => setActiveTab("overview")}
+            className={`pb-2 px-1 ${activeTab === "overview" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
           >
             Overview
           </button>
           {isUser && (
             <button
-              onClick={() => setActiveTab('recharge')}
-              className={`pb-2 px-1 ${activeTab === 'recharge' ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground'}`}
+              onClick={() => setActiveTab("recharge")}
+              className={`pb-2 px-1 ${activeTab === "recharge" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
             >
               Recharge History
             </button>
           )}
           {isAstrologer && (
             <button
-              onClick={() => setActiveTab('payout')}
-              className={`pb-2 px-1 ${activeTab === 'payout' ? 'border-b-2 border-primary text-primary' : 'text-muted-foreground'}`}
+              onClick={() => setActiveTab("payout")}
+              className={`pb-2 px-1 ${activeTab === "payout" ? "border-b-2 border-primary text-primary" : "text-muted-foreground"}`}
             >
               Payout History
             </button>
@@ -313,7 +389,7 @@ const WalletDashboard = () => {
 
         {/* Tab Content - fully responsive */}
         <div className="space-y-6">
-          {activeTab === 'overview' && (
+          {activeTab === "overview" && (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card className="border-2 border-green-300">
                 <CardHeader>
@@ -321,12 +397,35 @@ const WalletDashboard = () => {
                     <Phone className="w-5 h-5 text-green-600" />
                     Call Statistics
                   </CardTitle>
-                  <CardDescription>Your call consultation metrics</CardDescription>
+                  <CardDescription>
+                    Your call consultation metrics
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <InfoRow label="Total Call Duration" value={`${walletData.total_call_minutes ?? 0} minutes`} icon={Clock} />
-                  <InfoRow label="Total Call Revenue" value={formatCurrency(walletData.total_call_spent ?? 0)} icon={IndianRupee} />
-                  <InfoRow label="Average Per Minute" value={walletData.total_call_minutes > 0 ? formatCurrency((parseFloat(walletData.total_call_spent) / walletData.total_call_minutes).toFixed(2)) : '₹0.00'} icon={TrendingUp} />
+                  <InfoRow
+                    label="Total Call Duration"
+                    value={`${walletData.total_call_minutes ?? 0} minutes`}
+                    icon={Clock}
+                  />
+                  <InfoRow
+                    label="Total Call Revenue"
+                    value={formatCurrency(walletData.total_call_spent ?? 0)}
+                    icon={IndianRupee}
+                  />
+                  <InfoRow
+                    label="Average Per Minute"
+                    value={
+                      walletData.total_call_minutes > 0
+                        ? formatCurrency(
+                            (
+                              parseFloat(walletData.total_call_spent) /
+                              walletData.total_call_minutes
+                            ).toFixed(2),
+                          )
+                        : "₹0.00"
+                    }
+                    icon={TrendingUp}
+                  />
                 </CardContent>
               </Card>
 
@@ -336,60 +435,109 @@ const WalletDashboard = () => {
                     <MessageSquare className="w-5 h-5 text-blue-600" />
                     Chat Statistics
                   </CardTitle>
-                  <CardDescription>Your chat consultation metrics</CardDescription>
+                  <CardDescription>
+                    Your chat consultation metrics
+                  </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <InfoRow label="Total Chat Duration" value={`${walletData.total_chat_minutes ?? 0} minutes`} icon={Clock} />
-                  <InfoRow label="Total Chat Revenue" value={formatCurrency(walletData.total_chat_spent ?? 0)} icon={IndianRupee} />
-                  <InfoRow label="Average Per Minute" value={walletData.total_chat_minutes > 0 ? formatCurrency((parseFloat(walletData.total_chat_spent) / walletData.total_chat_minutes).toFixed(2)) : '₹0.00'} icon={TrendingUp} />
+                  <InfoRow
+                    label="Total Chat Duration"
+                    value={`${walletData.total_chat_minutes ?? 0} minutes`}
+                    icon={Clock}
+                  />
+                  <InfoRow
+                    label="Total Chat Revenue"
+                    value={formatCurrency(walletData.total_chat_spent ?? 0)}
+                    icon={IndianRupee}
+                  />
+                  <InfoRow
+                    label="Average Per Minute"
+                    value={
+                      walletData.total_chat_minutes > 0
+                        ? formatCurrency(
+                            (
+                              parseFloat(walletData.total_chat_spent) /
+                              walletData.total_chat_minutes
+                            ).toFixed(2),
+                          )
+                        : "₹0.00"
+                    }
+                    icon={TrendingUp}
+                  />
                 </CardContent>
               </Card>
             </div>
           )}
 
-          {activeTab === 'recharge' && isUser && (
+          {activeTab === "recharge" && isUser && (
             <Card className="border-2 border-primary/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
                   <Calendar className="w-5 h-5 text-purple-600" />
                   Recharge History
                 </CardTitle>
-                <CardDescription>Your wallet recharge transactions</CardDescription>
+                <CardDescription>
+                  Your wallet recharge transactions
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-center text-muted-foreground py-6">Recharge history will appear here soon.</p>
+                <p className="text-center text-muted-foreground py-6">
+                  Recharge history will appear here soon.
+                </p>
               </CardContent>
             </Card>
           )}
 
-          {activeTab === 'payout' && isAstrologer && (
+          {activeTab === "payout" && isAstrologer && (
             <Card className="border-2 border-primary/30">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
                   <Calendar className="w-5 h-5 text-purple-600" />
                   Payout History
                 </CardTitle>
-                <CardDescription>Your withdrawal requests and status</CardDescription>
+                <CardDescription>
+                  Your withdrawal requests and status
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {payoutHistory.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-4">No payout requests found.</p>
+                  <p className="text-center text-muted-foreground py-4">
+                    No payout requests found.
+                  </p>
                 ) : (
                   <div className="space-y-3 max-h-96 overflow-y-auto">
                     {payoutHistory.map((payout) => (
-                      <div key={payout.id} className="flex flex-wrap justify-between items-center py-2 border-b last:border-0 gap-2">
+                      <div
+                        key={payout.id}
+                        className="flex flex-wrap justify-between items-center py-2 border-b last:border-0 gap-2"
+                      >
                         <div>
                           <p className="font-medium">₹{payout.amount}</p>
-                          <p className="text-xs text-muted-foreground">{formatDate(payout.created_at)}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {formatDate(payout.created_at)}
+                          </p>
                         </div>
-                        <Badge variant={payout.status === 'completed' ? 'default' : 'secondary'}>{payout.status || 'Pending'}</Badge>
+                        <Badge
+                          variant={
+                            payout.status === "completed"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {payout.status || "Pending"}
+                        </Badge>
                       </div>
                     ))}
                   </div>
                 )}
                 <div className="mt-6 pt-4 border-t">
-                  <h3 className="text-lg font-semibold mb-3">Request Withdrawal</h3>
-                  <form onSubmit={handleWithdraw} className="flex flex-col sm:flex-row gap-3">
+                  <h3 className="text-lg font-semibold mb-3">
+                    Request Withdrawal
+                  </h3>
+                  <form
+                    onSubmit={handleWithdraw}
+                    className="flex flex-col sm:flex-row gap-3"
+                  >
                     <input
                       type="number"
                       placeholder="Enter amount"
@@ -405,7 +553,14 @@ const WalletDashboard = () => {
                       disabled={withdrawing}
                       className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark disabled:opacity-50 flex items-center justify-center gap-2"
                     >
-                      {withdrawing ? 'Processing...' : <><ArrowUpRight className="w-4 h-4" /> Request Withdrawal</>}
+                      {withdrawing ? (
+                        "Processing..."
+                      ) : (
+                        <>
+                          <ArrowUpRight className="w-4 h-4" /> Request
+                          Withdrawal
+                        </>
+                      )}
                     </button>
                   </form>
                 </div>
@@ -420,12 +575,26 @@ const WalletDashboard = () => {
                 <Calendar className="w-5 h-5 text-purple-600" />
                 Recent Activity
               </CardTitle>
-              <CardDescription>Your latest wallet transactions and updates</CardDescription>
+              <CardDescription>
+                Your latest wallet transactions and updates
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
-                <InfoRow label="Last Recharge Amount" value={walletData.last_recharge_amount ? formatCurrency(walletData.last_recharge_amount) : 'No recharge yet'} icon={ArrowUpRight} />
-                <InfoRow label="Last Recharge Date" value={formatDate(walletData.last_recharge_at)} icon={Calendar} />
+                <InfoRow
+                  label="Last Recharge Amount"
+                  value={
+                    walletData.last_recharge_amount
+                      ? formatCurrency(walletData.last_recharge_amount)
+                      : "No recharge yet"
+                  }
+                  icon={ArrowUpRight}
+                />
+                <InfoRow
+                  label="Last Recharge Date"
+                  value={formatDate(walletData.last_recharge_at)}
+                  icon={Calendar}
+                />
               </div>
             </CardContent>
           </Card>
@@ -438,15 +607,23 @@ const WalletDashboard = () => {
             <CardContent>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Account Status</p>
-                  <Badge variant="outline" className="text-sm">{walletData.deleted_at ? 'Inactive' : 'Active'}</Badge>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Account Status
+                  </p>
+                  <Badge variant="outline" className="text-sm">
+                    {walletData.deleted_at ? "Inactive" : "Active"}
+                  </Badge>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">User ID</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    User ID
+                  </p>
                   <p className="text-sm font-mono">{walletData.user_id}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-sm font-medium text-muted-foreground">Wallet ID</p>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Wallet ID
+                  </p>
                   <p className="text-sm font-mono">{walletData.id}</p>
                 </div>
               </div>
@@ -465,7 +642,9 @@ const StatCard = ({ icon: Icon, title, value, colorClass, borderColor }) => (
       <div className="flex items-start justify-between">
         <div>
           <p className="text-sm text-slate-600 mb-1">{title}</p>
-          <p className={`text-2xl sm:text-3xl font-bold ${colorClass}`}>{value}</p>
+          <p className={`text-2xl sm:text-3xl font-bold ${colorClass}`}>
+            {value}
+          </p>
         </div>
         <div className={`p-2 rounded-lg ${colorClass} bg-opacity-10`}>
           <Icon className={`w-5 h-5 ${colorClass}`} />
@@ -486,20 +665,6 @@ const InfoRow = ({ label, value, icon: Icon }) => (
 );
 
 export default WalletDashboard;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import React, { useState } from 'react';
 // import { Wallet, TrendingUp, TrendingDown, Phone, MessageSquare, DollarSign, ArrowUpRight, ArrowDownRight, Calendar, Clock, IndianRupee } from 'lucide-react';
@@ -561,7 +726,6 @@ export default WalletDashboard;
 //               </Badge>
 //             )}
 //           </div>
-
 
 //           <div className={`p-3 rounded-lg ${colorClass} bg-opacity-10`}>
 //             <Icon className={`w-6 h-6 ${colorClass}`} />
