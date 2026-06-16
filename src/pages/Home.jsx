@@ -1,5 +1,7 @@
 
+import AIChatBot from '@/components/AIChatBot/AIChatBot'
 import BannerSlider from '@/components/BannerSlider'
+import AiChat from '@/components/Home/AiChat'
 import Astrologers from '@/components/Home/Astrologers'
 import Banner from '@/components/Home/Banner'
 import Counter from '@/components/Home/Counter'
@@ -10,6 +12,7 @@ import Services from '@/components/Home/Services'
 import Testmonial from '@/components/Home/Testmonial'
 import ZodiacPredictions from '@/components/Home/ZodiacPredictions'
 import TestmonialCard from '@/components/TestmonialCard'
+import { AirVent } from 'lucide-react'
 import React from 'react'
 
 const Home = () => {
@@ -18,6 +21,7 @@ const Home = () => {
      
       <Banner />
       <BannerSlider />
+      <AiChat />
       <Astrologers />
       <ZodiacPredictions/>
       <Services />

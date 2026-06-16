@@ -12,6 +12,7 @@ export const getAllBlog = createAsyncThunk(
         url += `?blog_category_id=${categoryId}`;
       }
       const res = await api.get(url);
+      console.log("blog", res.data.data)
       return res.data.data;
     } catch (error) {
       return thunkApi.rejectWithValue(

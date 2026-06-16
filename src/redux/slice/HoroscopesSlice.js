@@ -8,7 +8,7 @@ export const getHoroscope = createAsyncThunk(
     async (_, thunkApi) => {
         try {
             const res = await api.get("/horoscopes");
-            console.log(res.data.data);
+            // console.log(res.data.data);
             return res.data.data;
         } catch (error) {
             return thunkApi.rejectWithValue(

@@ -17,9 +17,9 @@ import { userProfile } from "./redux/slice/UserAuth";
 // import GrihaPravesh from "./pages/FooterMahurat/GrihaPravesh";
 // import Mundan from "./pages/FooterMahurat/Mundan";
 import GoogleTagManager from "./components/common/GoogleTagManager";
-import AIChatBot from "./components/AIChatBot/AIChatBot";
-
-
+// import AuthHOC from "@/components/Home/AuthHOC";
+import AIChatBot from "@/components/AIChatBot/AIChatBot";
+import AuthHOC from "@/components/Home/AuthHOC";
 
 // import BlogPage from "./pages/BlogPage";
 
@@ -35,7 +35,6 @@ const AstroRegister = lazy(() => import("./components/AstroRegistration"));
 const HoroscopeDetails = lazy(
   () => import("./components/Horoscopes/HoroscopeDetails"),
 );
-
 
 const Horoscopes = lazy(() => import("./pages/Horoscopes"));
 const StaticHoroscopesMonthlyAndYearly = lazy(
@@ -56,16 +55,21 @@ const WidhdrowHistory = lazy(
 );
 const ServiceDetail = lazy(() => import("./pages/ServiceDetail"));
 
-
 // all policies are lazy loaded
 const DisclaimerPage = lazy(() => import("./pages/legal/DisclaimerPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/legal/PrivacyPolicyPage"));
 const RefundPolicyPage = lazy(() => import("./pages/legal/RefundPolicyPage"));
-const ShippingPolicyPage = lazy(() => import("./pages/legal/ShippingPolicyPage"));
-const TermsAndConditionsPage = lazy(() => import("./pages/legal/TermsAndConditionsPage"));
-const AstrologerServiceProviderTermsAndConditionsPage = lazy(() => import("./pages/legal/AstrologerServiceProviderTermsAndConditionsPage"));
+const ShippingPolicyPage = lazy(
+  () => import("./pages/legal/ShippingPolicyPage"),
+);
+const TermsAndConditionsPage = lazy(
+  () => import("./pages/legal/TermsAndConditionsPage"),
+);
+const AstrologerServiceProviderTermsAndConditionsPage = lazy(
+  () => import("./pages/legal/AstrologerServiceProviderTermsAndConditionsPage"),
+);
 
-// all mahurat 
+// all mahurat
 const Annanprashan = lazy(() => import("./pages/FooterMahurat/Annanprashan"));
 
 const Namkaran = lazy(() => import("./pages/FooterMahurat/Namkaran"));
@@ -79,7 +83,6 @@ const BhumiPuja = lazy(() => import("./pages/FooterMahurat/BhumiPuja"));
 const GrihaPravesh = lazy(() => import("./pages/FooterMahurat/GrihaPravesh"));
 
 const Mundan = lazy(() => import("./pages/FooterMahurat/Mundan"));
-
 
 const App = () => {
   const path = useLocation().pathname;
@@ -108,7 +111,7 @@ const App = () => {
   // }, [path]);
   useEffect(() => {
     if (!path.includes("/findHoroschope/") && !path.includes("/services")) {
-      window.scrollTo({ top: 0, left: 0, behavior: "smooth" })
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
     }
   }, [path]);
 
@@ -123,8 +126,7 @@ const App = () => {
   return (
     <>
       <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
-
-       <GoogleTagManager /> 
+        <GoogleTagManager />
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Home />} />
@@ -152,16 +154,19 @@ const App = () => {
               element={<StaticHoroscopesMonthlyAndYearly />}
             />
 
-
             {/* all policies are here */}
             <Route path="/refund-policy" element={<RefundPolicyPage />} />
             <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-            <Route path="/terms-conditions" element={<TermsAndConditionsPage />} />
+            <Route
+              path="/terms-conditions"
+              element={<TermsAndConditionsPage />}
+            />
             <Route path="/disclaimer" element={<DisclaimerPage />} />
-            <Route path="/astrologer-serviceProvider-TnC" element={<AstrologerServiceProviderTermsAndConditionsPage />} />
-
-
+            <Route
+              path="/astrologer-serviceProvider-TnC"
+              element={<AstrologerServiceProviderTermsAndConditionsPage />}
+            />
 
             {/* astro route */}
             <Route path="/astro-login" element={<AstroLogin />} />
@@ -180,14 +185,12 @@ const App = () => {
             <Route path="/bhoomi-pujan-muhurat" element={<BhumiPuja />} />
             <Route path="/griha-pravesh-muhurat" element={<GrihaPravesh />} />
             <Route path="/mundan-muhurat" element={<Mundan />} />
-
-
-            {/* royte for ai chatbot */}
           </Route>
-            <Route path="/ai-chat" element={<AIChatBot />} />
 
+          {/* royte for ai chatbot */}
 
-
+          <Route
+            path="/ai-chat" element={<AuthHOC><AIChatBot /></AuthHOC>} />
 
           {/* Dashboard starts from here */}
           <Route path="/dashboard" element={<AstroLayout />}>

@@ -204,11 +204,11 @@ const mahuratData = allMahuratData.map((mahurat)=>({
         path: "/blogs",
         hasmenu: false,
       },
-      {
-        name: "Ask AI",
-        path: "/ai-chat",
-        hasmenu: false,
-      },
+      // {
+      //   name: "Ask AI",
+      //   path: "/ai-chat",
+      //   hasmenu: false,
+      // },
     
     ],
     [horosType]
