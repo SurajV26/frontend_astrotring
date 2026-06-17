@@ -138,48 +138,6 @@ const AIChatBot = () => {
             )}
           </div>
 
-<<<<<<< HEAD
-          {/* Messages area */}
-          <div className="flex-1  p-4 space-y-3">
-            {!selectedTopic && messages.length === 0 && (
-              <div className="text-center text-gray-400 mt-20">
-                Select a topic above to start chatting.
-              </div>
-            )}
-            {selectedTopic && messages.length === 0 && (
-              <div className="text-center text-gray-400 mt-20">
-                Start chatting about {selectedTopic}
-              </div>
-            )}
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`flex ${
-                  msg.sender === "user" ? "justify-end" : "justify-start"
-                }`}
-              >
-                <span
-                  className={`inline-block px-4 py-2 rounded-lg max-w-[80%] text-xs ${
-                    msg.sender === "user"
-                      ? "bg-amber-400 text-white"
-                      : "bg-white border border-gray-300 text-gray-900"
-                  }`}
-                >
-                  <Markdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      a: ({ href }) => (
-                        <a
-                          href={href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 underline"
-                        >
-                          {href}
-                        </a>
-                      ),
-                    }}
-=======
           <div className="flex-1 mt-2 flex flex-col overflow-y-auto">
             {/* Topic selector chips */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 px-4 sm:px-10">
@@ -197,7 +155,6 @@ const AIChatBot = () => {
                         ? "bg-amber-500 text-white"
                         : "bg-amber-200 text-black hover:bg-amber-500"
                     }`}
->>>>>>> 0208e2c7f9a4577d231240fb64fcd4c7b678d55b
                   >
                     {topic.name}
                   </button>
