@@ -5,7 +5,7 @@ import AstroAuthReducer from "./slice/AstroAuth";
 import WalletReducer from "./slice/walletSlice";
 import blogReducer from './slice/BlogSlice';
 import aiChatReducer from './slice/aiChatSlice';
-import uiReducer from "./slice/uiSlice";
+
 
 
 
@@ -17,6 +17,6 @@ export const store = configureStore({
     wallet: WalletReducer,
     blog: blogReducer,
     aiChat: aiChatReducer,
-    ui: uiReducer,
+    
   },
 });

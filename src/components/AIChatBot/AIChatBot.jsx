@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "@/assets/logo.png"; 
+import logo from "@/assets/logo.png";
 import {
   fetchTopics,
   addUserMessageLocally,
