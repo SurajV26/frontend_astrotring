@@ -43,13 +43,13 @@ const signupSchema = z
 
 /* ---------------- COMPONENT ---------------- */
 
-const UserLogin = ({ ele }) => {
+const UserLogin = ({ ele , defaultOpen = false,onOpenChange}) => {
   const dispatch = useDispatch();
   const { user, error, loading } = useSelector((state) => state.userAuth);
   const navigate = useNavigate();
 
   const [mode, setMode] = useState("login");
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(defaultOpen);
   const [userType, setUserType] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [form, setForm] = useState({
@@ -196,17 +196,22 @@ const UserLogin = ({ ele }) => {
     }
   };
 
+    const handleOpenChange = (newOpen) => {
+    setOpen(newOpen);
+    if (onOpenChange) onOpenChange(newOpen);
+  };
+
   /* ---------------- UI ---------------- */
 
   return (
     <div className="flex items-center gap-3">
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        {!defaultOpen && (<DialogTrigger asChild>
           <Button className="flex gap-2 bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-700 text-white rounded-3xl shadow-lg hover:shadow-xl transition-all">
             <User />
             {ele?.name || "Account"}
           </Button>
-        </DialogTrigger>
+        </DialogTrigger>)}
 
         <DialogContent>
           <DialogHeader>

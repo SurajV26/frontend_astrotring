@@ -27,9 +27,9 @@ import UserLogin from "./UserLogin";
 import { getHoroscope } from "@/redux/slice/HoroscopesSlice";
 import { AstrologerLogout, AstrologerProfile } from "@/redux/slice/AstroAuth";
 import { userLogout, userProfile } from "@/redux/slice/UserAuth";
-import logo from "../assets/logo.png"
-import {servicesData} from "@/data/services/servicesData"
-import {allMahuratData} from "@/components/common/MuhuratCard"
+import logo from "../assets/logo.png";
+import { servicesData } from "@/data/services/servicesData";
+import { allMahuratData } from "@/components/common/MuhuratCard";
 
 const MobileNavSection = ({ navItems }) => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -107,14 +107,14 @@ const Header = () => {
   const dispatch = useDispatch();
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-useEffect(() => {
-  if (location.pathname.includes("findHoroschope")) {
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  }
-}, [location.pathname]);
+  useEffect(() => {
+    if (location.pathname.includes("findHoroschope")) {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -159,14 +159,14 @@ useEffect(() => {
     navigate("/dashboard/profile");
   };
 
-const doshData = servicesData.map((service) => ({
-  label: service.title,
-  path: `/services/${service.slug}`,
-}));
-const mahuratData = allMahuratData.map((mahurat)=>({
-  label:mahurat.name,
-  path:mahurat.link
-}))
+  const doshData = servicesData.map((service) => ({
+    label: service.title,
+    path: `/services/${service.slug}`,
+  }));
+  const mahuratData = allMahuratData.map((mahurat) => ({
+    label: mahurat.name,
+    path: mahurat.link,
+  }));
 
   const navigationItems = useMemo(
     () => [
@@ -177,11 +177,11 @@ const mahuratData = allMahuratData.map((mahurat)=>({
         menu: horosType,
       },
       {
-        name: "Chat With Astrologer", 
+        name: "Chat With Astrologer",
         path: "/talk-to-astrologer",
         hasmenu: false,
       },
-      
+
       {
         name: "Doshas",
         path: "/services/mangal-dosh",
@@ -209,9 +209,8 @@ const mahuratData = allMahuratData.map((mahurat)=>({
       //   path: "/ai-chat",
       //   hasmenu: false,
       // },
-    
     ],
-    [horosType]
+    [horosType],
   );
 
   useEffect(() => {
@@ -253,15 +252,13 @@ const mahuratData = allMahuratData.map((mahurat)=>({
       }`}
     >
       <div className="container mx-auto px-4  flex py-2 items-center justify-between  gap-6">
-         <Link to="/" className="text-sm font-medium hover:text-[#070707cc] transition-colors">
-            <img src={logo} alt="Logo" className="h-8" />
-          </Link>
+        <Link
+          to="/"
+          className="text-sm font-medium hover:text-[#070707cc] transition-colors"
+        >
+          <img src={logo} alt="Logo" className="h-8" />
+        </Link>
         <div className="flex items-center space-x-6">
-          
-
-         
-          
-
           <nav className="hidden lg:flex items-center space-x-6">
             {navigationItems.map((item, index) => (
               <div
@@ -316,12 +313,20 @@ const mahuratData = allMahuratData.map((mahurat)=>({
 
         <div className="hidden lg:flex items-center space-x-4">
           {astrologer?.name || user?.name ? (
-            <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+            <DropdownMenu
+              open={isDropdownOpen}
+              onOpenChange={setIsDropdownOpen}
+            >
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                <Button
+                  variant="ghost"
+                  className="relative h-8 w-8 rounded-full"
+                >
                   <Avatar className="h-8 w-8">
                     <AvatarImage
-                      src={user ? user?.profile_image : astrologer?.profile_image}
+                      src={
+                        user ? user?.profile_image : astrologer?.profile_image
+                      }
                     />
                     <AvatarFallback>
                       {(astrologer?.name || user?.name)
@@ -342,9 +347,7 @@ const mahuratData = allMahuratData.map((mahurat)=>({
                   {"Dashboard"}
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={logout}>
-                  {"Logout"}
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={logout}>{"Logout"}</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
@@ -353,79 +356,76 @@ const mahuratData = allMahuratData.map((mahurat)=>({
         </div>
 
         <Sheet>
-            <SheetTrigger asChild className="lg:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
+          <SheetTrigger asChild className="lg:hidden">
+            <Button variant="ghost" size="icon">
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
 
-            <SheetContent side="right" className="w-80">
-
-              <SheetHeader>
-                <SheetTitle>
-                 <SheetClose asChild>
-                   <Link to="/" className="flex items-center space-x-2">
-                     <span className="text-lg font-semibold">Home</span>
+          <SheetContent side="right" className="w-80">
+            <SheetHeader>
+              <SheetTitle>
+                <SheetClose asChild>
+                  <Link to="/" className="flex items-center space-x-2">
+                    <span className="text-lg font-semibold">Home</span>
                   </Link>
-                 </SheetClose>
-               </SheetTitle>
-              </SheetHeader>
+                </SheetClose>
+              </SheetTitle>
+            </SheetHeader>
 
-              <ScrollArea className="h-[calc(100vh-8rem)] mt-6">
+            <ScrollArea className="h-[calc(100vh-8rem)] mt-6">
+              <MobileNavSection navItems={navigationItems} />
 
-                <MobileNavSection navItems={navigationItems} />
+              {/* Mobile Account */}
+              <div className="mt-3  p-1 space-y-2">
+                {astrologer?.name || user?.name ? (
+                  <>
+                    <div className="flex items-center gap-3 px-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={
+                            user
+                              ? user?.profile_image
+                              : astrologer?.profile_image
+                          }
+                        />
+                        <AvatarFallback>
+                          {(astrologer?.name || user?.name)?.charAt(0)}
+                        </AvatarFallback>
+                      </Avatar>
 
-                {/* Mobile Account */}
-                <div className="mt-3  p-1 space-y-2">
+                      <span className="text-sm font-medium">
+                        {astrologer?.name || user?.name}
+                      </span>
+                    </div>
 
-                  {astrologer?.name || user?.name ? (
-                    <>
-                      <div className="flex items-center gap-3 px-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage
-                            src={user ? user?.profile_image : astrologer?.profile_image}
-                          />
-                          <AvatarFallback>
-                            {(astrologer?.name || user?.name)?.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
+                    <SheetClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={moveToDashboard}
+                      >
+                        {"Dashboard"}
+                      </Button>
+                    </SheetClose>
 
-                        <span className="text-sm font-medium">
-                          {astrologer?.name || user?.name}
-                        </span>
-                      </div>
-
-                      <SheetClose asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start"
-                          onClick={moveToDashboard}
-                        >
-                          {"Dashboard"}
-                        </Button>
-                      </SheetClose>
-
-                      <SheetClose asChild>
-                        <Button
-                          variant="ghost"
-                          className="w-full justify-start text-red-500"
-                          onClick={logout}
-                        >
-                          {"Logout"}
-                        </Button>
-                      </SheetClose>
-
-                    </>
-
-                  ) : (
-                    <UserLogin />
-                  )}
-
-                </div>
-
-              </ScrollArea>
-            </SheetContent>
-          </Sheet>
+                    <SheetClose asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start text-red-500"
+                        onClick={logout}
+                      >
+                        {"Logout"}
+                      </Button>
+                    </SheetClose>
+                  </>
+                ) : (
+                  <UserLogin />
+                )}
+              </div>
+            </ScrollArea>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

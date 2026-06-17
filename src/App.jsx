@@ -19,7 +19,7 @@ import { userProfile } from "./redux/slice/UserAuth";
 import GoogleTagManager from "./components/common/GoogleTagManager";
 // import AuthHOC from "@/components/Home/AuthHOC";
 import AIChatBot from "@/components/AIChatBot/AIChatBot";
-import AuthHOC from "@/components/Home/AuthHOC";
+// import AuthHOC from "@/components/Home/AuthHOC";
 
 // import BlogPage from "./pages/BlogPage";
 
@@ -190,7 +190,7 @@ const App = () => {
           {/* royte for ai chatbot */}
 
           <Route
-            path="/ai-chat" element={<AuthHOC><AIChatBot /></AuthHOC>} />
+            path="/ai-chat" element={<AIChatBot />} />
 
           {/* Dashboard starts from here */}
           <Route path="/dashboard" element={<AstroLayout />}>
