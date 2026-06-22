@@ -14,6 +14,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
+import Loader from "../common/Loader";
 
 const AIChatBot = () => {
   const navigate = useNavigate();
@@ -174,6 +175,7 @@ const AIChatBot = () => {
                   Start chatting about {selectedTopic}
                 </div>
               )}
+             
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
