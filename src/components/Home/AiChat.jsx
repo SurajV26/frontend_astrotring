@@ -1,37 +1,7 @@
-// import { useNavigate } from "react-router-dom";
-// import { useSelector } from "react-redux";
-// import { toast } from "react-toastify";
-// import { openLoginModal } from "@/redux/slice/uiSlice";
-
-// const AiChat = () => {
-//   const navigate = useNavigate();
-//   const { isLoggedIn } = useSelector((state) => state.userAuth);
-
-
-
-//   return (
-//     <div
-//       onClick={}
-//       className="w-full mx-auto overflow-hidden border-8 border-white cursor-pointer"
-//     >
-//       <img
-//         src="/aichathome.jpeg"
-//         alt="Chat with AI Astrologer"
-//         className="w-full h-auto object-cover"
-//       />
-//     </div>
-//   );
-// };
-
-// export default AiChat;
-
-
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import UserLogin from "../UserLogin";
-
 
 const AiChat = () => {
   const navigate = useNavigate();
@@ -46,21 +16,39 @@ const AiChat = () => {
     }
   };
 
+
+
+  //  Jab login ho jaye, to automatically chat par navigate ho
+  useEffect(() => {
+    if (isLoggedIn && showLogin) {
+      navigate("/ai-chat");
+      setShowLogin(false);
+    }
+  }, [isLoggedIn, showLogin, navigate]);
+
   return (
     <>
-      <div onClick={handleClick} className="w-full mx-auto overflow-hidden border-8 border-white cursor-pointer">
+      <div
+        onClick={handleClick}
+        className="w-full mx-auto overflow-hidden border-8 border-white cursor-pointer"
+      >
         <img src="/aichathome.jpeg" className="w-full h-auto object-cover" />
       </div>
 
       {showLogin && (
         <UserLogin
           defaultOpen={true}
-          onOpenChange={(open) => !open && setShowLogin(false)}
-          
+          onOpenChange={(open) => {
+            setShowLogin(open);
+            if (!open && isLoggedIn) {
+              navigate("/ai-chat");
+            }
+
+          }}
         />
       )}
     </>
   );
 };
 
- export default AiChat;
+export default AiChat;

@@ -1,244 +1,108 @@
-import { useEffect, useState } from "react";
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import { MoveRight, Phone, ShoppingBag } from "lucide-react";
-import { IoIosChatbubbles } from "react-icons/io";
-import { Link } from "react-router-dom";
+
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { MessageCircle, ShoppingBag } from "lucide-react";
+
+import UserLogin from "../UserLogin";
+import HeroTaramandal from "./HeroTaramandal";
 
 const Banner = () => {
-  const [banners, setBanners] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const navigate = useNavigate();
+  const { isLoggedIn } = useSelector((state) => state.userAuth);
+  const [showLogin, setShowLogin] = useState(false);
 
-  useEffect(() => {
-    fetch("https://astro.astrotring.com/api/banners?type=astro")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data?.success && data?.data?.length > 0) {
-          const sorted = [...data.data].sort(
-            (a, b) => a.sort_order - b.sort_order,
-          );
-          setBanners(sorted);
-        }
-      })
-      .catch((err) => console.error(err));
-  }, []);
-
-  useEffect(() => {
-    if (banners.length === 0) return;
-
-    const currentItem = banners[currentIndex];
-
-    if (currentItem?.media_type === "image") {
-      const timer = setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % banners.length);
-      }, 5000);
-
-      return () => clearTimeout(timer);
+  const handleChatClick = () => {
+    if (isLoggedIn) {
+      navigate("/ai-chat");
+    } else {
+      setShowLogin(true);
     }
-  }, [currentIndex, banners]);
+  };
+
+  useEffect(() => {
+    if (isLoggedIn && showLogin) {
+      navigate("/ai-chat");
+      setShowLogin(false);
+    }
+  }, [isLoggedIn, showLogin, navigate]);
 
   return (
-    <section className="py-0 from-orange-50 via-yellow-100 to-red-100">
-      <div className="w-full h-full mx-auto overflow-hidden border-8 border-white">
-        {banners.length > 0 && (
-          <div
-            className="flex h-full transition-transform duration-700 ease-in-out"
-            style={{
-              transform: `translateX(${-currentIndex * 100}%)`,
-            }}
-          >
-            {banners.map((item) => (
-              <div key={item.id} className="w-full h-full flex-shrink-0">
-                {item.media_type === "video" ? (
-                  <video
-                    src={item.media_url}
-                    autoPlay
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
-                    onEnded={() =>
-                      setCurrentIndex((prev) => (prev + 1) % banners.length)
-                    }
-                  />
-                ) : (
-                  <img
-                    src={item.media_url}
-                    alt="banner"
-                    className="w-full h-full object-cover"
-                  />
-                )}
+    <>
+      <section className="relative w-full overflow-hidden bg-gradient-to-b from-white via-amber-50/80 to-amber-100 py-10 sm:py-12 lg:py-16 xl:py-20">
+        <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-amber-300/20 blur-3xl" />
+        <div className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-orange-300/15 blur-3xl" />
+
+        <div className="relative z-10 mx-auto w-full l px-4 sm:px-6 lg:px-12 xl:px-16">
+          <div className="flex flex-col-reverse items-center justify-between gap-8 lg:flex-row lg:gap-10 xl:gap-14">
+            {/* Left Content */}
+            <div className="w-full text-center lg:w-[48%] lg:text-left xl:w-[50%]">
+              <h1 className="mb-5 text-[28px] font-bold leading-[1.25] tracking-tight text-gray-900 sm:text-3xl sm:leading-[1.3] lg:mb-6 lg:text-5xl xl:text-6xl">
+                <span className="whitespace-nowrap">
+                  Chat With{" "}
+                  <span className="bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 bg-clip-text text-transparent">
+                    Astrologers
+                  </span>
+                </span>
+                <br />
+                right now.
+              </h1>
+
+              <p className="mx-auto mb-8 max-w-lg text-base font-medium leading-7 text-gray-500 sm:text-lg sm:leading-8 lg:mx-0 lg:mb-10">
+                Know about astrology, zodiac signs, retrogrades, and more!
+                Your world becomes clear once you understand how the universe influences it.
+              </p>
+
+              <div className="flex w-full flex-row items-center justify-center gap-3 sm:gap-4 lg:justify-start">
+                <button
+                  onClick={handleChatClick}
+                  className="group relative flex flex-1 cursor-pointer items-center justify-center gap-1.5 overflow-hidden whitespace-nowrap rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-3 text-[15px] font-semibold text-black/75 shadow-lg shadow-amber-500/25 transition-all duration-300 hover:-translate-y-1 hover:from-amber-500 hover:to-orange-600 hover:shadow-xl hover:shadow-amber-500/35 active:scale-[0.98] sm:flex-none sm:gap-2 sm:px-8 sm:py-4 sm:text-lg"
+                >
+                  <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
+                  <MessageCircle className="relative h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
+                  <span className="relative md:hidden">Chat Now</span>
+                  <span className="relative hidden md:inline">Chat with AI Astrologer</span>
+                </button>
+
+                <a
+                  href="https://astrotring.shop"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 cursor-pointer sm:flex-none"
+                >
+                  <button className="flex w-full cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-full border-2 border-amber-500 bg-white/90 px-4 py-3 text-[15px] font-semibold text-amber-600 shadow-md shadow-amber-500/10 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-600 hover:bg-amber-50 hover:text-amber-700 hover:shadow-lg active:scale-[0.98] sm:gap-2 sm:px-8 sm:py-4 sm:text-lg">
+                    <ShoppingBag className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" />
+                    <span>Shop Now</span>
+                  </button>
+                </a>
               </div>
-            ))}
+            </div>
+
+            {/* Right — celestial wheel */}
+            <div className="flex w-full items-center justify-center overflow-visible lg:w-1/2 lg:min-h-[540px] lg:justify-center">
+              <div className="scale-[0.55] sm:scale-75 lg:hidden">
+                <HeroTaramandal compact />
+              </div>
+              <div className="hidden lg:block">
+                <HeroTaramandal />
+              </div>
+            </div>
           </div>
-        )}
-      </div>
-      <div className="container">
-        <div
-          className="
-          flex flex-wrap
-          justify-center
-          gap-4 sm:gap-5 md:gap-6   /* spacing improved */
-          px-4 sm:px-6
-          py-3                      /* thoda kam vertical spacing */
-        "
-        >
-          {/* 
-          <Card className="relative w-[130px] sm:w-[170px] md:w-[210px] lg:w-[280px] border-0 font-medium group">
-            <span className="absolute inset-0 transition-all duration-500 ease-out transform -skew-x-12 bg-gradient-to-r from-[#FFD54F] via-[#FFB300] to-[#F57C00] group-hover:skew-x-12" />
-            <span className="absolute inset-0 transition-all duration-500 ease-out transform skew-x-12 opacity-90 bg-gradient-to-r from-[#FFF176] via-[#f9ce86] to-[#ffdbc7] group-hover:-skew-x-12" />
-
-            <Link to="/talk-to-astrologer" className="relative z-10 block">
-              <CardHeader className="flex items-center justify-between px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2.5 lg:px-6 lg:py-4">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-10 lg:h-10 rounded-full bg-white/20 backdrop-blur-md transition-all duration-300 group-hover:scale-110">
-                    <Phone className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
-                  </span>
-
-                  <div className="leading-tight">
-
-
-                  
-                    <div className="font-semibold text-[10px] sm:text-xs md:text-sm lg:text-lg">
-                      Talk
-                    </div>
-
-
-
-
-                    <div className="text-[8px] sm:text-[10px] md:text-xs opacity-90">
-                      Talk with astrologer
-                    </div>
-                  </div>
-                </div>
-
-                <MoveRight className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 transition-all duration-300 group-hover:translate-x-2" />
-              </CardHeader>
-            </Link>
-          </Card>
-
-          <Card className="relative w-[130px] sm:w-[170px] md:w-[210px] lg:w-[280px] border-0 font-medium group">
-            <span className="absolute inset-0 transition-all duration-500 ease-out transform -skew-x-12 bg-gradient-to-r from-[#FFD54F] via-[#FFB300] to-[#F57C00] group-hover:skew-x-12" />
-            <span className="absolute inset-0 transition-all duration-500 ease-out transform skew-x-12 opacity-90 bg-gradient-to-r from-[#FFF176] via-[#f9ce86] to-[#ffdbc7] group-hover:-skew-x-12" />
-
-            <Link
-              to="https://store.adkrayons.com/product"
-              target="_blank"
-              className="relative z-10 block"
-            >
-              <CardHeader className="flex items-center justify-between px-2 py-1.5 sm:px-3 sm:py-2 md:px-4 md:py-2.5 lg:px-6 lg:py-4">
-                <div className="flex items-center gap-2 sm:gap-3">
-                  <span className="flex items-center justify-center w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 lg:w-10 lg:h-10 rounded-full bg-white/20 backdrop-blur-md transition-all duration-300 group-hover:scale-110">
-                    <ShoppingBag className="h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
-                  </span>
-
-                  <div className="leading-tight">
-                    <div className="font-semibold text-[10px] sm:text-xs md:text-sm lg:text-lg">
-                      Store
-                    </div>
-                    <div className="text-[8px] sm:text-[10px] md:text-xs opacity-90">
-                      Buy your products
-                    </div>
-                  </div>
-                </div>
-
-                <MoveRight className="w-3 h-3 sm:w-4 sm:h-4 md:w-5 md:h-5 transition-all duration-300 group-hover:translate-x-2" />
-              </CardHeader>
-            </Link>
-          </Card> */}
-
-          {/* <Link to="/talk-to-astrologer" data-twe-ripple-init data-twe-ripple-color="light" className="inline-flex items-center justify-between gap-3  w-[130px] sm:w-[170px] md:w-[210px] lg:w-[220px] rounded-lg bg-gradient-to-r from-[#FFD54F] via-[#FFB300] to-[#F57C00] px-3 py-2 sm:px-4 sm:py-3 text-black shadow-md transition-all duration-300 ease-in-out hover:bg-orange-600 hover:scale-105 hover:shadow-lg active:scale-95">
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
-              <div className="leading-tight">
-                <div className="font-semibold text-[11px] sm:text-sm">Talk</div>
-                <div className="text-[9px] sm:text-xs opacity-90">
-                  Talk with astrologer
-                </div>
-              </div>
-            </div>
-
-            <MoveRight className="w-4 h-4 transition-transform duration-300 hover:translate-x-1" />
-          </Link> */}
-          <Link
-            to="/talk-to-astrologer"
-            data-twe-ripple-init
-            data-twe-ripple-color="light"
-            className="group relative inline-flex items-center justify-between gap-3
-              w-[130px] sm:w-[170px] md:w-[210px] lg:w-[240px]
-              rounded-xl px-3 py-2 sm:px-4 sm:py-3
-              text-black font-medium
-              bg-gradient-to-r from-[#FFD54F] via-[#FFB300] to-[#F57C00]
-              shadow-md overflow-hidden
-              transition-all duration-300 ease-in-out
-              hover:scale-105 hover:shadow-[0_10px_25px_rgba(245,124,0,0.5)]"
-          >
-            <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition duration-300"></span>
-
-            <div className="flex items-center gap-2 sm:gap-3 relative z-10">
-              <span
-                className="flex items-center justify-center
-                  w-7 h-7 sm:w-8 sm:h-8
-                  rounded-full bg-white/30 backdrop-blur-md
-                  transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
-              >
-                <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
-              </span>
-
-              <div className="leading-tight">
-                <div className="font-semibold text-[11px] sm:text-sm">
-                  Talk
-                </div>
-
-                <div className="text-[9px] sm:text-xs opacity-90">
-                  Talk with astrologer
-                </div>
-              </div>
-            </div>
-
-            <MoveRight className="relative z-10 w-4 h-4 transition-all duration-300 group-hover:translate-x-2" />
-          </Link>
-
-          <Link
-            to="https://astrotring.shop"
-            target="_blank"
-            data-twe-ripple-init
-            data-twe-ripple-color="light"
-            className="group relative inline-flex items-center justify-between gap-3
-              w-[130px] sm:w-[170px] md:w-[210px] lg:w-[240px]
-              rounded-xl px-3 py-2 sm:px-4 sm:py-3
-              text-black font-medium
-              bg-gradient-to-r from-[#FFD54F] via-[#FFB300] to-[#F57C00]
-              shadow-md overflow-hidden
-              transition-all duration-300 ease-in-out
-              hover:scale-105 hover:shadow-[0_10px_25px_rgba(245,124,0,0.5)]"
-          >
-            <span className="absolute inset-0 bg-white/20 opacity-0 group-hover:opacity-100 transition duration-300"></span>
-
-            <div className="flex items-center gap-2 sm:gap-3 relative z-10">
-              <span
-                className="flex items-center justify-center
-                  w-7 h-7 sm:w-8 sm:h-8
-                  rounded-full bg-white/30 backdrop-blur-md
-                  transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110"
-              >
-                <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
-              </span>
-
-              <div className="leading-tight">
-                <div className="font-semibold text-[11px] sm:text-sm">
-                  Shop
-                </div>
-
-                <div className="text-[9px] sm:text-xs opacity-90">
-                  Buy your products
-                </div>
-              </div>
-            </div>
-
-            <MoveRight className="relative z-10 w-4 h-4 transition-all duration-300 group-hover:translate-x-2" />
-          </Link>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {showLogin && (
+        <UserLogin
+          defaultOpen={true}
+          onOpenChange={(open) => {
+            setShowLogin(open);
+            if (!open && isLoggedIn) {
+              navigate("/ai-chat");
+            }
+          }}
+        />
+      )}
+    </>
   );
 };
 
