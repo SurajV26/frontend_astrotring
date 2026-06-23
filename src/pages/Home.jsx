@@ -24,7 +24,7 @@ const Home = () => {
       {/* <BannerCopy /> */}
       <BannerSlider />
       <AiAstrologers />
-      <Astrologers />
+      {/* <Astrologers /> */}
       <ZodiacPredictions />
       <Services />
       <Counter />
