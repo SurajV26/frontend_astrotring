@@ -204,11 +204,7 @@ const Header = () => {
         path: "/blogs",
         hasmenu: false,
       },
-      // {
-      //   name: "Ask AI",
-      //   path: "/ai-chat",
-      //   hasmenu: false,
-      // },
+     
     ],
     [horosType],
   );
@@ -219,7 +215,7 @@ const Header = () => {
     }
   }, [horoscope, dispatch]);
 
-  // ⭐ Updated Horoscope Menu with Translation
+  //  Updated Horoscope Menu with Translation
   useEffect(() => {
     if (horoscope?.length > 0) {
       const horosSet = new Set();
@@ -248,7 +244,7 @@ const Header = () => {
       ${
         scrolled
           ? "bg-white/60 backdrop-blur-lg shadow-lg border sm:rounded-full sm:border-amber-500"
-          : "bg-white/60 backdrop-blur-lg shadow-lg border sm:rounded-full sm:border-amber-500"
+          : "bg-white/60 backdrop-blur-lg"
       }`}
     >
       <div className="container mx-auto px-4  flex py-2 items-center justify-between  gap-6">

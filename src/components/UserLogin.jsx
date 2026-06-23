@@ -356,7 +356,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                         required
                         className="focus:ring-2 focus:ring-amber-400 transition"
                       />
-                      <div className="flex items-center justify-between mt-2">
+                      {/* <div className="flex items-center justify-between mt-2">
                         <p className="text-xs text-gray-400">
                           OTP sent to {mobileNumber}
                         </p>
@@ -370,8 +370,11 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                             ? `Resend in ${resendCooldown}s`
                             : "Resend OTP"}
                         </button>
-                      </div>
+                      </div> */}
                     </div>
+                    <p className="text-xs text-gray-400">
+                          OTP sent to {mobileNumber}
+                        </p>
 
                     <Button
                       type="submit"
