@@ -6,7 +6,7 @@ const BannerSlider = () => {
     "Kundli Matching",
     "Compatibility",
     "Horoscopes",
-    "Chat / Call to Astrologer",
+    "Chat to Astrologer",
   ];
 
   return (
@@ -41,7 +41,7 @@ const BannerSlider = () => {
         `}
       </style>
 
-      <div className="w-full overflow-hidden py-2 sm:py-3 md:py-4 bg-gradient-to-r from-yellow-200/90 via-orange-400/80 to-amber-300/90 backdrop-blur-md">
+      <div className="w-full overflow-hidden  bg-gradient-to-r from-yellow-200/90 via-orange-400/80 to-amber-300/90 backdrop-blur-md">
         <div
           className="flex w-max items-center scrollleft"
         >

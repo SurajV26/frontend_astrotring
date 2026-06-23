@@ -83,7 +83,7 @@ const BhumiPuja = lazy(() => import("./pages/FooterMahurat/BhumiPuja"));
 const GrihaPravesh = lazy(() => import("./pages/FooterMahurat/GrihaPravesh"));
 
 const Mundan = lazy(() => import("./pages/FooterMahurat/Mundan"));
-const AiAstrologerDetails = lazy(() => import("./pages/AiAstrologerDetails"));
+const AiAstrologerDetails = lazy(() => import("./components/Home/aiAstrologers/AiAstrologerDetails"));
 
 const App = () => {
   const path = useLocation().pathname;

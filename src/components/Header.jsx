@@ -240,14 +240,14 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 sm:top-3 z-50 w-full sm:w-[90%] mx-auto transition-all duration-300 ease-in-out
+      className={`sticky top-0 sm:top-3 z-50 w-full mt-8 sm:w-[90%] mx-auto transition-all duration-300 ease-in-out
       ${
         scrolled
           ? "bg-white/60 backdrop-blur-lg shadow-lg border sm:rounded-full sm:border-amber-500"
           : "bg-white/60 backdrop-blur-lg"
       }`}
     >
-      <div className="container mx-auto px-4  flex py-2 items-center justify-between  gap-6">
+      <div className="container mx-auto px-4  flex py-3 items-center justify-between  gap-6">
         <Link
           to="/"
           className="text-sm font-medium hover:text-[#070707cc] transition-colors"
