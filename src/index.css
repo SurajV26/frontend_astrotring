@@ -433,15 +433,40 @@ Select {
   }
 }
 
-@keyframes astro-drift {
+@keyframes sun-core-glow {
   0%,
   100% {
-    opacity: 0.2;
-    transform: translate(0, 0) scale(1);
+    box-shadow: 
+      0 0 20px rgba(255, 251, 235, 0.95),
+      0 0 40px rgba(253, 230, 138, 0.8),
+      0 0 70px rgba(251, 191, 36, 0.6),
+      0 0 110px rgba(245, 158, 11, 0.4),
+      0 0 160px rgba(249, 115, 22, 0.2),
+      inset 0 0 25px rgba(255, 255, 255, 0.9),
+      inset 0 0 50px rgba(255, 251, 235, 0.6),
+      inset 0 0 80px rgba(253, 230, 138, 0.3);
+    filter: brightness(1.05) saturate(1.25) blur(0.5px);
   }
   50% {
-    opacity: 0.55;
-    transform: translate(12px, -8px) scale(1.15);
+    box-shadow: 
+      0 0 30px rgba(255, 251, 235, 1),
+      0 0 60px rgba(253, 230, 138, 0.9),
+      0 0 100px rgba(251, 191, 36, 0.7),
+      0 0 150px rgba(245, 158, 11, 0.5),
+      0 0 220px rgba(249, 115, 22, 0.3),
+      inset 0 0 35px rgba(255, 255, 255, 1),
+      inset 0 0 70px rgba(255, 251, 235, 0.7),
+      inset 0 0 110px rgba(253, 230, 138, 0.4);
+    filter: brightness(1.15) saturate(1.35) blur(0.3px);
+  }
+}
+
+@keyframes sun-rays-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 
@@ -477,55 +502,13 @@ Select {
   animation: glow-pulse 4s ease-in-out infinite;
 }
 
-.astro-wheel-glow {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  filter: blur(30px);
+.animate-sun-core-glow {
+  animation: sun-core-glow 2.5s ease-in-out infinite;
 }
 
-.astro-wheel-glow-a {
-  top: 10%;
-  left: 14%;
-  width: 40%;
-  height: 40%;
-  background: radial-gradient(circle, rgba(251, 191, 36, 0.2), transparent 70%);
+.animate-sun-rays-rotate {
+  animation: sun-rays-rotate 30s linear infinite;
 }
-
-.astro-wheel-glow-b {
-  bottom: 8%;
-  right: 12%;
-  width: 36%;
-  height: 36%;
-  background: radial-gradient(circle, rgba(249, 115, 22, 0.14), transparent 70%);
-}
-
-.astro-dust {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(18px);
-  animation: astro-drift 9s ease-in-out infinite;
-  pointer-events: none;
-}
-
-.astro-dust-1 {
-  top: 18%;
-  right: 14%;
-  width: 28%;
-  height: 12%;
-  background: linear-gradient(90deg, transparent, rgba(251, 191, 36, 0.35), transparent);
-}
-
-.astro-dust-2 {
-  bottom: 22%;
-  left: 10%;
-  width: 24%;
-  height: 10%;
-  background: linear-gradient(90deg, transparent, rgba(251, 146, 60, 0.28), transparent);
-  animation-delay: 3s;
-  animation-duration: 11s;
-}
-
 
 
 /* for hide scroll bar  */

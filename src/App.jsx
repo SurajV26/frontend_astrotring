@@ -83,6 +83,7 @@ const BhumiPuja = lazy(() => import("./pages/FooterMahurat/BhumiPuja"));
 const GrihaPravesh = lazy(() => import("./pages/FooterMahurat/GrihaPravesh"));
 
 const Mundan = lazy(() => import("./pages/FooterMahurat/Mundan"));
+const AiAstrologerDetails = lazy(() => import("./pages/AiAstrologerDetails"));
 
 const App = () => {
   const path = useLocation().pathname;
@@ -185,6 +186,7 @@ const App = () => {
             <Route path="/bhoomi-pujan-muhurat" element={<BhumiPuja />} />
             <Route path="/griha-pravesh-muhurat" element={<GrihaPravesh />} />
             <Route path="/mundan-muhurat" element={<Mundan />} />
+            <Route path="/ai-astrologer/:id" element={<AiAstrologerDetails />} />
           </Route>
 
           {/* royte for ai chatbot */}

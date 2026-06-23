@@ -1,7 +1,7 @@
 
-import AIChatBot from '@/components/AIChatBot/AIChatBot'
+
 import BannerSlider from '@/components/BannerSlider'
-import AiChat from '@/components/Home/AiChat'
+import AiAstrologers from '@/components/Home/aiAstrologers/AiAstrologers'
 import Astrologers from '@/components/Home/Astrologers'
 import Banner from '@/components/Home/Banner'
 import BannerCopy from '@/components/Home/BannerCopy'
@@ -21,9 +21,9 @@ const Home = () => {
     <>
 
       <Banner />
-      <BannerCopy />
+      {/* <BannerCopy /> */}
       <BannerSlider />
-      {/* <AiChat /> */}
+      <AiAstrologers />
       <Astrologers />
       <ZodiacPredictions />
       <Services />
