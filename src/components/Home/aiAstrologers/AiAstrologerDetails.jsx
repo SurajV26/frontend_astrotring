@@ -4,24 +4,8 @@ import { useNavigate } from "react-router-dom"
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import UserLogin from "@/components/UserLogin"
+import { DUMMY_ASTROLOGERS } from "@/data/dummyAiastrologers/dummyAiastrologers"
 
-const DUMMY_ASTROLOGERS = [
-  { id: 1, name: "Love Guru", image: "/AiAstro.jpg", chatPrice: 29, callPrice: 21, experience: "10+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology for AI" },
-  { id: 2, name: "Pandit Suresh", image: "/AiAstro.jpg", chatPrice: 20, callPrice: 15, experience: "8+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 3, name: "Dr. Meera Sharma", image: "/AiAstro.jpg", chatPrice: 15, callPrice: 10, experience: "12+ Years", expertise: "Vedic", education: "PhD in Vedic Astrology" },
-  { id: 4, name: "Guru Vijay", image: "/AiAstro.jpg", chatPrice: 18, callPrice: 12, experience: "9+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 5, name: "Swami Anand", image: "/AiAstro.jpg", chatPrice: 25, callPrice: 20, experience: "15+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 6, name: "Priya Devi", image: "/AiAstro.jpg", chatPrice: 22, callPrice: 18, experience: "11+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 7, name: "Ravi Kumar", image: "/AiAstro.jpg", chatPrice: 30, callPrice: 25, experience: "13+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 8, name: "Sunita Joshi", image: "/AiAstro.jpg", chatPrice: 28, callPrice: 22, experience: "10+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 9, name: "Mahesh Bhai", image: "/AiAstro.jpg", chatPrice: 20, callPrice: 16, experience: "8+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 10, name: "Kavita Singh", image: "/AiAstro.jpg", chatPrice: 35, callPrice: 28, experience: "14+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 11, name: "Amit Verma", image: "/AiAstro.jpg", chatPrice: 40, callPrice: 32, experience: "16+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 12, name: "Neeta Gupta", image: "/AiAstro.jpg", chatPrice: 42, callPrice: 35, experience: "17+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 13, name: "Sanjay Mishra", image: "/AiAstro.jpg", chatPrice: 48, callPrice: 40, experience: "20+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 14, name: "Rekha Devi", image: "/AiAstro.jpg", chatPrice: 30, callPrice: 24, experience: "12+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-  { id: 15, name: "Deepak Sharma", image: "/AiAstro.jpg", chatPrice: 45, callPrice: 38, experience: "18+ Years", expertise: "Vedic", education: "Alumnus of AstroSage's School of Vedic Astrology" },
-]
 
 const AiAstrologerDetails = () => {
   const { id } = useParams()
