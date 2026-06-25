@@ -1,25 +1,10 @@
 import { useNavigate } from "react-router-dom"
 import Slider from "../Slider";
 import ComponentHead from "@/components/ComponentHead";
+import { DUMMY_ASTROLOGERS } from "@/data/dummyAiastrologers/dummyAiastrologers";
 
 
-const DUMMY_ASTROLOGERS = [
-  { id: 1, name: "Acharya Rajesh", price: 10, image: "/AiAstro.jpg" },
-  { id: 2, name: "Pandit Suresh", price: 15, image: "/AiAstro.jpg" },
-  { id: 3, name: "Dr. Meera Sharma", price: 10, image: "/AiAstro.jpg" },
-  { id: 4, name: "Guru Vijay", price: 12, image: "/AiAstro.jpg" },
-  { id: 5, name: "Swami Anand", price: 20, image: "/AiAstro.jpg" },
-  { id: 6, name: "Priya Devi", price: 18, image: "/AiAstro.jpg" },
-  { id: 7, name: "Ravi Kumar", price: 25, image: "/AiAstro.jpg" },
-  { id: 8, name: "Sunita Joshi", price: 22, image: "/AiAstro.jpg" },
-  { id: 9, name: "Mahesh Bhai", price: 16, image: "/AiAstro.jpg" },
-  { id: 10, name: "Kavita Singh", price: 28, image: "/AiAstro.jpg" },
-  { id: 11, name: "Amit Verma", price: 32, image: "/AiAstro.jpg" },
-  { id: 12, name: "Neeta Gupta", price: 35, image: "/AiAstro.jpg" },
-  { id: 13, name: "Sanjay Mishra", price: 40, image: "/AiAstro.jpg" },
-  { id: 14, name: "Rekha Devi", price: 24, image: "/AiAstro.jpg" },
-  { id: 15, name: "Deepak Sharma", price: 38, image: "/AiAstro.jpg" },
-];
+
 
 const AiAstrologers = () => {
   const navigate = useNavigate()
