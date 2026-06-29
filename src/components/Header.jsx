@@ -60,9 +60,8 @@ const MobileNavSection = ({ navItems }) => {
                   {item.name}
                 </span>
                 <ChevronDown
-                  className={`h-4 w-4 transition-transform ${
-                    openIndex === index ? "rotate-180" : ""
-                  }`}
+                  className={`h-4 w-4 transition-transform ${openIndex === index ? "rotate-180" : ""
+                    }`}
                 />
               </>
             )}
@@ -70,9 +69,8 @@ const MobileNavSection = ({ navItems }) => {
 
           {item.hasmenu && (
             <div
-              className={`overflow-hidden transition-all duration-200 ${
-                openIndex === index ? "max-h-96" : "max-h-0"
-              }`}
+              className={`overflow-hidden transition-all duration-200 ${openIndex === index ? "max-h-96" : "max-h-0"
+                }`}
             >
               <div className="ml-4 mt-1 space-y-1 border-l border-accent pl-2">
                 {item.menu.map((menuItem, menuIndex) => (
@@ -204,7 +202,7 @@ const Header = () => {
         path: "/blogs",
         hasmenu: false,
       },
-     
+
     ],
     [horosType],
   );
@@ -240,12 +238,11 @@ const Header = () => {
 
   return (
     <header
-      className={`sticky top-0 sm:top-3 z-50 w-full mt-8 sm:w-[90%] mx-auto transition-all duration-300 ease-in-out
-      ${
-        scrolled
+      className={`sticky top-0 sm:top-2 z-50 w-full sm:mt-6 sm:w-[90%] mx-auto transition-all duration-300 ease-in-out
+      ${scrolled
           ? "bg-white/60 backdrop-blur-lg shadow-lg border sm:rounded-full sm:border-amber-500"
           : "bg-white/60 backdrop-blur-lg"
-      }`}
+        }`}
     >
       <div className="container mx-auto px-4  flex py-3 items-center justify-between  gap-6">
         <Link

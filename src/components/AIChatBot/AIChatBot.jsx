@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
   fetchTopics,
@@ -9,6 +9,7 @@ import {
   sendChatMessage,
   startSession,
   fetchChatHistory,
+  fetchExpertiseQuestions,
 } from "@/redux/slice/aiChatSlice";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -33,24 +34,52 @@ const AIChatBot = () => {
   const [showRechargeModal, setShowRechargeModal] = useState(false);
   const bottomRef = useRef();
 
+  const location = useLocation();
+  const astrologerData = location.state; // { astrologerName, expertise }
+
   // Fetch topics on mount
   useEffect(() => {
-    dispatch(fetchTopics());
-  }, [dispatch]);
+    if (astrologerData?.expertise) {
+      dispatch(fetchExpertiseQuestions({
+        astrologerName: astrologerData.astrologerName,
+        expertise: astrologerData.expertise,
+      }));
+    } else {
+      dispatch(fetchTopics());
+    }
+  }, [dispatch, astrologerData]);
 
   // Auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Handle topic switch
-  const handleTopicSwitch = async (newTopic) => {
-    if (newTopic === selectedTopic) return;
-    const result = await dispatch(startSession(newTopic));
-    if (startSession.fulfilled.match(result)) {
-      await dispatch(
-        fetchChatHistory({ sessionId: result.payload, topic: newTopic }),
-      );
+  // Handle Question click
+  const handleQuestionClick = async (question) => {
+    let currentSessionId = sessionId;
+    // If no session exists, start a new one
+    if (!currentSessionId) {
+      const topicName = astrologerData?.astrologerName ? `Chat with ${astrologerData.astrologerName}` : "AI Astrologer";
+      const result = await dispatch(startSession(topicName));
+      if (startSession.fulfilled.match(result)) {
+        currentSessionId = result.payload;
+      } else {
+        return;
+      }
+    }
+
+    // Immediately send the clicked question as a message
+    dispatch(addUserMessageLocally(question));
+    try {
+      await dispatch(sendChatMessage({ sessionId: currentSessionId, message: question })).unwrap();
+      setShowRechargeModal(false);
+    } catch (err) {
+      console.log("Send error:", err);
+      if (err.type === "wallet_error" || err.type === "free_limit_exceeded") {
+        setShowRechargeModal(true);
+      } else {
+        toast.error(err.message || "Failed to send message");
+      }
     }
   };
 
@@ -150,12 +179,8 @@ const AIChatBot = () => {
                 topics.map((topic) => (
                   <button
                     key={topic.id}
-                    onClick={() => handleTopicSwitch(topic.name)}
-                    className={`py-2 rounded-lg text-sm font-medium cursor-pointer transition ${
-                      selectedTopic === topic.name
-                        ? "bg-amber-500 text-white"
-                        : "bg-amber-200 text-black hover:bg-amber-500"
-                    }`}
+                    onClick={() => handleQuestionClick(topic.name)}
+                    className={`py-2 px-3 rounded-lg text-sm font-medium cursor-pointer transition bg-amber-200 text-black hover:bg-amber-500 hover:text-white`}
                   >
                     {topic.name}
                   </button>
@@ -165,14 +190,14 @@ const AIChatBot = () => {
 
             {/* Messages area */}
             <div className="flex-1 p-4 space-y-3">
-              {!selectedTopic && messages.length === 0 && (
+              {!sessionId && messages.length === 0 && (
                 <div className="text-center text-gray-400 mt-20">
-                  Select a topic above to start chatting.
+                  {astrologerData ? `Click a question above to start chatting with ${astrologerData.astrologerName}.` : "Select a topic above to start chatting."}
                 </div>
               )}
-              {selectedTopic && messages.length === 0 && (
+              {sessionId && messages.length === 0 && (
                 <div className="text-center text-gray-400 mt-20">
-                  Start chatting about {selectedTopic}
+                  Start chatting
                 </div>
               )}
              
