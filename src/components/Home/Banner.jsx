@@ -54,8 +54,6 @@ const Banner = () => {
   return (
     <>
       <section className="relative w-full overflow-hidden bg-gradient-to-b from-white via-amber-50/80 to-amber-100 py-8 sm:py-10 md:py-12 lg:py-14 xl:py-16">
-        <div className="pointer-events-none absolute -left-24 top-0 h-72 w-72 rounded-full bg-amber-300/20 blur-3xl" />
-        <div className="pointer-events-none absolute -right-20 bottom-0 h-80 w-80 rounded-full bg-orange-300/15 blur-3xl" />
 
         <div className="relative z-10 mx-auto w-full  px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
           <div className="flex flex-col items-center gap-8 md:flex-row md:items-center md:gap-6 lg:gap-10">

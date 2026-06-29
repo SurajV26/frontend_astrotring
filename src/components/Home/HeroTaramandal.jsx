@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
 const ZODIAC_SIGNS = [
-  "♈", "♉", "♊", "♋", "♌", "♍",
-  "♎", "♏", "♐", "♑", "♒", "♓",
+  "♈\uFE0E", "♉\uFE0E", "♊\uFE0E", "♋\uFE0E", "♌\uFE0E", "♍\uFE0E",
+  "♎\uFE0E", "♏\uFE0E", "♐\uFE0E", "♑\uFE0E", "♒\uFE0E", "♓\uFE0E",
 ];
 
 /* orbit radius = fraction of --wheel-size (full box width) */
@@ -151,9 +151,7 @@ const HeroTaramandal = ({ wheelSize = 520, compact = false }) => {
       }}
       aria-hidden="true"
     >
-      <div className="pointer-events-none absolute -inset-[12%] rounded-full bg-[radial-gradient(circle,rgba(251,191,36,0.28)_0%,rgba(249,115,22,0.08)_45%,transparent_70%)]" />
 
-      <div className="absolute inset-[4%] rounded-full bg-white/30 " />
 
       {stars.map((star, i) => (
         <span

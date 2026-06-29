@@ -20,6 +20,26 @@ export const fetchTopics = createAsyncThunk(
   },
 );
 
+export const fetchExpertiseQuestions = createAsyncThunk(
+  "aiChat/fetchExpertiseQuestions",
+  async ({ astrologerName, expertise }, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/user/ai-chat/astrologer-questions", {
+        astrologerName,
+        expertise,
+      });
+
+      console.log("fetchExpertiseQuestions", response);
+      const questions = response.data?.data ?? [];
+      return questions;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to load expertise questions",
+      );
+    }
+  },
+);
+
 export const startSession = createAsyncThunk(
   "aiChat/startSession",
   async (topic, { rejectWithValue }) => {
@@ -140,6 +160,20 @@ const aiChatSlice = createSlice({
         state.topics = action.payload;
       })
       .addCase(fetchTopics.rejected, (state, action) => {
+        state.isFetchingTopics = false;
+        state.error = action.payload;
+      })
+
+      // ----- Fetch Expertise Questions -----
+      .addCase(fetchExpertiseQuestions.pending, (state) => {
+        state.isFetchingTopics = true;
+        state.error = null;
+      })
+      .addCase(fetchExpertiseQuestions.fulfilled, (state, action) => {
+        state.isFetchingTopics = false;
+        state.topics = action.payload;
+      })
+      .addCase(fetchExpertiseQuestions.rejected, (state, action) => {
         state.isFetchingTopics = false;
         state.error = action.payload;
       })
