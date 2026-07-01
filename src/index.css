@@ -337,9 +337,7 @@ Select {
 .scrollleft {
   animation: infiniteSlide 30s linear infinite;
 }
-.swiper-wrapper {
-  margin-bottom: 40px;
-}
+
 .swiper-pagination-bullet {
   transition: all 0.3s ease-in-out;
 }
@@ -348,6 +346,7 @@ Select {
   width: 30px !important;
   border-radius: 10px !important;
 }
+
 
 @layer base {
   * {

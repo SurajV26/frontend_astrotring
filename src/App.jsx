@@ -186,7 +186,7 @@ const App = () => {
             <Route path="/bhoomi-pujan-muhurat" element={<BhumiPuja />} />
             <Route path="/griha-pravesh-muhurat" element={<GrihaPravesh />} />
             <Route path="/mundan-muhurat" element={<Mundan />} />
-            <Route path="/ai-astrologer/:id" element={<AiAstrologerDetails />} />
+            <Route path="/ai-astrologer/:slug" element={<AiAstrologerDetails />} />
           </Route>
 
           {/* royte for ai chatbot */}

@@ -3,116 +3,236 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
-  fetchTopics,
-  addUserMessageLocally,
-  closeSession,
-  sendChatMessage,
+  
   startSession,
-  fetchChatHistory,
-  fetchExpertiseQuestions,
+  sendChatMessage,
+  closeSession,
+  addUserMessageLocally,
 } from "@/redux/slice/aiChatSlice";
+// import { api } from "@/redux/baseApi";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "react-toastify";
 import { X } from "lucide-react";
-import Loader from "../common/Loader";
 
 const AIChatBot = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
   const {
-    selectedTopic,
-    topics,
-    isFetchingTopics,
     sessionId,
+    sessionQuestions,
     messages,
     isLoading,
+    isStartingSession,
     error,
   } = useSelector((state) => state.aiChat);
 
+  // console.log("astrologerQuestions", astrologerQuestions);
+
   const [input, setInput] = useState("");
   const [showRechargeModal, setShowRechargeModal] = useState(false);
+ 
+
+  // Active expertise tab (slug)
+  const [activeExpertiseSlug, setActiveExpertiseSlug] = useState(null);
+
   const bottomRef = useRef();
 
   const location = useLocation();
-  const astrologerData = location.state; // { astrologerName, expertise }
+  // { astrologerName, astrologerSlug, expertises: [{id, name, slug}] }
+  const astrologerData = location.state;
 
-  // Fetch topics on mount
+  // Set first expertise as default on mount
+  // useEffect(() => {
+  //   if (astrologerData?.expertises?.length > 0 && !activeExpertiseSlug) {
+  //     setActiveExpertiseSlug(astrologerData.expertises[0].slug);
+  //   }
+  // }, [astrologerData]);
+
+  // Fetch questions whenever active expertise changes
+  // useEffect(() => {
+  //   if (astrologerData?.astrologerSlug && activeExpertiseSlug) {
+  //     dispatch(
+  //       fetchAstrologerQuestions({
+  //         astrologerSlug: astrologerData.astrologerSlug,
+  //         expertiseSlug: activeExpertiseSlug,
+  //       }),
+  //     );
+  //   }
+  //   return () => {
+  //     dispatch(clearAstrologerQuestions());
+  //   };
+  // }, [dispatch, astrologerData?.astrologerSlug, activeExpertiseSlug]);
+
   useEffect(() => {
-    if (astrologerData?.expertise) {
-      dispatch(fetchExpertiseQuestions({
-        astrologerName: astrologerData.astrologerName,
-        expertise: astrologerData.expertise,
-      }));
-    } else {
-      dispatch(fetchTopics());
-    }
-  }, [dispatch, astrologerData]);
+  if (astrologerData?.astrologerSlug && astrologerData.expertises[0].slug) {
+    dispatch(
+      startSession({
+        astrologerSlug: astrologerData.astrologerSlug,
+        expertiseSlug: astrologerData.expertises[0].slug,
+      })
+    );
+  }
+}, [dispatch, astrologerData?.astrologerSlug, astrologerData.expertises[0].slug]);
 
   // Auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Handle Question click
+  // Helper: ensure session exists
+  // const ensureSession = async () => {
+  //   if (sessionId) return sessionId;
+  //   setIsStartingSession(true);
+  //   try {
+  //     const topicName = astrologerData?.astrologerName
+  //       ? `Chat with ${astrologerData.astrologerName}`
+  //       : "AI Astrologer";
+  //     const response = await api.post("/user/ai-chat/start-session", {
+  //       topic: topicName,
+  //     });
+  //     const id = response.data?.session_id || response.data?.data?.id;
+  //     if (!id) throw new Error("No session ID returned");
+  //     setSessionId(id);
+  //     return id;
+  //   } catch (err) {
+  //     toast.error("Failed to start session");
+  //     return null;
+  //   } finally {
+  //     setIsStartingSession(false);
+  //   }
+  // };
+
+  // Handle Question chip click
+  // const handleQuestionClick = async (question) => {
+  //   const currentSessionId = await ensureSession();
+  //   if (!currentSessionId) return;
+
+  //   setMessages((prev) => [...prev, { sender: "user", message: question }]);
+  //   setIsLoading(true);
+  //   setError(null);
+
+  //   try {
+  //     const response = await api.post("/user/ai-chat/send-message", {
+  //       session_id: currentSessionId,
+  //       message: question,
+  //     });
+  //     const reply =
+  //       response.data?.reply ||
+  //       response.data?.message ||
+  //       "Sorry, I couldn't reply.";
+  //     setMessages((prev) => [...prev, { sender: "assistant", message: reply }]);
+  //     setShowRechargeModal(false);
+  //   } catch (err) {
+  //     const errData = err.response?.data;
+  //     if (
+  //       errData?.type === "wallet_error" ||
+  //       errData?.type === "free_limit_exceeded"
+  //     ) {
+  //       setShowRechargeModal(true);
+  //     } else {
+  //       toast.error(errData?.message || "Failed to send message");
+  //     }
+  //     setMessages((prev) => [
+  //       ...prev,
+  //       { sender: "assistant", message: "Sorry, something went wrong." },
+  //     ]);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleQuestionClick = async (question) => {
-    let currentSessionId = sessionId;
-    // If no session exists, start a new one
-    if (!currentSessionId) {
-      const topicName = astrologerData?.astrologerName ? `Chat with ${astrologerData.astrologerName}` : "AI Astrologer";
-      const result = await dispatch(startSession(topicName));
-      if (startSession.fulfilled.match(result)) {
-        currentSessionId = result.payload;
-      } else {
-        return;
-      }
+  if (!sessionId) {
+    toast.error("No active session. Please wait.");
+    return;
+  }
+  dispatch(addUserMessageLocally(question));
+  try {
+    await dispatch(sendChatMessage({ sessionId, message: question })).unwrap();
+    setShowRechargeModal(false);
+  } catch (err) {
+    const errData = err;
+    if (errData?.type === "wallet_error" || errData?.type === "free_limit_exceeded") {
+      setShowRechargeModal(true);
+    } else {
+      toast.error(errData?.message || "Failed to send message");
     }
+  }
+};
 
-    // Immediately send the clicked question as a message
-    dispatch(addUserMessageLocally(question));
-    try {
-      await dispatch(sendChatMessage({ sessionId: currentSessionId, message: question })).unwrap();
-      setShowRechargeModal(false);
-    } catch (err) {
-      console.log("Send error:", err);
-      if (err.type === "wallet_error" || err.type === "free_limit_exceeded") {
-        setShowRechargeModal(true);
-      } else {
-        toast.error(err.message || "Failed to send message");
-      }
-    }
-  };
+  // Send typed message
+  // const handleSendMessage = async () => {
+  //   const message = input.trim();
+  //   if (!message || !sessionId) return;
 
-  // Send message
+  //   setMessages((prev) => [...prev, { sender: "user", message }]);
+  //   setInput("");
+  //   setIsLoading(true);
+  //   setError(null);
+
+  //   try {
+  //     const response = await api.post("/user/ai-chat/send-message", {
+  //       session_id: sessionId,
+  //       message,
+  //     });
+  //     const reply =
+  //       response.data?.reply ||
+  //       response.data?.message ||
+  //       "Sorry, I couldn't reply.";
+  //     setMessages((prev) => [...prev, { sender: "assistant", message: reply }]);
+  //     setShowRechargeModal(false);
+  //   } catch (err) {
+  //     const errData = err.response?.data;
+  //     if (
+  //       errData?.type === "wallet_error" ||
+  //       errData?.type === "free_limit_exceeded"
+  //     ) {
+  //       setShowRechargeModal(true);
+  //     } else {
+  //       toast.error(errData?.message || "Failed to send message");
+  //     }
+  //     setMessages((prev) => [
+  //       ...prev,
+  //       { sender: "assistant", message: "Sorry, something went wrong." },
+  //     ]);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const handleSendMessage = async () => {
-    const message = input.trim();
-    if (!message || !sessionId) return;
+  const message = input.trim();
+  if (!message || !sessionId) return;
+  dispatch(addUserMessageLocally(message));
+  setInput("");
+  try {
+    await dispatch(sendChatMessage({ sessionId, message })).unwrap();
+    setShowRechargeModal(false);
+  } catch (err) {
+    const errData = err;
+    if (errData?.type === "wallet_error" || errData?.type === "free_limit_exceeded") {
+      setShowRechargeModal(true);
+    } else {
+      toast.error(errData?.message || "Failed to send message");
+    }
+  }
+};
 
-    dispatch(addUserMessageLocally(message));
-    setInput("");
-
+  // Close session
+const handleManualCloseSession = async () => {
+  if (sessionId) {
     try {
-      await dispatch(sendChatMessage({ sessionId, message })).unwrap();
-      setShowRechargeModal(false);
+      await dispatch(closeSession(sessionId)).unwrap();
     } catch (err) {
-      console.log("Send error:", err);
-      if (err.type === "wallet_error" || err.type === "free_limit_exceeded") {
-        setShowRechargeModal(true);
-      } else {
-        toast.error(err.message || "Failed to send message");
-      }
+      console.error("Close session error:", err);
     }
-  };
-
-  // Manual close session
-  const handleManualCloseSession = async () => {
-    if (sessionId) {
-      await dispatch(closeSession(sessionId));
-    }
-  };
+  }
+};
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden ">
+    <div className="flex flex-col h-screen overflow-hidden">
       <div className="flex w-full h-screen">
         {/* Left Advertisement */}
         <div className="hidden lg:flex lg:flex-col flex-1 items-center justify-center gap-4">
@@ -120,7 +240,7 @@ const AIChatBot = () => {
             href="https://astrotring.shop/product/metal-dhan-yog-bracelet-with-free-raw-selenite-plate"
             target="_blank"
             rel="noopener noreferrer"
-            className="relative block w-[50%] h-full  overflow-hidden shadow-md bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow"
+            className="relative block w-[50%] h-full overflow-hidden shadow-md bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow"
           >
             <img
               src="/ad1.jpeg"
@@ -135,7 +255,7 @@ const AIChatBot = () => {
             href="https://astrotring.shop/product/couple-pyrite-combos-pyrite-bracelets-with-pyrite-anklet"
             target="_blank"
             rel="noopener noreferrer"
-            className="relative block w-[50%] h-full  overflow-hidden shadow-md bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow"
+            className="relative block w-[50%] h-full overflow-hidden shadow-md bg-white/80 backdrop-blur-sm hover:shadow-lg transition-shadow"
           >
             <img
               src="/ad4.jpeg"
@@ -149,15 +269,24 @@ const AIChatBot = () => {
         </div>
 
         {/* Chat Box Container */}
-
-        <div className="flex-1 flex flex-col sm:min-w-4xl mx-auto w-full  shadow-2xl  overflow-hidden bg-white">
-          {/* Internal Header */}
-          <div className="flex justify-between border-2 border-gray-300  p-2 flex-shrink-0 bg-amber-400">
+        <div className="flex-1 flex flex-col sm:min-w-4xl mx-auto w-full shadow-2xl overflow-hidden bg-white">
+          {/* Header */}
+          <div className="flex justify-between border-2 border-gray-300 p-2 flex-shrink-0 bg-amber-400">
             <Link to="/">
               <img src={logo} alt="logo" className="h-10" />
             </Link>
+
+            {/* Astrologer name if available */}
+            {astrologerData?.astrologerName && (
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-white">
+                  Chatting with {astrologerData.astrologerName}
+                </span>
+              </div>
+            )}
+
             {sessionId && (
-              <div className="flex justify-end mb-2">
+              <div className="flex justify-end">
                 <button
                   onClick={handleManualCloseSession}
                   className="p-2 rounded-lg text-xs font-medium bg-red-100 text-red-600 hover:bg-red-200"
@@ -169,22 +298,49 @@ const AIChatBot = () => {
           </div>
 
           <div className="flex-1 mt-2 flex flex-col overflow-y-auto">
-            {/* Topic selector chips */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 px-4 sm:px-10">
-              {isFetchingTopics ? (
-                <span className="text-xs text-gray-400 col-span-full text-center">
-                  Loading topics...
-                </span>
-              ) : (
-                topics.map((topic) => (
+            {/* Expertise Tabs (if multiple expertises) */}
+            {astrologerData?.expertises?.length > 1 && (
+              <div className="flex gap-2 px-4 sm:px-6 pb-2 overflow-x-auto flex-shrink-0">
+                {astrologerData.expertises.map((exp) => (
                   <button
-                    key={topic.id}
-                    onClick={() => handleQuestionClick(topic.name)}
-                    className={`py-2 px-3 rounded-lg text-sm font-medium cursor-pointer transition bg-amber-200 text-black hover:bg-amber-500 hover:text-white`}
+                    key={exp.slug}
+                    onClick={() => setActiveExpertiseSlug(exp.slug)}
+                    className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-all ${
+                      activeExpertiseSlug === exp.slug
+                        ? "bg-amber-500 text-white border-amber-500"
+                        : "bg-white text-amber-700 border-amber-300 hover:bg-amber-50"
+                    }`}
                   >
-                    {topic.name}
+                    {exp.name}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Question chips */}
+            <div className="grid grid-cols-2  gap-2 px-4 sm:px-10">
+              {isStartingSession  ? (
+                <span className="text-xs text-gray-400 col-span-full text-center">
+                  Loading questions...
+                </span>
+              ) : sessionQuestions?.length > 0 ? (
+                sessionQuestions?.map((q, idx) => (
+                  <button
+                    key={q.id ?? idx}
+                    onClick={() =>
+                      handleQuestionClick(q.question ?? q.name ?? q)
+                    }
+                    className="py-2 px-3 rounded-lg text-sm font-medium cursor-pointer transition bg-amber-200 text-black hover:bg-amber-500 hover:text-white text-left"
+                  >
+                    {q.question}
                   </button>
                 ))
+              ) : (
+                <span className="text-xs text-gray-400 col-span-full text-center">
+                  {astrologerData
+                    ? "No questions available for this expertise."
+                    : "Select a topic to start."}
+                </span>
               )}
             </div>
 
@@ -192,7 +348,9 @@ const AIChatBot = () => {
             <div className="flex-1 p-4 space-y-3">
               {!sessionId && messages.length === 0 && (
                 <div className="text-center text-gray-400 mt-20">
-                  {astrologerData ? `Click a question above to start chatting with ${astrologerData.astrologerName}.` : "Select a topic above to start chatting."}
+                  {astrologerData
+                    ? `Click a question above to start chatting with ${astrologerData.astrologerName}.`
+                    : "Select a topic above to start chatting."}
                 </div>
               )}
               {sessionId && messages.length === 0 && (
@@ -200,7 +358,7 @@ const AIChatBot = () => {
                   Start chatting
                 </div>
               )}
-             
+
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
@@ -315,7 +473,7 @@ const AIChatBot = () => {
             <img
               src="/ad2.jpeg"
               alt="Advertisement"
-              className="w-full h-full object-fill "
+              className="w-full h-full object-fill"
             />
             <span className="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full">
               Ad
@@ -330,7 +488,7 @@ const AIChatBot = () => {
             <img
               src="/ad3.jpeg"
               alt="Advertisement"
-              className="w-full h-full object-fill "
+              className="w-full h-full object-fill"
             />
             <span className="absolute top-2 right-2 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full">
               Ad
