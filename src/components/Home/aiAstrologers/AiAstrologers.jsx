@@ -1,108 +1,165 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
 import ComponentHead from "@/components/ComponentHead";
-import { DUMMY_ASTROLOGERS } from "@/data/dummyAiastrologers/dummyAiastrologers";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAllAiAstrologers } from "@/redux/slice/aiChatSlice";
+
+const FADE_MASK = {
+  maskImage:
+    "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+  WebkitMaskImage:
+    "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+};
 
 const AstrologerCard = ({ astro, onClick }) => {
-  const expertiseTags = Array.isArray(astro.expertise)
-    ? astro.expertise
-    : [astro.expertise];
+  const expertiseName = astro.expertises?.[0]?.name.split(",")[0] ?? "";
+  const price = astro.chat_price ? `₹${astro.chat_price}` : "";
 
   return (
     <div
-      title={astro.name + "\n" + expertiseTags.join(", ")}
       onClick={onClick}
-      className="group flex flex-col items-center transition-all duration-300 hover:-translate-y-1 cursor-pointer select-none h-full"
+      className="group inline-flex flex-row items-center gap-3 p-3 bg-white rounded-xl shadow-sm hover:shadow-lg transition-all cursor-pointer select-none border border-amber-200 hover:border-amber-400"
+      style={{ whiteSpace: 'nowrap' }}
     >
-      {/* Image — same as ZodiacPredictions */}
-      <div className="w-30 h-30 sm:w-40 sm:h-40 rounded-full overflow-hidden bg-gradient-to-br from-amber-100 to-orange-100">
+      <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 rounded-full overflow-hidden bg-gradient-to-br from-amber-100 to-orange-100 flex-shrink-0 ring-2 ring-amber-200 group-hover:ring-amber-400 transition-all">
         <img
           src={astro.image}
           alt={astro.name}
-          className="w-full h-full object-cover rounded-full"
+          className="w-full h-full object-cover"
         />
       </div>
 
-      {/* Name — same as ZodiacPredictions */}
-      <span className="mt-2 text-sm md:text-base font-medium text-gray-700 group-hover:text-purple-600 transition-colors text-center truncate w-full ">
-        {astro.name}
-      </span>
-
-      {/* Expertise — comma separated in parentheses */}
-      <span className="text-[10px] text-gray-500 text-center leading-snug mt-0.5 line-clamp-1 ">
-        ({expertiseTags.join(", ")})
-      </span>
+      <div className="flex flex-col" style={{ whiteSpace: 'nowrap' }}>
+        <span className="text-sm sm:text-lg font-semibold text-gray-800 group-hover:text-amber-600 transition-colors">
+          {astro.name}
+        </span>
+        <span className="text-xs sm:text-sm text-gray-600 font-medium">
+          Vedic
+        </span>
+        {expertiseName && (
+          <span className="text-xs sm:text-sm text-gray-600 mt-0.5">
+            Expertise: <span className="text-amber-500">{expertiseName}</span>
+          </span>
+        )}
+        {price && (
+          <span className="text-sm sm:text-base font-medium text-amber-500 mt-0.5">
+            {price}
+            <span className="text-xs text-amber-500 font-semibold">/msg</span>
+          </span>
+        )}
+      </div>
     </div>
   );
 };
 
-
 const AiAstrologers = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { allAiAstrologers, isFetchingAllAiAstrologers } = useSelector(
+    (state) => state.aiChat,
+  );
 
-  const half = Math.ceil(DUMMY_ASTROLOGERS.length / 2);
-  const row1 = DUMMY_ASTROLOGERS.slice(0, half);
-  const row2 = DUMMY_ASTROLOGERS.slice(half);
+  useEffect(() => {
+    dispatch(fetchAllAiAstrologers());
+  }, [dispatch]);
+
+  if (isFetchingAllAiAstrologers || !allAiAstrologers) {
+    return (
+      <div className="w-full bg-gradient-to-b from-amber-50 to-white py-6 flex justify-center items-center min-h-[300px]">
+        <p className="text-gray-500">Loading astrologers...</p>
+      </div>
+    );
+  }
+
+  const data = Array.isArray(allAiAstrologers) ? allAiAstrologers : [];
+  if (data.length === 0) {
+    return (
+      <div className="w-full bg-gradient-to-b from-amber-50 to-white py-6 flex justify-center items-center min-h-[300px]">
+        <p className="text-gray-500">No astrologers found.</p>
+      </div>
+    );
+  }
+
+  const half = Math.ceil(data.length / 2);
+  const row1 = data.slice(0, half);
+  const row2 = data.slice(half);
 
   const swiperCommon = {
     modules: [Autoplay],
-    spaceBetween: 6,
-    loop: true,
+    slidesPerView: 'auto',      // 👈 auto width based on slide content
+    spaceBetween: 12,
+    loop: data.length > 2,
     allowTouchMove: true,
-    breakpoints: {
-      0: { slidesPerView: 2 },
-      480: { slidesPerView: 3 },
-      768: { slidesPerView: 3 },
-      1024: { slidesPerView: 5 },
-      1280: { slidesPerView: 6 },
-    },
   };
 
   return (
-    <div className="w-full container bg-gradient-to-b from-amber-50 to-white py-6 overflow-hidden">
-      <div className="container">
+    <div className="w-full container py-6">
+      <div className="container mx-auto px-4 mb-6">
         <ComponentHead
           heading="AI Astrologers"
           title="Connect with our expert AI astrologers for guidance"
         />
       </div>
 
-      <div className="mt-6 flex flex-col items-center gap-4 md:gap-6">
-        {/* ROW 1 — Left to Right */}
-        <Swiper
-          {...swiperCommon}
-          autoplay={{ delay: 0, disableOnInteraction: false, reverseDirection: false }}
-          speed={3000}
-          className="w-full"
-        >
-          {row1.map((astro, idx) => (
-            <SwiperSlide key={`r1-${idx}`}>
-              <AstrologerCard
-                astro={astro}
-                onClick={() => navigate(`/ai-astrologer/${astro.id}`)}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+      <div className="flex flex-col gap-6">
+        {row1.length > 0 && (
+          <div className="w-full" style={FADE_MASK}>
+            <Swiper
+              {...swiperCommon}
+              autoplay={{
+                delay: 0,
+                disableOnInteraction: false,
+                reverseDirection: false,
+              }}
+              speed={4000}
+              className="w-full"
+            >
+              {row1.map((astro, idx) => (
+                <SwiperSlide
+                  key={`r1-${idx}`}
+                  className="w-auto flex-shrink-0"
+                  style={{ display: 'inline-flex', width: 'auto' }}
+                >
+                  <AstrologerCard
+                    astro={astro}
+                    onClick={() => navigate(`/ai-astrologer/${astro.slug}`)}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        )}
 
-        {/* ROW 2 — Right to Left */}
-        <Swiper
-          {...swiperCommon}
-          autoplay={{ delay: 0, disableOnInteraction: false, reverseDirection: true }}
-          speed={3500}
-          className="w-full"
-        >
-          {row2.map((astro, idx) => (
-            <SwiperSlide key={`r2-${idx}`}>
-              <AstrologerCard
-                astro={astro}
-                onClick={() => navigate(`/ai-astrologer/${astro.id}`)}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
+        {row2.length > 0 && (
+          <div className="w-full" style={FADE_MASK}>
+            <Swiper
+              {...swiperCommon}
+              autoplay={{
+                delay: 0,
+                disableOnInteraction: false,
+                reverseDirection: true,
+              }}
+              speed={4000}
+              className="w-full"
+            >
+              {row2.map((astro, idx) => (
+                <SwiperSlide
+                  key={`r2-${idx}`}                     // 👈 fixed key
+                  className="w-auto flex-shrink-0"
+                  style={{ display: 'inline-flex', width: 'auto' }}
+                >
+                  <AstrologerCard
+                    astro={astro}
+                    onClick={() => navigate(`/ai-astrologer/${astro.slug}`)}
+                  />
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          </div>
+        )}
       </div>
     </div>
   );

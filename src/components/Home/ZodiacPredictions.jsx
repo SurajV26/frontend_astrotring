@@ -55,12 +55,12 @@ const ZodiacPredictions = () => {
                     className="w-full h-full object-cover rounded-full"
                   />
                 ) : (
-                  <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center text-purple-800 font-bold text-xl">
+                  <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center text-amber-600 font-bold text-xl">
                     {sign.name.charAt(0)}
                   </div>
                 )}
               </div>
-              <span className="mt-2 text-sm md:text-base font-medium text-gray-700 group-hover:text-purple-600 transition-colors">
+              <span className="mt-2 text-sm md:text-base font-medium text-gray-700 group-hover:text-amber-600 transition-colors">
                 {sign.name}
               </span>
             </Link>

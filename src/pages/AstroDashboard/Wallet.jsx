@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Wallet, TrendingUp, TrendingDown, Phone, MessageSquare, ArrowUpRight, ArrowDownRight, Calendar, Clock, IndianRupee } from 'lucide-react';
+import { Wallet, TrendingUp, TrendingDown, Phone, MessageSquare, ArrowUpRight, ArrowDownRight, Calendar, Clock, IndianRupee, Bold, Plus } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -109,9 +109,9 @@ function WalletDashboard() {
   };
 
   const StatCard = ({ icon: Icon, title, value, subtitle, trend, colorClass, borderColor }) => (
-    <Card className={`overflow-hidden  ${borderColor} `}>
+    <Card className={`overflow-hidden  ${borderColor}  p-6 `}>
 
-      <CardContent className="p-6">
+      <CardContent >
         <div className="flex items-start justify-between">
 
           <div>
@@ -125,7 +125,7 @@ function WalletDashboard() {
             )}
           </div>
 
-          <div className={`p-3 rounded-lg ${colorClass} bg-opacity-10`}>
+          <div className={`p-3 rounded-lg ${colorClass} bg-opacity-10 `}>
             <Icon className={`w-6 h-6 ${colorClass}`} />
           </div>
         </div>
@@ -157,15 +157,15 @@ function WalletDashboard() {
           </div>
           <button
             onClick={() => setIsAddMoneyModalOpen(true)}
-            className="bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-lg font-semibold shadow-md transition-colors flex items-center gap-2 shrink-0"
+            className="bg-amber-500 hover:bg-amber-600 text-gray-710 px-6 py-2.5 rounded-lg font-semibold shadow-md transition-colors flex items-center gap-0 shrink-0 cursor-pointer"
           >
-            <IndianRupee className="w-5 h-5" />
+            <Plus className="w-5 h-5 " />
             Add Money to Wallet
           </button>
         </div>
 
         {/* Main Balance Card */}
-        <Card className="border-2 border-primary/30 bg-gradient-to-br from-blue-50 to-white">
+        <Card className="border-2 border-primary/30 bg-gradient-to-br from-blue-50 to-white ">
           <CardContent className="p-8">
             <div className="space-y-4">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -196,7 +196,7 @@ function WalletDashboard() {
 
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatCard
+          {/* <StatCard
             icon={TrendingUp}
             title="Total Earned"
             value={formatCurrency(walletData.total_earned || 0)}
@@ -209,9 +209,9 @@ function WalletDashboard() {
             value={formatCurrency(walletData.total_withdrawn || 0)}
             colorClass="text-orange-600"
             borderColor={'border-orange-200 bg-orange-50'}
-          />
+          /> */}
           <StatCard
-            icon={IndianRupee}
+            icon={ArrowDownRight}
             title="Total Added"
             value={formatCurrency(walletData.total_added || 0)}
             colorClass="text-blue-600"
@@ -228,7 +228,7 @@ function WalletDashboard() {
 
         {/* Service Usage */}
         <div className="grid lg:grid-cols-2 gap-6">
-          <Card className={"border-2 border-green-300"}>
+          <Card className={"border-2 border-green-300 p-6"}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-green-600" />
@@ -257,7 +257,7 @@ function WalletDashboard() {
             </CardContent>
           </Card>
 
-          <Card className={"border-2 border-primary/30"}>
+          <Card className={"border-2 border-primary/30 p-6"}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MessageSquare className="w-5 h-5 text-blue-600" />
@@ -288,7 +288,7 @@ function WalletDashboard() {
         </div>
 
         {/* Recent Activity */}
-        <Card className={"border-2 border-primary/30"}>
+        <Card className={"border-2 border-primary/30 p-6"}>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Calendar className="w-5 h-5 text-purple-600" />
@@ -313,7 +313,7 @@ function WalletDashboard() {
         </Card>
 
         {/* Summary Card */}
-        <Card className={"border-2 border-primary/30"}  >
+        <Card className={"border-2 border-primary/30 p-6"}  >
           <CardHeader>
             <CardTitle>Account Summary</CardTitle>
             <CardDescription>Overview of your wallet account</CardDescription>
@@ -345,7 +345,7 @@ function WalletDashboard() {
           <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative p-6 md:p-8 animate-in fade-in zoom-in duration-200">
             <button
               onClick={() => setIsAddMoneyModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
             >
               ✕
             </button>
@@ -353,13 +353,13 @@ function WalletDashboard() {
             <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4">
               <div>
                 <p className="text-gray-600 text-sm font-medium">Available Balance</p>
-                <h2 className="text-4xl font-bold flex items-center gap-2">
-                  <span className="text-2xl font-normal">₹</span> {parseFloat(walletData.balance || 0).toFixed(2)}
+                <h2 className="text-4xl font-bold flex items-center gap-0">
+                  <IndianRupee strokeWidth={2.75} /> {parseFloat(walletData.balance || 0).toFixed(2)}
                 </h2>
               </div>
-              <button className="mt-4 md:mt-0 text-orange-500 hover:text-orange-600 font-medium transition-colors">
+              {/* <button className="mt-4 md:mt-0 text-orange-500 hover:text-orange-600 font-medium transition-colors">
                 Consultation History
-              </button>
+              </button> */}
             </div>
 
             <div className="mb-8">
@@ -374,7 +374,7 @@ function WalletDashboard() {
                   onClick={() => handlePayment(pack.pay)}
                   className="bg-[#FFF9E6] border border-[#E5C780] rounded-md cursor-pointer hover:shadow-md hover:border-amber-500 transition-all group flex flex-col items-center justify-between overflow-hidden"
                 >
-                  <div className="bg-amber-400 w-full py-1 text-center font-medium text-xs text-amber-900 shadow-sm">
+                  <div className="bg-amber-500 w-full py-1 text-center font-medium text-xs text-amber-900 shadow-sm">
                     {pack.label}
                   </div>
                   <div className="flex-1 w-full flex items-center justify-center py-5">

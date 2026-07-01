@@ -422,9 +422,9 @@ setSelectedQualification(labels);
         </div>
 
         <div className="space-y-6">
-          <Card className="border-2 pt-0 border-primary/50 shadow-lg overflow-hidden">
-            <CardHeader className="bg-primary/70 py-2">
-              <CardTitle className="flex items-center gap-2">
+          <Card className="border-2 pt-0 border-primary/50 shadow-lg overflow-hidden ">
+            <CardHeader className="bg-primary/70 py-2 ">
+              <CardTitle className="flex items-center gap-2 ">
                 <User className="w-5 h-5 text-primary-forground" />
                 Personal
               </CardTitle>
@@ -488,6 +488,7 @@ setSelectedQualification(labels);
                   label="Birth Time"
                   name="birthTime"
                   type="time"
+                  step="1"
                   icon={Clock}
                   value={formData.birthTime}
                   onChange={handleInputChange}
