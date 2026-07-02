@@ -40,7 +40,7 @@ const AiAstrologerDetails = () => {
 
   const handleChatClick = () => {
     if (isLoggedIn) {
-      navigate("/ai-chat", { state: chatState });
+      navigate(`/ai-chat/${astro.slug}/${astro.expertises?.[0]?.slug}`);
     } else {
       setShowLogin(true);
     }
