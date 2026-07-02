@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
-  
   startSession,
   sendChatMessage,
   closeSession,
   addUserMessageLocally,
+  fetchAiAstrologerDetails,
+  clearAstrologerDetails,
 } from "@/redux/slice/aiChatSlice";
 // import { api } from "@/redux/baseApi";
 import Markdown from "react-markdown";
@@ -19,12 +20,15 @@ const AIChatBot = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  const { astrologerSlug, expertiseSlug } = useParams();
+
   const {
     sessionId,
     sessionQuestions,
     messages,
     isLoading,
     isStartingSession,
+    astrologerDetails,
     error,
   } = useSelector((state) => state.aiChat);
 
@@ -32,16 +36,15 @@ const AIChatBot = () => {
 
   const [input, setInput] = useState("");
   const [showRechargeModal, setShowRechargeModal] = useState(false);
- 
 
   // Active expertise tab (slug)
   const [activeExpertiseSlug, setActiveExpertiseSlug] = useState(null);
 
   const bottomRef = useRef();
 
-  const location = useLocation();
+  // const location = useLocation();
   // { astrologerName, astrologerSlug, expertises: [{id, name, slug}] }
-  const astrologerData = location.state;
+  // const astrologerData = location.state;
 
   // Set first expertise as default on mount
   // useEffect(() => {
@@ -66,15 +69,24 @@ const AIChatBot = () => {
   // }, [dispatch, astrologerData?.astrologerSlug, activeExpertiseSlug]);
 
   useEffect(() => {
-  if (astrologerData?.astrologerSlug && astrologerData.expertises[0].slug) {
-    dispatch(
-      startSession({
-        astrologerSlug: astrologerData.astrologerSlug,
-        expertiseSlug: astrologerData.expertises[0].slug,
-      })
-    );
-  }
-}, [dispatch, astrologerData?.astrologerSlug, astrologerData.expertises[0].slug]);
+    if (astrologerSlug) {
+      dispatch(fetchAiAstrologerDetails(astrologerSlug));
+    }
+    return () => {
+      dispatch(clearAstrologerDetails());
+    };
+  }, [astrologerSlug, dispatch]);
+
+  useEffect(() => {
+    if (expertiseSlug && astrologerSlug) {
+      dispatch(
+        startSession({
+          astrologerSlug: astrologerSlug,
+          expertiseSlug: expertiseSlug,
+        }),
+      );
+    }
+  }, [dispatch, expertiseSlug, astrologerSlug]);
 
   // Auto-scroll
   useEffect(() => {
@@ -144,23 +156,28 @@ const AIChatBot = () => {
   // };
 
   const handleQuestionClick = async (question) => {
-  if (!sessionId) {
-    toast.error("No active session. Please wait.");
-    return;
-  }
-  dispatch(addUserMessageLocally(question));
-  try {
-    await dispatch(sendChatMessage({ sessionId, message: question })).unwrap();
-    setShowRechargeModal(false);
-  } catch (err) {
-    const errData = err;
-    if (errData?.type === "wallet_error" || errData?.type === "free_limit_exceeded") {
-      setShowRechargeModal(true);
-    } else {
-      toast.error(errData?.message || "Failed to send message");
+    if (!sessionId) {
+      toast.error("No active session. Please wait.");
+      return;
     }
-  }
-};
+    dispatch(addUserMessageLocally(question));
+    try {
+      await dispatch(
+        sendChatMessage({ sessionId, message: question }),
+      ).unwrap();
+      setShowRechargeModal(false);
+    } catch (err) {
+      const errData = err;
+      if (
+        errData?.type === "wallet_error" ||
+        errData?.type === "free_limit_exceeded"
+      ) {
+        setShowRechargeModal(true);
+      } else {
+        toast.error(errData?.message || "Failed to send message");
+      }
+    }
+  };
 
   // Send typed message
   // const handleSendMessage = async () => {
@@ -203,33 +220,38 @@ const AIChatBot = () => {
   // };
 
   const handleSendMessage = async () => {
-  const message = input.trim();
-  if (!message || !sessionId) return;
-  dispatch(addUserMessageLocally(message));
-  setInput("");
-  try {
-    await dispatch(sendChatMessage({ sessionId, message })).unwrap();
-    setShowRechargeModal(false);
-  } catch (err) {
-    const errData = err;
-    if (errData?.type === "wallet_error" || errData?.type === "free_limit_exceeded") {
-      setShowRechargeModal(true);
-    } else {
-      toast.error(errData?.message || "Failed to send message");
+    const message = input.trim();
+    if (!message || !sessionId) return;
+    dispatch(addUserMessageLocally(message));
+    setInput("");
+    try {
+      await dispatch(sendChatMessage({ sessionId, message })).unwrap();
+      setShowRechargeModal(false);
+    } catch (err) {
+      const errData = err;
+      if (
+        errData?.type === "wallet_error" ||
+        errData?.type === "free_limit_exceeded"
+      ) {
+        setShowRechargeModal(true);
+      } else {
+        toast.error(errData?.message || "Failed to send message");
+      }
     }
-  }
-};
+  };
 
   // Close session
-const handleManualCloseSession = async () => {
-  if (sessionId) {
-    try {
-      await dispatch(closeSession(sessionId)).unwrap();
-    } catch (err) {
-      console.error("Close session error:", err);
+  const handleManualCloseSession = async () => {
+    if (sessionId) {
+      try {
+        await dispatch(closeSession(sessionId)).unwrap();
+      } catch (err) {
+        console.error("Close session error:", err);
+      }
     }
-  }
-};
+  };
+
+  // console.log(sessionQuestions);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden">
@@ -277,10 +299,10 @@ const handleManualCloseSession = async () => {
             </Link>
 
             {/* Astrologer name if available */}
-            {astrologerData?.astrologerName && (
+            {astrologerDetails?.name && (
               <div className="flex items-center gap-2">
                 <span className="text-sm font-semibold text-white">
-                  Chatting with {astrologerData.astrologerName}
+                  Chatting with {astrologerDetails.name}
                 </span>
               </div>
             )}
@@ -298,28 +320,9 @@ const handleManualCloseSession = async () => {
           </div>
 
           <div className="flex-1 mt-2 flex flex-col overflow-y-auto">
-            {/* Expertise Tabs (if multiple expertises) */}
-            {astrologerData?.expertises?.length > 1 && (
-              <div className="flex gap-2 px-4 sm:px-6 pb-2 overflow-x-auto flex-shrink-0">
-                {astrologerData.expertises.map((exp) => (
-                  <button
-                    key={exp.slug}
-                    onClick={() => setActiveExpertiseSlug(exp.slug)}
-                    className={`px-4 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap border transition-all ${
-                      activeExpertiseSlug === exp.slug
-                        ? "bg-amber-500 text-white border-amber-500"
-                        : "bg-white text-amber-700 border-amber-300 hover:bg-amber-50"
-                    }`}
-                  >
-                    {exp.name}
-                  </button>
-                ))}
-              </div>
-            )}
-
             {/* Question chips */}
             <div className="grid grid-cols-2  gap-2 px-4 sm:px-10">
-              {isStartingSession  ? (
+              {isStartingSession ? (
                 <span className="text-xs text-gray-400 col-span-full text-center">
                   Loading questions...
                 </span>
@@ -337,9 +340,9 @@ const handleManualCloseSession = async () => {
                 ))
               ) : (
                 <span className="text-xs text-gray-400 col-span-full text-center">
-                  {astrologerData
+                  {astrologerDetails
                     ? "No questions available for this expertise."
-                    : "Select a topic to start."}
+                    : "Select a Astrologer."}
                 </span>
               )}
             </div>
@@ -348,9 +351,9 @@ const handleManualCloseSession = async () => {
             <div className="flex-1 p-4 space-y-3">
               {!sessionId && messages.length === 0 && (
                 <div className="text-center text-gray-400 mt-20">
-                  {astrologerData
-                    ? `Click a question above to start chatting with ${astrologerData.astrologerName}.`
-                    : "Select a topic above to start chatting."}
+                  {astrologerDetails
+                    ? `Click a question above to start chatting with ${astrologerDetails.name}.`
+                    : "Select a question above to start chatting."}
                 </div>
               )}
               {sessionId && messages.length === 0 && (
@@ -442,6 +445,7 @@ const handleManualCloseSession = async () => {
                       handleSendMessage();
                     }
                   }}
+                  
                   placeholder="Type your question..."
                   rows={1}
                   className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white text-sm resize-none"

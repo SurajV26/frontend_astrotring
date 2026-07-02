@@ -192,7 +192,7 @@ const App = () => {
           {/* royte for ai chatbot */}
 
           <Route
-            path="/ai-chat" element={<AIChatBot />} />
+            path="/ai-chat/:astrologerSlug/:expertiseSlug?" element={<AIChatBot />} />
 
           {/* Dashboard starts from here */}
           <Route path="/dashboard" element={<AstroLayout />}>
