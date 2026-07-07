@@ -37,4 +37,4 @@ jobs:
 
           state-name: .ftp-deploy-sync-state.json
 
-          dangerous-clean-slate: false
+          dangerous-clean-slate: true
