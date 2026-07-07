@@ -7,8 +7,6 @@ import {
   sendChatMessage,
   closeSession,
   addUserMessageLocally,
-  fetchAiAstrologerDetails,
-  clearAstrologerDetails,
 } from "@/redux/slice/aiChatSlice";
 // import { api } from "@/redux/baseApi";
 import Markdown from "react-markdown";
@@ -32,24 +30,16 @@ const AIChatBot = () => {
     error,
   } = useSelector((state) => state.aiChat);
 
-  // console.log("astrologerQuestions", astrologerQuestions);
+  console.log(astrologerDetails)
+
 
   const [input, setInput] = useState("");
   const [showRechargeModal, setShowRechargeModal] = useState(false);
 
-  // Active expertise tab (slug)
-  const [activeExpertiseSlug, setActiveExpertiseSlug] = useState(null);
+
 
   const bottomRef = useRef();
 
-  useEffect(() => {
-    if (astrologerSlug) {
-      dispatch(fetchAiAstrologerDetails(astrologerSlug));
-    }
-    return () => {
-      dispatch(clearAstrologerDetails());
-    };
-  }, [astrologerSlug, dispatch]);
 
   useEffect(() => {
     if (expertiseSlug && astrologerSlug) {
