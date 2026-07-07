@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -15,10 +14,7 @@ const FADE_MASK = {
     "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
 };
 
-
-
 const AiAstrologers = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { allAiAstrologers, isFetchingAllAiAstrologers } = useSelector(
     (state) => state.aiChat,
@@ -51,7 +47,7 @@ const AiAstrologers = () => {
 
   const swiperCommon = {
     modules: [Autoplay],
-    slidesPerView: 'auto',      // 👈 auto width based on slide content
+    slidesPerView: "auto", // 👈 auto width based on slide content
     spaceBetween: 12,
     loop: data.length > 2,
     allowTouchMove: true,
@@ -75,6 +71,7 @@ const AiAstrologers = () => {
                 delay: 0,
                 disableOnInteraction: false,
                 reverseDirection: false,
+                pauseOnMouseEnter: true,
               }}
               speed={4000}
               className="w-full"
@@ -83,12 +80,9 @@ const AiAstrologers = () => {
                 <SwiperSlide
                   key={`r1-${idx}`}
                   className="w-auto flex-shrink-0"
-                  style={{ display: 'inline-flex', width: 'auto' }}
+                  style={{ display: "inline-flex", width: "auto" }}
                 >
-                  <AiAstrologerCard
-                    astro={astro}
-                    
-                  />
+                  <AiAstrologerCard astro={astro} />
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -100,23 +94,21 @@ const AiAstrologers = () => {
             <Swiper
               {...swiperCommon}
               autoplay={{
-                delay: 0,
+                delay: 1,
                 disableOnInteraction: false,
                 reverseDirection: true,
+                pauseOnMouseEnter: true,
               }}
               speed={4000}
               className="w-full"
             >
               {row2.map((astro, idx) => (
                 <SwiperSlide
-                  key={`r2-${idx}`}                     // 👈 fixed key
+                  key={`r2-${idx}`} // 👈 fixed key
                   className="w-auto flex-shrink-0"
-                  style={{ display: 'inline-flex', width: 'auto' }}
+                  style={{ display: "inline-flex", width: "auto" }}
                 >
-                  <AiAstrologerCard
-                    astro={astro}
-                    
-                  />
+                  <AiAstrologerCard astro={astro} />
                 </SwiperSlide>
               ))}
             </Swiper>

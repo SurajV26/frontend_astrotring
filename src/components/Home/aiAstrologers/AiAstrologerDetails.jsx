@@ -16,17 +16,14 @@ const AiAstrologerDetails = () => {
 
   const [showLogin, setShowLogin] = useState(false);
 
-  console.log("astro", astro)
+  // console.log("astro", astro)
 
   useEffect(() => {
     if (slug) {
       dispatch(fetchAiAstrologerDetails(slug));
     }
 
-    // Cleanup on unmount
-    return () => {
-      dispatch(clearAstrologerDetails());
-    };
+  
   }, [slug, dispatch]);
 
   // Pass slug + all expertise slugs so AIChatBot can fetch questions from API

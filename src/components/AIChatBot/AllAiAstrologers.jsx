@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchAllAiAstrologers } from "@/redux/slice/aiChatSlice";
 import { AiAstrologerCard } from "../Home/aiAstrologers/AiAstrologerCard";
 import ComponentHead from "../ComponentHead";
+import Loader from "../common/Loader";
 
 const AllAiAstrologers = () => {
   const dispatch = useDispatch();
@@ -17,9 +18,7 @@ const AllAiAstrologers = () => {
 
   if (isFetchingAllAiAstrologers || !allAiAstrologers) {
     return (
-      <div className="w-full bg-gradient-to-b from-amber-50 to-white py-6 flex justify-center items-center min-h-[300px]">
-        <p className="text-gray-500">Loading astrologers...</p>
-      </div>
+      <Loader message="Loading astrologer details..."/>
     );
   }
 

@@ -62,14 +62,15 @@ export const startSession = createAsyncThunk(
         astrologer_slug: astrologerSlug,
         expertise_slug: expertiseSlug,
       });
+      //  console.log("FULL SESSION RESPONSE:", response.data);
       const sessionId = response.data?.session_id || response.data?.data?.id;
       const questions =
-         response.data?.data?.questions || [];
+         response.data?.data?.questions || response.data?.questions || [];
 
-        // console.log(sessionId)
-        // console.log(questions)
-        // console.log(response)
+       
       if (!sessionId) throw new Error("No session ID returned");
+      //  console.log("SESSION ID:", sessionId);
+      // console.log("QUESTIONS:", questions);
       return { sessionId, questions };
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);

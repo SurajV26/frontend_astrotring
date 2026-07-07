@@ -9,7 +9,7 @@ export const AiAstrologerCard = ({ astro, className = "" }) => {
   return (
     <div
       onClick={() => navigate(`/ai-astrologer/${astro.slug}`)}
-      className={`flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm hover:shadow-lg transition-all cursor-pointer select-none border border-amber-200 hover:border-amber-400 ${className}`}
+       className={`group inline-flex items-center gap-3 p-3 bg-white rounded-xl shadow-sm hover:shadow-lg transition-all cursor-pointer select-none border border-amber-200 hover:border-amber-400 ${className}`}
     >
       <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-28 md:h-28 rounded-full overflow-hidden bg-gradient-to-br from-amber-100 to-orange-100 flex-shrink-0 ring-2 ring-amber-200 group-hover:ring-amber-400 transition-all">
         <img
@@ -19,7 +19,7 @@ export const AiAstrologerCard = ({ astro, className = "" }) => {
         />
       </div>
 
-      <div className="flex flex-col min-w-0">
+      <div className="flex flex-col min-w-0 ">
         <span className="text-sm sm:text-lg font-semibold text-gray-800 group-hover:text-amber-600 transition-colors truncate">
           {astro.name}
         </span>
