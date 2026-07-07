@@ -14,7 +14,7 @@ import {
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "react-toastify";
-import { X } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 
 const AIChatBot = () => {
   const navigate = useNavigate();
@@ -42,32 +42,6 @@ const AIChatBot = () => {
 
   const bottomRef = useRef();
 
-  // const location = useLocation();
-  // { astrologerName, astrologerSlug, expertises: [{id, name, slug}] }
-  // const astrologerData = location.state;
-
-  // Set first expertise as default on mount
-  // useEffect(() => {
-  //   if (astrologerData?.expertises?.length > 0 && !activeExpertiseSlug) {
-  //     setActiveExpertiseSlug(astrologerData.expertises[0].slug);
-  //   }
-  // }, [astrologerData]);
-
-  // Fetch questions whenever active expertise changes
-  // useEffect(() => {
-  //   if (astrologerData?.astrologerSlug && activeExpertiseSlug) {
-  //     dispatch(
-  //       fetchAstrologerQuestions({
-  //         astrologerSlug: astrologerData.astrologerSlug,
-  //         expertiseSlug: activeExpertiseSlug,
-  //       }),
-  //     );
-  //   }
-  //   return () => {
-  //     dispatch(clearAstrologerQuestions());
-  //   };
-  // }, [dispatch, astrologerData?.astrologerSlug, activeExpertiseSlug]);
-
   useEffect(() => {
     if (astrologerSlug) {
       dispatch(fetchAiAstrologerDetails(astrologerSlug));
@@ -93,68 +67,6 @@ const AIChatBot = () => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Helper: ensure session exists
-  // const ensureSession = async () => {
-  //   if (sessionId) return sessionId;
-  //   setIsStartingSession(true);
-  //   try {
-  //     const topicName = astrologerData?.astrologerName
-  //       ? `Chat with ${astrologerData.astrologerName}`
-  //       : "AI Astrologer";
-  //     const response = await api.post("/user/ai-chat/start-session", {
-  //       topic: topicName,
-  //     });
-  //     const id = response.data?.session_id || response.data?.data?.id;
-  //     if (!id) throw new Error("No session ID returned");
-  //     setSessionId(id);
-  //     return id;
-  //   } catch (err) {
-  //     toast.error("Failed to start session");
-  //     return null;
-  //   } finally {
-  //     setIsStartingSession(false);
-  //   }
-  // };
-
-  // Handle Question chip click
-  // const handleQuestionClick = async (question) => {
-  //   const currentSessionId = await ensureSession();
-  //   if (!currentSessionId) return;
-
-  //   setMessages((prev) => [...prev, { sender: "user", message: question }]);
-  //   setIsLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const response = await api.post("/user/ai-chat/send-message", {
-  //       session_id: currentSessionId,
-  //       message: question,
-  //     });
-  //     const reply =
-  //       response.data?.reply ||
-  //       response.data?.message ||
-  //       "Sorry, I couldn't reply.";
-  //     setMessages((prev) => [...prev, { sender: "assistant", message: reply }]);
-  //     setShowRechargeModal(false);
-  //   } catch (err) {
-  //     const errData = err.response?.data;
-  //     if (
-  //       errData?.type === "wallet_error" ||
-  //       errData?.type === "free_limit_exceeded"
-  //     ) {
-  //       setShowRechargeModal(true);
-  //     } else {
-  //       toast.error(errData?.message || "Failed to send message");
-  //     }
-  //     setMessages((prev) => [
-  //       ...prev,
-  //       { sender: "assistant", message: "Sorry, something went wrong." },
-  //     ]);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const handleQuestionClick = async (question) => {
     if (!sessionId) {
       toast.error("No active session. Please wait.");
@@ -178,46 +90,6 @@ const AIChatBot = () => {
       }
     }
   };
-
-  // Send typed message
-  // const handleSendMessage = async () => {
-  //   const message = input.trim();
-  //   if (!message || !sessionId) return;
-
-  //   setMessages((prev) => [...prev, { sender: "user", message }]);
-  //   setInput("");
-  //   setIsLoading(true);
-  //   setError(null);
-
-  //   try {
-  //     const response = await api.post("/user/ai-chat/send-message", {
-  //       session_id: sessionId,
-  //       message,
-  //     });
-  //     const reply =
-  //       response.data?.reply ||
-  //       response.data?.message ||
-  //       "Sorry, I couldn't reply.";
-  //     setMessages((prev) => [...prev, { sender: "assistant", message: reply }]);
-  //     setShowRechargeModal(false);
-  //   } catch (err) {
-  //     const errData = err.response?.data;
-  //     if (
-  //       errData?.type === "wallet_error" ||
-  //       errData?.type === "free_limit_exceeded"
-  //     ) {
-  //       setShowRechargeModal(true);
-  //     } else {
-  //       toast.error(errData?.message || "Failed to send message");
-  //     }
-  //     setMessages((prev) => [
-  //       ...prev,
-  //       { sender: "assistant", message: "Sorry, something went wrong." },
-  //     ]);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const handleSendMessage = async () => {
     const message = input.trim();
@@ -294,9 +166,16 @@ const AIChatBot = () => {
         <div className="flex-1 flex flex-col sm:min-w-4xl mx-auto w-full shadow-2xl overflow-hidden bg-white">
           {/* Header */}
           <div className="flex justify-between border-2 border-gray-300 p-2 flex-shrink-0 bg-amber-400">
-            <Link to="/">
-              <img src={logo} alt="logo" className="h-10" />
-            </Link>
+            <div className="flex justify-center items-center gap-2">
+              <ChevronLeft
+                size={20}
+                className="text-gray-700 cursor-pointer"
+                onClick={() => navigate(-1)}
+              />
+              <Link to="/">
+                <img src={logo} alt="logo" className="h-10" />
+              </Link>
+            </div>
 
             {/* Astrologer name if available */}
             {astrologerDetails?.name && (
@@ -308,10 +187,10 @@ const AIChatBot = () => {
             )}
 
             {sessionId && (
-              <div className="flex justify-end">
+              <div className="flex justify-end ">
                 <button
                   onClick={handleManualCloseSession}
-                  className="p-2 rounded-lg text-xs font-medium bg-red-100 text-red-600 hover:bg-red-200"
+                  className="p-2 rounded-lg text-xs font-medium bg-red-100 text-red-600 hover:bg-red-200 hidden"
                 >
                   ❌ Close Session
                 </button>
@@ -321,7 +200,7 @@ const AIChatBot = () => {
 
           <div className="flex-1 mt-2 flex flex-col overflow-y-auto">
             {/* Question chips */}
-            <div className="grid grid-cols-2  gap-2 px-4 sm:px-10">
+            <div className="grid grid-cols-1 md:grid-cols-2  gap-2 px-4 sm:px-10">
               {isStartingSession ? (
                 <span className="text-xs text-gray-400 col-span-full text-center">
                   Loading questions...
@@ -333,7 +212,7 @@ const AIChatBot = () => {
                     onClick={() =>
                       handleQuestionClick(q.question ?? q.name ?? q)
                     }
-                    className="py-2 px-3 rounded-lg text-sm font-medium cursor-pointer transition bg-amber-200 text-black hover:bg-amber-500 hover:text-white text-left"
+                    className="py-2 rounded-md text-xs text-center font-normal cursor-pointer transition bg-amber-200 text-black hover:bg-amber-500 hover:text-white "
                   >
                     {q.question}
                   </button>
@@ -357,8 +236,9 @@ const AIChatBot = () => {
                 </div>
               )}
               {sessionId && messages.length === 0 && (
-                <div className="text-center text-gray-400 mt-20">
-                  Start chatting
+                <div className="text-center text-xs text-gray-400 mt-10">
+                  Choose a question from above, or type your question below to
+                  ask.
                 </div>
               )}
 
@@ -368,35 +248,37 @@ const AIChatBot = () => {
                   className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <span
-                    className={`inline-block px-4 py-2 rounded-lg max-w-[80%] text-xs ${
+                    className={`inline-block px-4 rounded-md max-w-[80%] ${
                       msg.sender === "user"
                         ? "bg-amber-400 text-white"
-                        : "bg-white border border-gray-300 text-gray-900"
+                        : "bg-white border border-gray-100"
                     }`}
                   >
-                    <Markdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        a: ({ href }) => (
-                          <a
-                            href={href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 underline"
-                          >
-                            {href}
-                          </a>
-                        ),
-                      }}
-                    >
-                      {msg.message}
-                    </Markdown>
+                    <div className="prose prose-xs max-w-none prose-p:my-2 prose-pre:bg-gray-900 prose-code:text-red-500">
+                      <Markdown
+                        remarkPlugins={[remarkGfm]}
+                        components={{
+                          a: ({ href, children }) => (
+                            <a
+                              href={href}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 underline hover:text-blue-800"
+                            >
+                              {children}
+                            </a>
+                          ),
+                        }}
+                      >
+                        {msg.message}
+                      </Markdown>
+                    </div>
                   </span>
                 </div>
               ))}
               {isLoading && (
                 <div className="flex justify-start">
-                  <span className="inline-block px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-500 text-sm">
+                  <span className="inline-block px-4 py-2 bg-white border border-gray-100 rounded-md text-gray-500 text-xs">
                     Typing...
                   </span>
                 </div>
@@ -434,7 +316,7 @@ const AIChatBot = () => {
             )}
 
             {/* Input area */}
-            <div className="p-4 bg-white border-t border-gray-200 flex-shrink-0">
+            <div className="py-4 px-4 sm:px-20 bg-white  border-gray-200 flex-shrink-0">
               <div className="flex gap-2">
                 <textarea
                   value={input}
@@ -445,10 +327,9 @@ const AIChatBot = () => {
                       handleSendMessage();
                     }
                   }}
-                  
                   placeholder="Type your question..."
                   rows={1}
-                  className="flex-1 border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white text-sm resize-none"
+                  className="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white text-sm resize-none placeholder:text-xs "
                   disabled={!sessionId || isLoading}
                 />
                 <button
@@ -459,9 +340,6 @@ const AIChatBot = () => {
                   Send
                 </button>
               </div>
-              {error && (
-                <p className="text-xs text-center text-red-500 mt-1">{error}</p>
-              )}
             </div>
           </div>
         </div>

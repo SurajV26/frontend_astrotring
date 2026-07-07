@@ -166,6 +166,12 @@ const Header = () => {
     path: mahurat.link,
   }));
 
+  const aiAstrologersData = [{
+    label: "Chat with Astrologer",
+    path: "/chat/all-ai-astrologer",
+  }];
+
+
   const navigationItems = useMemo(
     () => [
       {
@@ -175,9 +181,10 @@ const Header = () => {
         menu: horosType,
       },
       {
-        name: "Chat With Astrologer",
-        path: "/talk-to-astrologer",
-        hasmenu: false,
+        name: "Consultation",
+        path: "/chat/all-ai-astrologer",
+        hasmenu: true,
+        menu: aiAstrologersData,
       },
 
       {

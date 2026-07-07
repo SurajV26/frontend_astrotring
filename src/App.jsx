@@ -19,6 +19,7 @@ import { userProfile } from "./redux/slice/UserAuth";
 import GoogleTagManager from "./components/common/GoogleTagManager";
 // import AuthHOC from "@/components/Home/AuthHOC";
 import AIChatBot from "@/components/AIChatBot/AIChatBot";
+import AllAiAstrologers from "./components/AIChatBot/AllAiAstrologers";
 // import AuthHOC from "@/components/Home/AuthHOC";
 
 // import BlogPage from "./pages/BlogPage";
@@ -186,11 +187,11 @@ const App = () => {
             <Route path="/bhoomi-pujan-muhurat" element={<BhumiPuja />} />
             <Route path="/griha-pravesh-muhurat" element={<GrihaPravesh />} />
             <Route path="/mundan-muhurat" element={<Mundan />} />
+
+            {/* royte for ai chatbot */}
             <Route path="/ai-astrologer/:slug" element={<AiAstrologerDetails />} />
+            <Route path="/chat/all-ai-astrologer" element={<AllAiAstrologers />} />
           </Route>
-
-          {/* royte for ai chatbot */}
-
           <Route
             path="/ai-chat/:astrologerSlug/:expertiseSlug?" element={<AIChatBot />} />
 

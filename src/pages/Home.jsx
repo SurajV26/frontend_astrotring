@@ -2,9 +2,8 @@
 
 import BannerSlider from '@/components/BannerSlider'
 import AiAstrologers from '@/components/Home/aiAstrologers/AiAstrologers'
-import Astrologers from '@/components/Home/Astrologers'
+// import Astrologers from '@/components/Home/Astrologers'
 import Banner from '@/components/Home/Banner'
-import BannerCopy from '@/components/Home/BannerCopy'
 import Counter from '@/components/Home/Counter'
 import Faq from '@/components/Home/Faq'
 import FeaturedFaqsStatic from '@/components/Home/FeaturedFaqsStatic'
@@ -21,7 +20,6 @@ const Home = () => {
     <>
 
       <Banner />
-      {/* <BannerCopy /> */}
       <BannerSlider />
       <AiAstrologers />
       {/* <Astrologers /> */}

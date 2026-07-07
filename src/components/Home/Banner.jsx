@@ -10,24 +10,12 @@ import HeroTaramandal from "./HeroTaramandal";
 const Banner = () => {
   const navigate = useNavigate();
   const { isLoggedIn } = useSelector((state) => state.userAuth);
-  const [showLogin, setShowLogin] = useState(false);
+
   const wheelContainerRef = useRef(null);
   const [wheelSize, setWheelSize] = useState(400);
 
-  const handleChatClick = () => {
-    if (isLoggedIn) {
-      navigate("/ai-chat");
-    } else {
-      setShowLogin(true);
-    }
-  };
 
-  useEffect(() => {
-    if (isLoggedIn && showLogin) {
-      navigate("/ai-chat");
-      setShowLogin(false);
-    }
-  }, [isLoggedIn, showLogin, navigate]);
+
 
   useEffect(() => {
     const el = wheelContainerRef.current;
@@ -77,7 +65,7 @@ const Banner = () => {
 
               <div className="flex w-full  items-stretch justify-center gap-3 flex-row ">
                 <button
-                  onClick={handleChatClick}
+                  onClick={()=>{navigate("/chat/all-ai-astrologer")}}
                   className="group relative flex flex-1 cursor-pointer items-center justify-center gap-1.5 overflow-hidden whitespace-nowrap rounded-full bg-gradient-to-r from-amber-400 to-orange-500 px-4 py-2.5 text-sm font-semibold text-black/75 shadow-lg shadow-amber-500/25 transition-all duration-300 hover:-translate-y-1 hover:from-amber-500 hover:to-orange-600 hover:shadow-xl hover:shadow-amber-500/35 active:scale-[0.98] sm:px-6 sm:py-3 sm:text-[15px] md:px-5 md:py-2.5 md:text-sm lg:px-8 lg:py-4 lg:text-lg"
                 >
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
@@ -111,17 +99,7 @@ const Banner = () => {
         </div>
       </section>
 
-      {showLogin && (
-        <UserLogin
-          defaultOpen={true}
-          onOpenChange={(open) => {
-            setShowLogin(open);
-            if (!open && isLoggedIn) {
-              navigate("/ai-chat");
-            }
-          }}
-        />
-      )}
+     
     </>
   );
 };
