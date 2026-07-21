@@ -7,82 +7,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { createRazorpayOrder, fetchWalletDetails, verifyRazorpayPayment, fetchRechargeHistory, fetchPayoutHistory, createPayoutRequest } from '@/redux/slice/walletSlice';
 import { toast } from 'react-toastify';
+import { openRechargeModal } from '@/redux/slice/uiSlice';
 
-const RECHARGE_PACKS = [
-  { pay: 50, label: "Get ₹50" },
-  { pay: 100, label: "Get ₹100" },
-  { pay: 199, label: "Get ₹199" },
-  { pay: 300, label: "Get ₹300" },
-  { pay: 500, label: "Get ₹500" },
-  { pay: 1000, label: "Get ₹1000" },
-  { pay: 2000, label: "Get ₹2000" },
-  { pay: 3000, label: "Get ₹3000" },
-  { pay: 5000, label: "Get ₹5000" },
-  { pay: 10000, label: "Get ₹10000" },
-  { pay: 15000, label: "Get ₹15000" },
-  { pay: 20000, label: "Get ₹20000" },
-  { pay: 50000, label: "Get ₹50000" },
-  { pay: 100000, label: "Get ₹100000" },
-];
 
 function WalletDashboard() {
   const { astrologer } = useSelector((state) => state.astroAuth);
   const { user } = useSelector((state) => state.userAuth);
   const dispatch = useDispatch();
   const { details, loading } = useSelector((state) => state.wallet);
-  const [isAddMoneyModalOpen, setIsAddMoneyModalOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchWalletDetails());
   }, [dispatch]);
 
-  const handlePayment = async (amount) => {
-    if (!window.Razorpay) {
-      toast.error("Razorpay SDK failed to load. Are you offline?");
-      return;
-    }
-
-    try {
-      const orderData = await dispatch(createRazorpayOrder(amount)).unwrap();
-
-      const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Provided by backend or env
-        amount: orderData.amount,
-        currency: orderData.currency || "INR",
-        name: "AstroTring",
-        description: "Wallet Recharge",
-        order_id: orderData.order_id,
-        handler: async function (response) {
-          try {
-            await dispatch(verifyRazorpayPayment({
-              paymentData: {
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_signature: response.razorpay_signature,
-              },
-              amount
-            })).unwrap();
-            setIsAddMoneyModalOpen(false);
-            toast.success("Recharge Successful!");
-          } catch (err) {
-            toast.error("Payment verification failed. Please contact support.");
-          }
-        },
-        prefill: {
-          name: user?.name || astrologer?.name || "",
-          email: user?.email || astrologer?.email || "",
-          contact: user?.phone || astrologer?.phone || ""
-        },
-        theme: {
-          color: "#f59e0b" // amber-500
-        }
-      };
-      const paymentObject = new window.Razorpay(options);
-      paymentObject.open();
-    } catch (err) {
-      toast.error(err || "Failed to initiate payment");
-    }
-  };
 
   if (loading && !details) {
     return (
@@ -156,12 +93,14 @@ function WalletDashboard() {
             <p className="text-muted-foreground">Track your earnings, spending, and wallet balance</p>
           </div>
           <button
-            onClick={() => setIsAddMoneyModalOpen(true)}
+            onClick={() => dispatch(openRechargeModal())}
             className="bg-amber-500 hover:bg-amber-600 text-gray-710 px-6 py-2.5 rounded-lg font-semibold shadow-md transition-colors flex items-center gap-0 shrink-0 cursor-pointer"
           >
             <Plus className="w-5 h-5 " />
             Add Money to Wallet
           </button>
+
+
         </div>
 
         {/* Main Balance Card */}
@@ -176,9 +115,9 @@ function WalletDashboard() {
                 <h2 className="text-5xl font-bold text-primary">
                   {formatCurrency(walletData.balance || 0)}
                 </h2>
-                <Badge variant="outline" className="text-xs">
+                {/* <Badge variant="outline" className="text-xs">
                   Wallet ID: {walletData.id || "N/A"}
-                </Badge>
+                </Badge> */}
               </div>
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="space-y-1">
@@ -338,57 +277,7 @@ function WalletDashboard() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Add Money Modal */}
-      {isAddMoneyModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative p-6 md:p-8 animate-in fade-in zoom-in duration-200">
-            <button
-              onClick={() => setIsAddMoneyModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 bg-gray-100 rounded-full w-8 h-8 flex items-center justify-center transition-colors cursor-pointer"
-            >
-              ✕
-            </button>
-
-            <div className="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center border-b pb-4">
-              <div>
-                <p className="text-gray-600 text-sm font-medium">Available Balance</p>
-                <h2 className="text-4xl font-bold flex items-center gap-0">
-                  <IndianRupee strokeWidth={2.75} /> {parseFloat(walletData.balance || 0).toFixed(2)}
-                </h2>
-              </div>
-              {/* <button className="mt-4 md:mt-0 text-orange-500 hover:text-orange-600 font-medium transition-colors">
-                Consultation History
-              </button> */}
-            </div>
-
-            <div className="mb-8">
-              <h3 className="text-2xl font-semibold mb-1">Add Money to Wallet</h3>
-              <p className="text-gray-500 text-sm">Choose from the available recharge pack</p>
-            </div>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {RECHARGE_PACKS.map((pack, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => handlePayment(pack.pay)}
-                  className="bg-[#FFF9E6] border border-[#E5C780] rounded-md cursor-pointer hover:shadow-md hover:border-amber-500 transition-all group flex flex-col items-center justify-between overflow-hidden"
-                >
-                  <div className="bg-amber-500 w-full py-1 text-center font-medium text-xs text-amber-900 shadow-sm">
-                    {pack.label}
-                  </div>
-                  <div className="flex-1 w-full flex items-center justify-center py-5">
-                    <span className="text-xl font-semibold text-gray-800 group-hover:scale-110 transition-transform">
-                      ₹ {pack.pay.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-          </div>
-        </div>
-      )}
+y
     </div>
   );
 }

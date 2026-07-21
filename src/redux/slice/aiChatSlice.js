@@ -35,7 +35,7 @@ export const fetchAiAstrologerDetails = createAsyncThunk(
   },
 );
 
-// New API: /api/ai-astrologers/{astrologer_slug}/expertises/{expertise_slug}/questions
+// New API: /api/ai-astrologers/{astrologer_slug}/expertises/{expertise_slug}/questions- not using right now because question is arriving in start session
 export const fetchAstrologerQuestions = createAsyncThunk(
   "aiChat/fetchAstrologerQuestions",
   async ({ astrologerSlug, expertiseSlug }, { rejectWithValue }) => {
@@ -65,9 +65,8 @@ export const startSession = createAsyncThunk(
       //  console.log("FULL SESSION RESPONSE:", response.data);
       const sessionId = response.data?.session_id || response.data?.data?.id;
       const questions =
-         response.data?.data?.questions || response.data?.questions || [];
+        response.data?.data?.questions || response.data?.questions || [];
 
-       
       if (!sessionId) throw new Error("No session ID returned");
       //  console.log("SESSION ID:", sessionId);
       // console.log("QUESTIONS:", questions);
@@ -90,9 +89,25 @@ export const sendChatMessage = createAsyncThunk(
         response.data?.reply ||
         response.data?.message ||
         "Sorry, I couldn't reply.";
-      return { reply };
+      const remainingQuestions = response.data?.remaining_questions || [];
+      return { reply, remainingQuestions };
     } catch (error) {
       return rejectWithValue(error.response?.data);
+    }
+  },
+);
+
+export const fetchChatHistory = createAsyncThunk(
+  "aiChat/fetchHistory",
+  async (sessionId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/user/ai-chat/history/${sessionId}`);
+      console.log("history", response);
+      return response.data.data; // मान लें कि data में messages array है
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch history",
+      );
     }
   },
 );
@@ -127,6 +142,9 @@ const initialState = {
   isLoading: false,
   isStartingSession: false,
   sessionQuestions: [],
+   followUpQuestions: [], 
+
+  isHistoryLoading: false,
 
   error: null,
 };
@@ -145,9 +163,9 @@ const aiChatSlice = createSlice({
     clearAstrologerQuestions: (state) => {
       state.astrologerQuestions = [];
     },
-     addUserMessageLocally: (state, action) => {
-    state.messages.push({ sender: "user", message: action.payload });
-  },
+    addUserMessageLocally: (state, action) => {
+      state.messages.push({ sender: "user", message: action.payload });
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -213,6 +231,7 @@ const aiChatSlice = createSlice({
       .addCase(sendChatMessage.pending, (state) => {
         state.isLoading = true;
         state.error = null;
+        state.followUpQuestions = [];
       })
       // send message
       .addCase(sendChatMessage.fulfilled, (state, action) => {
@@ -221,10 +240,18 @@ const aiChatSlice = createSlice({
           sender: "assistant",
           message: action.payload.reply,
         });
+        // 🔥 नया: Remaining Questions को SessionQuestions में Set करें
+        if (
+          action.payload.remainingQuestions &&
+          action.payload.remainingQuestions.length > 0
+        ) {
+          state. followUpQuestions  = action.payload.remainingQuestions;
+        }
       })
       .addCase(sendChatMessage.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload?.message || "Failed to send message";
+        state.followUpQuestions = [];
         state.messages.push({
           sender: "assistant",
           message: "Sorry, something went wrong. Please try again.",
@@ -238,10 +265,31 @@ const aiChatSlice = createSlice({
       })
       .addCase(closeSession.rejected, (state, action) => {
         console.error("Close session error:", action.payload);
+      })
+
+      // chat history
+      .addCase(fetchChatHistory.pending, (state) => {
+        state.isHistoryLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchChatHistory.fulfilled, (state, action) => {
+        state.isHistoryLoading = false;
+        // मान लें कि API से मिला data: { messages: [...], sessionId, ... }
+        state.messages = action.payload.messages || [];
+        // यदि API sessionId भी दे तो उसे set करें (optional)
+        // state.sessionId = action.payload.sessionId;
+      })
+      .addCase(fetchChatHistory.rejected, (state, action) => {
+        state.isHistoryLoading = false;
+        state.error = action.payload || "Something went wrong";
       });
   },
 });
 
-export const { clearError, clearAstrologerDetails, clearAstrologerQuestions,addUserMessageLocally } =
-  aiChatSlice.actions;
+export const {
+  clearError,
+  clearAstrologerDetails,
+  clearAstrologerQuestions,
+  addUserMessageLocally,
+} = aiChatSlice.actions;
 export default aiChatSlice.reducer;
