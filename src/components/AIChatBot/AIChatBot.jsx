@@ -7,12 +7,16 @@ import {
   sendChatMessage,
   closeSession,
   addUserMessageLocally,
+  fetchChatHistory,
+  fetchAiAstrologerDetails,
 } from "@/redux/slice/aiChatSlice";
 // import { api } from "@/redux/baseApi";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "react-toastify";
-import { ChevronLeft, X } from "lucide-react";
+import { ChevronLeft, Wallet, X } from "lucide-react";
+import { fetchWalletDetails } from "@/redux/slice/walletSlice";
+import { openRechargeModal } from "@/redux/slice/uiSlice";
 
 const AIChatBot = () => {
   const navigate = useNavigate();
@@ -27,19 +31,37 @@ const AIChatBot = () => {
     isLoading,
     isStartingSession,
     astrologerDetails,
+    followUpQuestions,
+
     error,
   } = useSelector((state) => state.aiChat);
+  const { details: walletDetails } = useSelector((state) => state.wallet);
+  const walletBalance = walletDetails?.balance || 0;
 
-  console.log(astrologerDetails)
-
+  console.log("astrologer details", astrologerDetails);
+  console.log("chat messages", messages);
+  console.log("followUpQuestions", followUpQuestions);
 
   const [input, setInput] = useState("");
+  const [showCustomInput, setShowCustomInput] = useState(false);
   const [showRechargeModal, setShowRechargeModal] = useState(false);
-
-
 
   const bottomRef = useRef();
 
+  // AIChatBot.jsx के अंदर, सभी useState के नीचे यह function डालें
+  const formatMarkdownText = (text) => {
+    if (!text) return text;
+
+    let formatted = text
+      // 1. Numbered List (1., 2., 3.) से पहले newline डालें
+      .replace(/(\d+\.\s+)/g, "\n$1")
+      // 2. Bullet List (*, -) से पहले newline डालें (अगर भविष्य में आए)
+      .replace(/(\*\s+)/g, "\n$1")
+      // 3. अगर 3 से ज्यादा newline आ जाएं तो उन्हें 2 में बदल दें (साफ-सफाई)
+      .replace(/\n{3,}/g, "\n\n");
+
+    return formatted.trimStart();
+  };
 
   useEffect(() => {
     if (expertiseSlug && astrologerSlug) {
@@ -52,10 +74,27 @@ const AIChatBot = () => {
     }
   }, [dispatch, expertiseSlug, astrologerSlug]);
 
+  //  Astrologer Details Fetch करें (Refresh के बाद भी दिखे)
+  useEffect(() => {
+    if (astrologerSlug) {
+      dispatch(fetchAiAstrologerDetails(astrologerSlug));
+    }
+  }, [astrologerSlug, dispatch]);
+
+  //  जब sessionId आ जाए, तो history fetch करें
+  useEffect(() => {
+    if (sessionId) {
+      dispatch(fetchChatHistory(sessionId));
+    }
+  }, [sessionId, dispatch]);
+
   // Auto-scroll
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+  useEffect(() => {
+    dispatch(fetchWalletDetails());
+  }, [dispatch]);
 
   const handleQuestionClick = async (question) => {
     if (!sessionId) {
@@ -155,32 +194,50 @@ const AIChatBot = () => {
         {/* Chat Box Container */}
         <div className="flex-1 flex flex-col sm:min-w-4xl mx-auto w-full shadow-2xl overflow-hidden bg-white">
           {/* Header */}
-          <div className="flex justify-between border-2 border-gray-300 p-2 flex-shrink-0 bg-amber-400">
-            <div className="flex justify-center items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between gap-2 p-2 border-2 border-gray-300 bg-amber-400">
+            {/* Left: Back + Logo + Astrologer Info */}
+            <div className="flex items-center gap-2 flex-shrink-0">
               <ChevronLeft
-                size={20}
-                className="text-gray-700 cursor-pointer"
+                size={24}
+                strokeWidth={2.5}
+                className="text-gray-500 cursor-pointer"
                 onClick={() => navigate(-1)}
               />
-              <Link to="/">
-                <img src={logo} alt="logo" className="h-10" />
-              </Link>
+              <div className="flex flex-col items-start">
+                <Link to="/">
+                  <img
+                    src={logo}
+                    alt="logo"
+                    className="h-8 sm:h-10 w-auto max-w-[100px] sm:max-w-[150px] object-contain"
+                  />
+                </Link>
+                {astrologerDetails?.name && (
+                  <div className="flex items-center gap-1 text-[9px] pl-1">
+                    <span className="w-1 h-1 bg-green-500 rounded-full inline-block animate-pulse"></span>
+                    <span className="text-green-600 font-medium">Online</span>
+                    <span className="text-gray-600 font-medium ml-1">
+                      • {astrologerDetails.name}
+                    </span>
+                  </div>
+                )}
+              </div>
             </div>
 
-            {/* Astrologer name if available */}
-            {astrologerDetails?.name && (
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-white">
-                  Chatting with {astrologerDetails.name}
+            {/* Right: Wallet Balance */}
+            <div className="flex-shrink-0">
+              <div className="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg shadow-sm">
+                <Wallet className="w-4 h-4 text-amber-600" />
+                <span className="text-sm font-bold text-gray-800">
+                  ₹{walletBalance}
                 </span>
               </div>
-            )}
+            </div>
 
             {sessionId && (
-              <div className="flex justify-end ">
+              <div className="flex-shrink-0 hidden">
                 <button
                   onClick={handleManualCloseSession}
-                  className="p-2 rounded-lg text-xs font-medium bg-red-100 text-red-600 hover:bg-red-200 hidden"
+                  className="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-red-100 text-red-600 hover:bg-red-200 "
                 >
                   ❌ Close Session
                 </button>
@@ -225,12 +282,12 @@ const AIChatBot = () => {
                     : "Select a question above to start chatting."}
                 </div>
               )}
-              {sessionId && messages.length === 0 && (
+              {/* {sessionId && messages.length === 0 && (
                 <div className="text-center text-xs text-gray-400 mt-10">
                   Choose a question from above, or type your question below to
                   ask.
                 </div>
-              )}
+              )} */}
 
               {messages.map((msg, idx) => (
                 <div
@@ -244,10 +301,50 @@ const AIChatBot = () => {
                         : "bg-white border border-gray-100"
                     }`}
                   >
-                    <div className="prose prose-xs max-w-none prose-p:my-2 prose-pre:bg-gray-900 prose-code:text-red-500">
+                    <div className="prose prose-sm max-w-none prose-p:my-2 prose-pre:bg-gray-900 prose-code:text-red-500">
                       <Markdown
                         remarkPlugins={[remarkGfm]}
                         components={{
+                          // 🟢 Ordered List (Numbered) को सुंदर बनाएँ
+                          ol: ({ node, children, ...props }) => (
+                            <ol
+                              className="list-decimal pl-5 my-2 space-y-1"
+                              {...props}
+                            >
+                              {children}
+                            </ol>
+                          ),
+                          // 🟢 Unordered List (Bullet) को सुंदर बनाएँ
+                          ul: ({ node, children, ...props }) => (
+                            <ul
+                              className="list-disc pl-5 my-2 space-y-1"
+                              {...props}
+                            >
+                              {children}
+                            </ul>
+                          ),
+                          // 🟢 List Items को थोड़ा Padding दें
+                          li: ({ node, children, ...props }) => (
+                            <li className="text-sm text-gray-800" {...props}>
+                              {children}
+                            </li>
+                          ),
+                          // 🟢 Bold Text को Highlight करें
+                          strong: ({ node, children, ...props }) => (
+                            <strong
+                              className="font-bold text-amber-700"
+                              {...props}
+                            >
+                              {children}
+                            </strong>
+                          ),
+                          // 🟢 Paragraphs के बीच थोड़ा Gap दें
+                          p: ({ node, children, ...props }) => (
+                            <p className="mb-2 leading-relaxed" {...props}>
+                              {children}
+                            </p>
+                          ),
+                          // 🔵 Links (पहले से है, वैसा ही रखें)
                           a: ({ href, children }) => (
                             <a
                               href={href}
@@ -260,17 +357,40 @@ const AIChatBot = () => {
                           ),
                         }}
                       >
-                        {msg.message}
+                        {/* 🔥 यहाँ पर `formatMarkdownText` Function Apply करें */}
+                        {formatMarkdownText(msg.message)}
                       </Markdown>
                     </div>
                   </span>
                 </div>
               ))}
+
               {isLoading && (
                 <div className="flex justify-start">
                   <span className="inline-block px-4 py-2 bg-white border border-gray-100 rounded-md text-gray-500 text-xs">
                     Typing...
                   </span>
+                </div>
+              )}
+              {/* Follow-up Questions (Reply के नीचे) */}
+              {messages.length > 0 && followUpQuestions.length > 0 && (
+                <div className="mt-4 pt-3 border-t border-gray-200">
+                  <p className="text-xs text-gray-400 mb-2 font-medium">
+                    💡 You can aslo ask:
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {followUpQuestions.map((q, idx) => (
+                      <button
+                        key={q.id ?? idx}
+                        onClick={() =>
+                          handleQuestionClick(q.question ?? q.name ?? q)
+                        }
+                        className="py-1.5 px-3 rounded-full text-xs font-medium cursor-pointer transition bg-gray-100 text-gray-700 hover:bg-amber-400 hover:text-white border border-gray-200"
+                      >
+                        {q.question}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
               <div ref={bottomRef} />
@@ -295,7 +415,7 @@ const AIChatBot = () => {
                       Your wallet balance is low. Please recharge to continue.
                     </p>
                     <button
-                      onClick={() => navigate("/dashboard/wallet")}
+                      onClick={() => dispatch(openRechargeModal())}
                       className="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 px-4 rounded-xl transition-colors shadow-sm hover:shadow cursor-pointer"
                     >
                       Recharge Now
@@ -306,30 +426,47 @@ const AIChatBot = () => {
             )}
 
             {/* Input area */}
-            <div className="py-4 px-4 sm:px-20 bg-white  border-gray-200 flex-shrink-0">
-              <div className="flex gap-2">
-                <textarea
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && !e.shiftKey) {
-                      e.preventDefault();
-                      handleSendMessage();
-                    }
-                  }}
-                  placeholder="Type your question..."
-                  rows={1}
-                  className="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white text-sm resize-none placeholder:text-xs "
-                  disabled={!sessionId || isLoading}
-                />
-                <button
-                  onClick={handleSendMessage}
-                  disabled={!sessionId || isLoading}
-                  className="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 disabled:opacity-50 transition text-sm cursor-pointer"
+            <div className="py-4 px-4 sm:px-20 bg-white  flex-shrink-0">
+              {!showCustomInput ? (
+                // 🟢 जब Input छिपा है, तो यह Clickable Prompt दिखेगा
+                <div
+                  onClick={() => setShowCustomInput(true)}
+                  className="w-full  px-4 py-4 text-center text-sm text-gray-500 "
                 >
-                  Send
-                </button>
-              </div>
+                  Choose a question from above, or{" "}
+                  <span className="font-medium text-amber-500 cursor-pointer">
+                    click here
+                  </span>{" "}
+                  to type your own question.
+                </div>
+              ) : (
+                // 🔵 जब Input खुला है, तो Textarea और Send Button दिखेगा
+                <div className="flex gap-2">
+                  <textarea
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                    placeholder="Type your question..."
+                    rows={1}
+                    // 🟢 जब यह दिखे, तो Auto-Focus हो जाए
+                    autoFocus
+                    className="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white text-sm resize-none placeholder:text-xs"
+                    disabled={!sessionId || isLoading}
+                  />
+                  <button
+                    onClick={handleSendMessage}
+                    disabled={!sessionId || isLoading}
+                    className="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 disabled:opacity-50 transition text-sm cursor-pointer"
+                  >
+                    Send
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>

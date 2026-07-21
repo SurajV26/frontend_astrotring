@@ -20,6 +20,7 @@ import GoogleTagManager from "./components/common/GoogleTagManager";
 // import AuthHOC from "@/components/Home/AuthHOC";
 import AIChatBot from "@/components/AIChatBot/AIChatBot";
 import AllAiAstrologers from "./components/AIChatBot/AllAiAstrologers";
+import GlobalRechargeModal from "./components/recharge/GlobalRechargeModal";
 // import AuthHOC from "@/components/Home/AuthHOC";
 
 // import BlogPage from "./pages/BlogPage";
@@ -206,6 +207,8 @@ const App = () => {
             />
           </Route>
         </Routes>
+
+        <GlobalRechargeModal />
       </Suspense>
     </>
   );
