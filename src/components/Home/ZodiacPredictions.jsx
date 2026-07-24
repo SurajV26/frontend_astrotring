@@ -34,8 +34,8 @@ const ZodiacPredictions = () => {
   const { horoscope, loading } = useSelector((state) => state.horoscope);
 
   return (
-    <section className="py-10 bg-gradient-to-b from-orange-50 to-yellow-50">
-      <div className="container mx-auto px-4">
+    <section className="py-10 ">
+      <div className="container mx-auto ">
         <h3 className="font-bold text-center mb-12 bg-clip-text">
           Monthly Predictions As Per Moon Signs
         </h3>

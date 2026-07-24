@@ -36,11 +36,35 @@ export const testimonials = [
         service: "Palm Reading",
         message: "The guidance was honest and practical. Would definitely recommend to others.",
     },
+    {
+        id: 5,
+        name: "Priya Mehta",
+        avatar: "https://github.com/maxleiter.png",
+        rating: 4,
+        service: "Palm Reading",
+        message: "The guidance was honest and practical. Would definitely recommend to others.",
+    },
+    {
+        id: 6,
+        name: "Priya Mehta",
+        avatar: "https://github.com/maxleiter.png",
+        rating: 4,
+        service: "Palm Reading",
+        message: "The guidance was honest and practical. Would definitely recommend to others.",
+    },
+    {
+        id: 7,
+        name: "Priya Mehta",
+        avatar: "https://github.com/maxleiter.png",
+        rating: 4,
+        service: "Palm Reading",
+        message: "The guidance was honest and practical. Would definitely recommend to others.",
+    },
 ]
 
 const Testmonial = () => {
     return (
-      <section className="py-10 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
+      <section className="py-10">
             <div className="container">
                 <ComponentHead
                   className="text-start mb-5"

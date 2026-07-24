@@ -9,8 +9,8 @@ const counters = [
 
 const Counter = () => {
   return (
-    <section className="counter-section py-10 bg-gradient-to-br from-orange-50 to-yellow-50">
-      <div className="counter-container max-w-6xl mx-auto px-4">
+    <section className="counter-section py-10 ">
+      <div className="counter-container max-w-6xl mx-auto px-4 ">
         <div className="counter-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 text-center">
           {counters.map((item, index) => (
             <div key={index} className="counter-item">

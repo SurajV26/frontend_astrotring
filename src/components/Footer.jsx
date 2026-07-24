@@ -49,7 +49,7 @@ const Footer = () => {
     }
   }, [horoscope]);
   return (
-    <footer className="bg-gradient-to-b from-yellow-50 to-yellow-200 text-black pt-10">
+    <footer className=" text-gray-800 pt-10">
       <div className="mx-auto px-2 md:px-10">
         <div className="grid lg:grid-cols-4 md:grid-cols-2 gap-10 pb-12">
           {/* ABOUT */}

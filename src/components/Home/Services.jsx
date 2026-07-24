@@ -5,9 +5,9 @@ import { servicesData } from "@/data/services/servicesData";
 
 const Services = () => {
   return (
-    <section className="py-10 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50">
-      <div className="container mx-auto px-6">
-        <div className="text-center mb-14">
+    <section className="py-10">
+      <div className="container mx-auto ">
+        <div className="text-center mb-12">
           <ComponentHead
             heading="Complimentary Astrology Services"
             title="We offer free consultations to help you understand your birth chart and its implications."

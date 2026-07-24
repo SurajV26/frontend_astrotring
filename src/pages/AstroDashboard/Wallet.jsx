@@ -1,58 +1,95 @@
-import React, { useState } from 'react';
-import { Wallet, TrendingUp, TrendingDown, Phone, MessageSquare, ArrowUpRight, ArrowDownRight, Calendar, Clock, IndianRupee, Bold, Plus } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
-import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
-import { createRazorpayOrder, fetchWalletDetails, verifyRazorpayPayment, fetchRechargeHistory, fetchPayoutHistory, createPayoutRequest } from '@/redux/slice/walletSlice';
-import { toast } from 'react-toastify';
-import { openRechargeModal } from '@/redux/slice/uiSlice';
-
+import React, { useState } from "react";
+import {
+  Wallet,
+  TrendingUp,
+  TrendingDown,
+  Phone,
+  MessageSquare,
+  ArrowUpRight,
+  ArrowDownRight,
+  Calendar,
+  Clock,
+  IndianRupee,
+  Bold,
+  Plus,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import {
+  createRazorpayOrder,
+  fetchWalletDetails,
+  verifyRazorpayPayment,
+  fetchRechargeHistory,
+  fetchPayoutHistory,
+  createPayoutRequest,
+} from "@/redux/slice/walletSlice";
+import { toast } from "react-toastify";
+import { openRechargeModal } from "@/redux/slice/uiSlice";
 
 function WalletDashboard() {
   const { astrologer } = useSelector((state) => state.astroAuth);
   const { user } = useSelector((state) => state.userAuth);
   const dispatch = useDispatch();
   const { details, loading } = useSelector((state) => state.wallet);
+  const { chatHistory } = useSelector((state) => state.aiChat);
+
+  console.log("chatHistory",chatHistory)
 
   useEffect(() => {
     dispatch(fetchWalletDetails());
   }, [dispatch]);
-
+  useEffect(() => {
+    dispatch(fetchRechargeHistory());
+  }, [dispatch]);
 
   if (loading && !details) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-xl font-semibold text-gray-500 animate-pulse">Loading Wallet Data...</div>
+        <div className="text-xl font-semibold text-gray-500 animate-pulse">
+          Loading Wallet Data...
+        </div>
       </div>
     );
   }
 
   // Use only real data. If details is undefined, we use fallback 0s to prevent crash before loading triggers, though the loading check above handles it mostly.
   const walletData = details || {};
-  console.log("walletData", walletData)
+  console.log("walletData", walletData);
 
   const formatCurrency = (amount) => `₹${parseFloat(amount).toFixed(2)}`;
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).toLocaleDateString('en-IN', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    if (!dateString) return "N/A";
+    return new Date(dateString).toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
-  const StatCard = ({ icon: Icon, title, value, subtitle, trend, colorClass, borderColor }) => (
+  const StatCard = ({
+    icon: Icon,
+    title,
+    value,
+    subtitle,
+    trend,
+    colorClass,
+    borderColor,
+  }) => (
     <Card className={`overflow-hidden  ${borderColor}  p-6 `}>
-
-      <CardContent >
+      <CardContent>
         <div className="flex items-start justify-between">
-
           <div>
-
             <p className="text-sm text-slate-600 mb-1">{title}</p>
             <p className={`text-3xl font-bold ${colorClass}`}>{value}</p>
             {trend && (
@@ -86,21 +123,21 @@ function WalletDashboard() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight flex items-center gap-3">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight flex items-center gap-3">
               <Wallet className="w-8 h-8 text-primary" />
               Wallet Dashboard
             </h1>
-            <p className="text-muted-foreground">Track your earnings, spending, and wallet balance</p>
+            <p className="text-muted-foreground">
+              Track your earnings, spending, and wallet balance
+            </p>
           </div>
           <button
             onClick={() => dispatch(openRechargeModal())}
-            className="bg-amber-500 hover:bg-amber-600 text-gray-710 px-6 py-2.5 rounded-lg font-semibold shadow-md transition-colors flex items-center gap-0 shrink-0 cursor-pointer"
+            className="bg-amber-500 hover:bg-amber-600 text-gray-710 px-6 py-2.5 rounded-lg font-semibold shadow-md transition-colors flex items-center justify-center gap-0 shrink-0 cursor-pointer"
           >
             <Plus className="w-5 h-5 " />
             Add Money to Wallet
           </button>
-
-
         </div>
 
         {/* Main Balance Card */}
@@ -122,11 +159,17 @@ function WalletDashboard() {
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground">Last Updated</p>
-                  <p className="text-sm font-medium">{formatDate(walletData.updated_at)}</p>
+                  <p className="text-sm font-medium">
+                    {formatDate(walletData.updated_at)}
+                  </p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground">Account Created</p>
-                  <p className="text-sm font-medium">{formatDate(walletData.created_at)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Account Created
+                  </p>
+                  <p className="text-sm font-medium">
+                    {formatDate(walletData.created_at)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -154,14 +197,14 @@ function WalletDashboard() {
             title="Total Added"
             value={formatCurrency(walletData.total_added || 0)}
             colorClass="text-blue-600"
-            borderColor={'border-blue-200 bg-blue-50'}
+            borderColor={"border-blue-200 bg-blue-50"}
           />
           <StatCard
             icon={ArrowDownRight}
             title="Total Spent"
             value={formatCurrency(walletData.total_spent || 0)}
             colorClass="text-red-600"
-            borderColor={'border-red-200 bg-red-50'}
+            borderColor={"border-red-200 bg-red-50"}
           />
         </div>
 
@@ -188,9 +231,16 @@ function WalletDashboard() {
               />
               <InfoRow
                 label="Average Per Minute"
-                value={(walletData.total_call_minutes || 0) > 0
-                  ? formatCurrency((parseFloat(walletData.total_call_spent || 0) / walletData.total_call_minutes).toFixed(2))
-                  : '₹0.00'}
+                value={
+                  (walletData.total_call_minutes || 0) > 0
+                    ? formatCurrency(
+                        (
+                          parseFloat(walletData.total_call_spent || 0) /
+                          walletData.total_call_minutes
+                        ).toFixed(2),
+                      )
+                    : "₹0.00"
+                }
                 icon={TrendingUp}
               />
             </CardContent>
@@ -206,20 +256,18 @@ function WalletDashboard() {
             </CardHeader>
             <CardContent className="space-y-1">
               <InfoRow
-                label="Total Chat Duration"
-                value={`${walletData.total_chat_minutes || 0} minutes`}
+                label="Paid Messages Count"
+                value={`${chatHistory?.paid_messages || 0} `}
                 icon={Clock}
               />
               <InfoRow
-                label="Total Chat Revenue"
-                value={formatCurrency(walletData.total_chat_spent || 0)}
+                label="Free Messages Count"
+                value={`${chatHistory?.free_messages_used || 0} `}
                 icon={IndianRupee}
               />
               <InfoRow
-                label="Average Per Minute"
-                value={(walletData.total_chat_minutes || 0) > 0
-                  ? formatCurrency((parseFloat(walletData.total_chat_spent || 0) / walletData.total_chat_minutes).toFixed(2))
-                  : '₹0.00'}
+                label="Total Spent"
+                value={`${chatHistory?.total_amount || 0} `}
                 icon={TrendingUp}
               />
             </CardContent>
@@ -233,13 +281,19 @@ function WalletDashboard() {
               <Calendar className="w-5 h-5 text-purple-600" />
               Recent Activity
             </CardTitle>
-            <CardDescription>Your latest wallet transactions and updates</CardDescription>
+            <CardDescription>
+              Your latest wallet transactions and updates
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-1">
               <InfoRow
                 label="Last Recharge Amount"
-                value={walletData.last_recharge_amount ? formatCurrency(walletData.last_recharge_amount) : 'No recharge yet'}
+                value={
+                  walletData.last_recharge_amount
+                    ? formatCurrency(walletData.last_recharge_amount)
+                    : "No recharge yet"
+                }
                 icon={ArrowUpRight}
               />
               <InfoRow
@@ -252,7 +306,7 @@ function WalletDashboard() {
         </Card>
 
         {/* Summary Card */}
-        <Card className={"border-2 border-primary/30 p-6"}  >
+        <Card className={"border-2 border-primary/30 p-6"}>
           <CardHeader>
             <CardTitle>Account Summary</CardTitle>
             <CardDescription>Overview of your wallet account</CardDescription>
@@ -260,24 +314,31 @@ function WalletDashboard() {
           <CardContent>
             <div className="grid md:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Account Status</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Account Status
+                </p>
                 <Badge variant="outline" className="text-sm">
-                  {walletData.deleted_at ? 'Inactive' : 'Active'}
+                  {walletData.deleted_at ? "Inactive" : "Active"}
                 </Badge>
               </div>
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">User ID</p>
-                <p className="text-sm font-mono">{walletData.user_id || "N/A"}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  User ID
+                </p>
+                <p className="text-sm font-mono">
+                  {walletData.user_id || "N/A"}
+                </p>
               </div>
               <div className="space-y-2">
-                <p className="text-sm font-medium text-muted-foreground">Wallet ID</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  Wallet ID
+                </p>
                 <p className="text-sm font-mono">{walletData.id || "N/A"}</p>
               </div>
             </div>
           </CardContent>
         </Card>
       </div>
-y
     </div>
   );
 }

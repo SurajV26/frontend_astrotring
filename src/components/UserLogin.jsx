@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ReactSelect from "react-select";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,7 @@ import {
   userVerifyLoginOtp,
   userResendLoginOtp,
 } from "@/redux/slice/UserAuth";
+import { useCountryCodes } from "@/hooks/useCountryCodes";
 
 /* ---------------- ZOD SCHEMAS ---------------- */
 
@@ -73,6 +75,8 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
 
+  const { countryCodes, loading: loadingCodes } = useCountryCodes();
+
   // Signup form state
   const [form, setForm] = useState({
     name: "",
@@ -82,9 +86,9 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
     dob: "",
     birth_time: "",
     birth_place: "",
-    gender: "",
+    gender: "male",
     occupation: "",
-    marital_status: "",
+    marital_status: "unmarried",
   });
 
   const [errors, setErrors] = useState({ fields: {}, form: "" });
@@ -373,8 +377,8 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                       </div> */}
                     </div>
                     <p className="text-xs text-gray-400">
-                          OTP sent to {mobileNumber}
-                        </p>
+                      OTP sent to {mobileNumber}
+                    </p>
 
                     <Button
                       type="submit"
@@ -440,30 +444,83 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                 {/* Country Code + Mobile */}
                 <div className="grid grid-cols-3 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="country_code">Country Code</Label>
-                    <Select
-                      name="country_code"
-                      value={form.country_code}
-                      onValueChange={(val) =>
-                        handleChange({
-                          target: { name: "country_code", value: val },
-                        })
+                    <Label htmlFor="country_code">
+                      Country <span className="hidden sm:block">Code</span>{" "}
+                    </Label>
+                    <ReactSelect
+                    
+                      id="country_code"
+                      options={countryCodes?.map((code) => ({
+                        value: code.value,
+                        label: code.label,
+                      }))}
+                      value={
+                        countryCodes?.find(
+                          (code) => code.value === form.country_code,
+                        )
+                          ? {
+                              value: form.country_code,
+                              label: countryCodes.find(
+                                (c) => c.value === form.country_code,
+                              )?.label,
+                            }
+                          : null
                       }
-                    >
-                      <SelectTrigger
-                        id="country_code"
-                        className="focus:ring-2 focus:ring-amber-400 w-full"
-                      >
-                        <SelectValue placeholder="Code" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="+91">+91 (India)</SelectItem>
-                        <SelectItem value="+1">+1 (US)</SelectItem>
-                        <SelectItem value="+44">+44 (UK)</SelectItem>
-                        <SelectItem value="+61">+61 (Australia)</SelectItem>
-                        <SelectItem value="+81">+81 (Japan)</SelectItem>
-                      </SelectContent>
-                    </Select>
+                      onChange={(option) => {
+                        handleChange({
+                          target: {
+                            name: "country_code",
+                            value: option?.value || "",
+                          },
+                        });
+                      }}
+                      placeholder="country code..."
+                      isLoading={loadingCodes}
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                      formatOptionLabel={(option, { context }) => {
+                        //  Show only value in the input (context === 'value')
+                      if (context === "value") {
+      // Input में: Mobile पर सिर्फ Value, बड़े पर Full Label
+      return (<div className="flex items-center justify-center">
+        <span className="block sm:hidden">{option.value}</span>
+        <span className="hidden sm:block">{option.label}</span></div>
+      );
+    }
+                        //  Show full label in dropdown menu
+                        return option.label; // e.g., "+91 (IN)"
+                      }}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          borderColor: "#d1d5db",
+                          boxShadow: "none",
+                          "&:hover": { borderColor: "#f59e0b" },
+                          borderRadius: "0.5rem",
+
+                          minWidth: "80px",
+                          fontSize: "0.75rem",
+                          fontWeight: "600",
+                          textAlign: "center",
+                        }),
+                        menu: (base) => ({
+                          ...base,
+                          zIndex: 9999,
+                          width: "200px",
+                        }),
+                        option: (base, state) => ({
+                          ...base,
+                          backgroundColor: state.isSelected
+                            ? "#f59e0b"
+                            : state.isFocused
+                              ? "#fef3c7"
+                              : "white",
+                          color: state.isSelected ? "white" : "#374151",
+                          "&:active": { backgroundColor: "#f59e0b" },
+                          fontSize: "0.75rem",
+                        }),
+                      }}
+                    />
                     {errors.fields.country_code && (
                       <p className="text-red-500 text-xs">
                         {errors.fields.country_code[0]}
@@ -510,7 +567,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                     >
                       <SelectTrigger
                         id="gender"
-                        className="focus:ring-2 focus:ring-amber-400 w-full"
+                        className="focus:ring-1 focus:ring-amber-400 w-full"
                       >
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
@@ -535,7 +592,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                       value={form.dob}
                       onChange={handleChange}
                       required
-                      className="focus:ring-2 focus:ring-amber-400 transition"
+                      className="focus:ring-1 focus:ring-amber-400 transition"
                     />
                     {errors.fields.dob && (
                       <p className="text-red-500 text-xs">
@@ -597,7 +654,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                     >
                       <SelectTrigger
                         id="marital_status"
-                        className="focus:ring-2 focus:ring-amber-400 w-full"
+                        className="focus:ring-1 focus:ring-amber-400 w-full"
                       >
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>

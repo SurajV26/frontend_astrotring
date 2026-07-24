@@ -222,7 +222,7 @@ const faqData = [
 
 const Faq = () => {
   return (
-    <section className="py-20 bg-gradient-to-br from-orange-50 via-yellow-100 to-red-20">
+    <section className="">
       <div className="container">
         <ComponentHead
           className="text-start mb-5"

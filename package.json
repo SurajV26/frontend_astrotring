@@ -46,6 +46,7 @@
     "react-phone-number-input": "^3.4.14",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.12.0",
+    "react-select": "^5.10.2",
     "react-slick": "^0.31.0",
     "react-spinners": "^0.17.0",
     "react-toastify": "^11.0.5",
@@ -74,5 +75,4 @@
   "overrides": {
     "vite": "npm:rolldown-vite@7.2.5"
   }
-  
 }

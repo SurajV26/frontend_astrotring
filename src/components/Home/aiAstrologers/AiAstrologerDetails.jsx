@@ -56,13 +56,15 @@ const AiAstrologerDetails = () => {
     );
   }
 
+
+  console.log(error)
   if (error || !astro) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50 to-white">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-800">Astrologer not found</h2>
           <p className="text-gray-500 mt-2">{error || "The astrologer you are looking for does not exist."}</p>
-          <button onClick={() => navigate("/")} className="mt-4 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 cursor-pointer">Go Home</button>
+          <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 cursor-pointer">Go Back</button>
         </div>
       </div>
     );

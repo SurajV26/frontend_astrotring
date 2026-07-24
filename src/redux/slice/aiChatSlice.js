@@ -142,9 +142,10 @@ const initialState = {
   isLoading: false,
   isStartingSession: false,
   sessionQuestions: [],
-   followUpQuestions: [], 
+  followUpQuestions: [], 
 
   isHistoryLoading: false,
+  chatHistory:{},
 
   error: null,
 };
@@ -276,6 +277,8 @@ const aiChatSlice = createSlice({
         state.isHistoryLoading = false;
         // मान लें कि API से मिला data: { messages: [...], sessionId, ... }
         state.messages = action.payload.messages || [];
+        state.chatHistory = action.payload || {};
+
         // यदि API sessionId भी दे तो उसे set करें (optional)
         // state.sessionId = action.payload.sessionId;
       })

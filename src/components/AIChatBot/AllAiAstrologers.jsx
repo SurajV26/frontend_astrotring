@@ -18,7 +18,7 @@ const AllAiAstrologers = () => {
 
   if (isFetchingAllAiAstrologers || !allAiAstrologers) {
     return (
-      <Loader message="Loading astrologer details..."/>
+      <Loader message="Loading astrologers..."/>
     );
   }
 

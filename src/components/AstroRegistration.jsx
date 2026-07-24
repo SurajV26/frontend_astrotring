@@ -843,6 +843,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import ReactSelect from "react-select";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { X, Check, AlertCircle, Camera, Upload } from "lucide-react";
@@ -851,6 +852,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AstrologerRegister } from "@/redux/slice/AstroAuth";
 import { Link, useNavigate } from "react-router-dom";
 import { fileToBase64 } from "@/hooks/fileToBase64";
+import { useCountryCodes } from "@/hooks/useCountryCodes";
 
 // Language options
 const languages = [
@@ -931,11 +933,12 @@ const AstroRegister = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, astrologer } = useSelector((state) => state.astroAuth);
-  const [countryCodes, setCountryCodes] = useState([]);
+  // const [countryCodes, setCountryCodes] = useState([]);
   const [loadingCountries, setLoadingCountries] = useState(true);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [registrationCode, setRegistrationCode] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const { countryCodes, loading: loadingCodes } = useCountryCodes();
 
   // Form state
   const [form, setForm] = useState({
@@ -962,56 +965,6 @@ const AstroRegister = () => {
 
   const [errors, setErrors] = useState({});
 
-  // Fetch country codes
-  useEffect(() => {
-    const fetchCountryCodes = async () => {
-      try {
-        const response = await fetch(
-          "https://restcountries.com/v3.1/all?fields=name,idd,cca2",
-        );
-        const data = await response.json();
-
-        const codes = data
-          .filter((country) => country.idd?.root && country.idd?.suffixes)
-          .map((country) => {
-            const root = country.idd.root;
-            const suffixes = country.idd.suffixes;
-
-            if (suffixes.length === 1 && suffixes[0] === "") {
-              return {
-                value: root,
-                label: `${root} (${country.name.common})`,
-                country: country.name.common,
-                code: country.cca2,
-              };
-            }
-
-            return {
-              value: `${root}${suffixes[0]}`,
-              label: `${root}${suffixes[0]} (${country.name.common})`,
-              country: country.name.common,
-              code: country.cca2,
-            };
-          })
-          .sort((a, b) => a.country.localeCompare(b.country));
-
-        const uniqueCodes = codes.filter(
-          (code, index, self) =>
-            index === self.findIndex((c) => c.value === code.value),
-        );
-
-        setCountryCodes(uniqueCodes);
-        setLoadingCountries(false);
-      } catch (error) {
-        console.error("Error fetching country codes:", error);
-        toast.error("Failed to load country codes");
-        setLoadingCountries(false);
-      }
-    };
-
-    fetchCountryCodes();
-  }, []);
-
   // Handlers
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -1035,7 +988,7 @@ const AstroRegister = () => {
 
       try {
         const base64 = await fileToBase64(file);
-        setProfileImage(base64);          // ✅ Base64 store
+        setProfileImage(base64); // ✅ Base64 store
         setImagePreview(URL.createObjectURL(file));
       } catch (error) {
         toast.error("Failed to process image");
@@ -1115,7 +1068,10 @@ const AstroRegister = () => {
     } else if (!/\S+@\S+\.\S+/.test(form.email)) {
       newErrors.email = "Please enter a valid email address";
     }
-
+    // Inside validateForm()
+    if (!form.country_code) {
+      newErrors.country_code = "Country code is required";
+    }
     if (!form.mobile.trim()) {
       newErrors.mobile = "Mobile number is required";
     } else if (!/^\d{10}$/.test(form.mobile)) {
@@ -1231,11 +1187,14 @@ const AstroRegister = () => {
       experience: Number(form.experience),
       daily_available_hours: Number(form.daily_available_hours),
       is_family_astrologer: Number(form.is_family_astrologer),
-      family_astrology_details: form.is_family_astrologer === "1" ? form.family_astrology_details.trim() : null,
+      family_astrology_details:
+        form.is_family_astrologer === "1"
+          ? form.family_astrology_details.trim()
+          : null,
       address: form.address.trim() || null,
       pincode: form.pincode.trim() || null,
       astro_education: form.astro_education,
-      profile_image: profileImage || null,   // ✅ Base64 string  directly
+      profile_image: profileImage || null, // ✅ Base64 string  directly
       terms_accepted: termsAccepted ? 1 : 0,
     };
 
@@ -1341,24 +1300,86 @@ const AstroRegister = () => {
                   <div className="space-y-2">
                     <Label>Mobile Number *</Label>
                     <div className="flex gap-2 ">
-                      <Select
-                        value={form.country_code}
-                        onValueChange={(value) =>
-                          handleSelect("country_code", value)
+                      <ReactSelect
+                        id="country_code"
+                        options={countryCodes?.map((code) => ({
+                          value: code.value,
+                          label: code.label,
+                        }))}
+                        value={
+                          countryCodes?.find(
+                            (code) => code.value === form.country_code,
+                          )
+                            ? {
+                                value: form.country_code,
+                                label: countryCodes.find(
+                                  (c) => c.value === form.country_code,
+                                )?.label,
+                              }
+                            : null
                         }
-                        disabled={loadingCountries}
-                      >
-                        <SelectTrigger className="w-[140px]">
-                          <SelectValue placeholder="Code" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {countryCodes.map((code) => (
-                            <SelectItem key={code.code} value={code.value}>
-                              {code.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                        onChange={(option) => {
+                          handleChange({
+                            target: {
+                              name: "country_code",
+                              value: option?.value || "",
+                            },
+                          });
+                        }}
+                        placeholder="country code..."
+                        isLoading={loadingCodes}
+                        className="react-select-container"
+                        classNamePrefix="react-select"
+                        formatOptionLabel={(option, { context }) => {
+                          //  Show only value in the input (context === 'value')
+                          if (context === "value") {
+                            // Input में: Mobile पर सिर्फ Value, बड़े पर Full Label
+                            return (
+                              <div className="flex items-center justify-center">
+                                <span className="block sm:hidden">
+                                  {option.value}
+                                </span>
+                                <span className="hidden sm:block">
+                                  {option.label}
+                                </span>
+                              </div>
+                            );
+                          }
+                          //  Show full label in dropdown menu
+                          return option.label; // e.g., "+91 (IN)"
+                        }}
+                        styles={{
+                          control: (base) => ({
+                            ...base,
+                            borderColor: "#d1d5db",
+                            boxShadow: "none",
+                            "&:hover": { borderColor: "#f59e0b" },
+                            borderRadius: "0.5rem",
+
+                            minWidth: "80px",
+                            fontSize: "0.75rem",
+                            fontWeight: "600",
+                            textAlign: "center",
+                          }),
+                          menu: (base) => ({
+                            ...base,
+                            zIndex: 9999,
+                            width: "200px",
+                          }),
+                          option: (base, state) => ({
+                            ...base,
+                            backgroundColor: state.isSelected
+                              ? "#f59e0b"
+                              : state.isFocused
+                                ? "#fef3c7"
+                                : "white",
+                            color: state.isSelected ? "white" : "#374151",
+                            "&:active": { backgroundColor: "#f59e0b" },
+                            fontSize: "0.75rem",
+                          }),
+                        }}
+                      />
+
                       <Input
                         name="mobile"
                         placeholder="1234567890"
@@ -1372,6 +1393,12 @@ const AstroRegister = () => {
                       <p className="text-xs text-red-500 flex items-center gap-1">
                         <AlertCircle className="w-3 h-3" />
                         {errors.mobile}
+                      </p>
+                    )}
+                    {errors.country_code && (
+                      <p className="text-xs text-red-500 flex items-center gap-1">
+                        <AlertCircle className="w-3 h-3" />
+                        {errors.country_code}
                       </p>
                     )}
                   </div>
@@ -1420,7 +1447,6 @@ const AstroRegister = () => {
 
               {/* Profile Photo */}
 
-
               <div className="space-y-1.5 col-span-1 max-w-xs">
                 <Label className="text-sm flex items-center gap-1.5">
                   <Camera className="w-3.5 h-3.5" />
@@ -1428,28 +1454,40 @@ const AstroRegister = () => {
                 </Label>
 
                 <div
-                  onClick={() => document.getElementById('profile-upload')?.click()}
+                  onClick={() =>
+                    document.getElementById("profile-upload")?.click()
+                  }
                   onDragOver={(e) => {
                     e.preventDefault();
-                    e.currentTarget.classList.add('border-yellow-500', 'bg-yellow-50');
+                    e.currentTarget.classList.add(
+                      "border-yellow-500",
+                      "bg-yellow-50",
+                    );
                   }}
                   onDragLeave={(e) => {
                     e.preventDefault();
-                    e.currentTarget.classList.remove('border-yellow-500', 'bg-yellow-50');
+                    e.currentTarget.classList.remove(
+                      "border-yellow-500",
+                      "bg-yellow-50",
+                    );
                   }}
                   onDrop={(e) => {
                     e.preventDefault();
-                    e.currentTarget.classList.remove('border-yellow-500', 'bg-yellow-50');
+                    e.currentTarget.classList.remove(
+                      "border-yellow-500",
+                      "bg-yellow-50",
+                    );
                     const file = e.dataTransfer.files[0];
                     if (file) handleImageChange({ target: { files: [file] } });
                   }}
                   className={`
       relative border border-dashed rounded-lg p-4
       transition-all duration-200 cursor-pointer
-      ${imagePreview
-                      ? 'border-green-300 bg-green-50/30'
-                      : 'border-gray-300 bg-gray-50 hover:border-yellow-400 hover:bg-yellow-50/30'
-                    }
+      ${
+        imagePreview
+          ? "border-green-300 bg-green-50/30"
+          : "border-gray-300 bg-gray-50 hover:border-yellow-400 hover:bg-yellow-50/30"
+      }
     `}
                 >
                   <input
@@ -1481,7 +1519,7 @@ const AstroRegister = () => {
                           e.stopPropagation();
                           setProfileImage(null);
                           setImagePreview("");
-                          document.getElementById('profile-upload').value = "";
+                          document.getElementById("profile-upload").value = "";
                         }}
                         className="text-red-500 hover:text-red-700 p-1 flex-shrink-0"
                       >
@@ -1605,7 +1643,6 @@ const AstroRegister = () => {
                             >
                               {expertiseOptions.find((e) => e.value === skill)
                                 ?.label || skill}
-
                             </Badge>
                             <X
                               className="w-3.5 h-3.5 ml-2 cursor-pointer absolute -top-1 right-0  bg-blue-100 text-blue-700 hover:bg-blue-200   rounded-full p-0.5 shadow-sm z-10"
@@ -1653,7 +1690,6 @@ const AstroRegister = () => {
                         {form.astro_education.map((qual) => (
                           <div className="relative">
                             <Badge
-
                               key={qual}
                               variant="secondary"
                               className="px-3 py-1.5 bg-purple-100 text-purple-700 hover:bg-purple-200"
@@ -1777,7 +1813,6 @@ const AstroRegister = () => {
                             >
                               {categories.find((c) => c.value === cat)?.label ||
                                 cat}
-
                             </Badge>
                             <X
                               className="w-3.5 h-3.5 absolute -top-1 right-0  cursor-pointer bg-orange-100 text-orange-700 hover:bg-orange-200 rounded-full p-0.5 shadow-sm z-10"
@@ -1787,7 +1822,6 @@ const AstroRegister = () => {
                             />
                           </div>
                         ))}
-
                       </div>
                     )}
                   </div>
@@ -1910,7 +1944,11 @@ const AstroRegister = () => {
                     onChange={(e) => setTermsAccepted(e.target.checked)}
                     className="mt-0.3 cursor-pointer"
                   />
-                  <label htmlFor="terms" className="text-xs text-gray-600" style={{ fontSize: '12px', color: '#4b5563' }}>
+                  <label
+                    htmlFor="terms"
+                    className="text-xs text-gray-600"
+                    style={{ fontSize: "12px", color: "#4b5563" }}
+                  >
                     I have read and agree to the{" "}
                     <Link
                       to="/astrologer-serviceProvider-TnC"
@@ -1919,7 +1957,6 @@ const AstroRegister = () => {
                     >
                       Terms & Conditions
                     </Link>{" "}
-
                   </label>
                 </div>
                 {errors.terms && (
@@ -1960,11 +1997,14 @@ const AstroRegister = () => {
                     Registration in Process
                   </h3>
                   <p className="text-gray-700 mb-2">
-                    Your registration is currently under verification process, please wait for some time.
+                    Your registration is currently under verification process,
+                    please wait for some time.
                   </p>
                   <p className="text-sm text-gray-600 mb-4">
                     Your registration token is:{" "}
-                    <span className="font-mono font-semibold text-orange-700">{registrationCode}</span>
+                    <span className="font-mono font-semibold text-orange-700">
+                      {registrationCode}
+                    </span>
                   </p>
                   <div className="flex justify-end cursor-pointer">
                     <button

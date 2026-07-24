@@ -39,7 +39,7 @@ export function AppSidebar() {
       <SidebarHeader className={"bg-yellow-50  "}>
         <SidebarMenu>
           <SidebarMenuItem>
-            <NavLink to="/" end className={"flex justify-center pt-2"}>
+            <NavLink to="/" end className={"flex justify-start pt-2"}>
               <img
                 src={faviconlogo}
                 className="h-8 w-8 rounded-md"

@@ -88,7 +88,7 @@
 }
 /* Counter Section Background */
 .counter-section {
-  @apply py-20 bg-gradient-to-br from-orange-50 via-yellow-50 to-red-50;
+  @apply py-20;
   font-family: "Poppins", sans-serif;
 }
 

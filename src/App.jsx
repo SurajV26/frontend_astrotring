@@ -18,9 +18,9 @@ import { userProfile } from "./redux/slice/UserAuth";
 // import Mundan from "./pages/FooterMahurat/Mundan";
 import GoogleTagManager from "./components/common/GoogleTagManager";
 // import AuthHOC from "@/components/Home/AuthHOC";
-import AIChatBot from "@/components/AIChatBot/AIChatBot";
-import AllAiAstrologers from "./components/AIChatBot/AllAiAstrologers";
-import GlobalRechargeModal from "./components/recharge/GlobalRechargeModal";
+// import AIChatBot from "@/components/AIChatBot/AIChatBot";
+// import AllAiAstrologers from "./components/AIChatBot/AllAiAstrologers";
+// import GlobalRechargeModal from "./components/recharge/GlobalRechargeModal";
 // import AuthHOC from "@/components/Home/AuthHOC";
 
 // import BlogPage from "./pages/BlogPage";
@@ -85,7 +85,14 @@ const BhumiPuja = lazy(() => import("./pages/FooterMahurat/BhumiPuja"));
 const GrihaPravesh = lazy(() => import("./pages/FooterMahurat/GrihaPravesh"));
 
 const Mundan = lazy(() => import("./pages/FooterMahurat/Mundan"));
+
+// ai astrologers and ai chatbot
+const AllAiAstrologers = lazy(() => import("./components/AIChatBot/AllAiAstrologers"));
 const AiAstrologerDetails = lazy(() => import("./components/Home/aiAstrologers/AiAstrologerDetails"));
+const AIChatBot = lazy(() => import("@/components/AIChatBot/AIChatBot"));
+
+
+const GlobalRechargeModal = lazy(() => import("./components/recharge/GlobalRechargeModal"));
 
 const App = () => {
   const path = useLocation().pathname;
@@ -208,7 +215,7 @@ const App = () => {
           </Route>
         </Routes>
 
-        <GlobalRechargeModal />
+         <Suspense fallback={null}><GlobalRechargeModal /></Suspense>
       </Suspense>
     </>
   );

@@ -55,16 +55,16 @@ const AiAstrologers = () => {
 
   return (
     <div className="w-full container py-6">
-      <div className="container mx-auto px-4 mb-6">
+      <div className=" mx-auto px-4 mb-6">
         <ComponentHead
           heading="AI Astrologers"
           title="Connect with our expert AI astrologers for guidance"
         />
       </div>
 
-      <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-6" >
         {row1.length > 0 && (
-          <div className="w-full" style={FADE_MASK}>
+          <div className="w-full" >
             <Swiper
               {...swiperCommon}
               autoplay={{
@@ -73,7 +73,7 @@ const AiAstrologers = () => {
                 reverseDirection: false,
                 pauseOnMouseEnter: true,
               }}
-              speed={4000}
+              speed={10000}
               className="w-full"
             >
               {row1.map((astro, idx) => (
@@ -90,7 +90,7 @@ const AiAstrologers = () => {
         )}
 
         {row2.length > 0 && (
-          <div className="w-full" style={FADE_MASK}>
+          <div className="w-full" >
             <Swiper
               {...swiperCommon}
               autoplay={{
@@ -99,12 +99,12 @@ const AiAstrologers = () => {
                 reverseDirection: true,
                 pauseOnMouseEnter: true,
               }}
-              speed={4000}
+              speed={10000}
               className="w-full"
             >
               {row2.map((astro, idx) => (
                 <SwiperSlide
-                  key={`r2-${idx}`} // 👈 fixed key
+                  key={`r2-${idx}`} //  fixed key
                   className="w-auto flex-shrink-0"
                   style={{ display: "inline-flex", width: "auto" }}
                 >

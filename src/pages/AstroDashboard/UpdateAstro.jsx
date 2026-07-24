@@ -1,26 +1,69 @@
-import React, { useState, useEffect } from 'react';
-import { User, Mail, Phone, MapPin, Calendar, Briefcase, Star, Languages, Award, Clock, Shield, Globe, Save, X, Heart, Sparkles } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { cn } from '@/lib/utils';
-import { useDispatch, useSelector } from 'react-redux';
-import { AstrologerProfile, AstrologerUpdate } from '@/redux/slice/AstroAuth';
-import { userProfile, userUpdate } from '@/redux/slice/UserAuth';
-import { fileToBase64 } from "@/hooks/fileToBase64";   // ✅ import
+import React, { useState, useEffect } from "react";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  Briefcase,
+  Star,
+  Languages,
+  Award,
+  Clock,
+  Shield,
+  Globe,
+  Save,
+  X,
+  Heart,
+  Sparkles,
+} from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { cn } from "@/lib/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { AstrologerProfile, AstrologerUpdate } from "@/redux/slice/AstroAuth";
+import { userProfile, userUpdate } from "@/redux/slice/UserAuth";
+import { fileToBase64 } from "@/hooks/fileToBase64"; // ✅ import
 
 // Move FormField component OUTSIDE
-const FormField = ({ label, name, type = "text", placeholder, icon: Icon, required = false, className = '', value, onChange }) => {
+import { toast } from "react-toastify";
+const FormField = ({
+  label,
+  name,
+  type = "text",
+  placeholder,
+  icon: Icon,
+  required = false,
+  className = "",
+  value,
+  onChange,
+}) => {
   // console.log("type",type)
   // console.log("value",type)
   return (
     <div className="space-y-2">
-      <Label htmlFor={name} className="flex items-center gap-2 text-sm font-medium text-slate-700">
+      <Label
+        htmlFor={name}
+        className="flex items-center gap-2 text-sm font-medium text-slate-700"
+      >
         {Icon && <Icon className="w-4 h-4 text-slate-500" />}
         {label}
         {required && <span className="text-red-500">*</span>}
@@ -33,14 +76,24 @@ const FormField = ({ label, name, type = "text", placeholder, icon: Icon, requir
         value={type !== "date" ? value : value?.split("T")[0]}
         onChange={onChange}
         lang="en-GB"
-        className={cn("border-slate-200 focus:border-indigo-400 focus:ring-indigo-200", className)}
+        className={cn(
+          "border-slate-200 focus:border-indigo-400 focus:ring-indigo-200",
+          className,
+        )}
       />
     </div>
-  )
+  );
 };
 
 // Move MultiSelect component OUTSIDE with maxSelection limit
-const MultiSelect = ({ options, selected, setSelected, label, icon: Icon, maxSelection = null }) => {
+const MultiSelect = ({
+  options,
+  selected,
+  setSelected,
+  label,
+  icon: Icon,
+  maxSelection = null,
+}) => {
   const handleToggle = (option) => {
     setSelected((prev) => {
       if (prev.includes(option)) {
@@ -70,7 +123,8 @@ const MultiSelect = ({ options, selected, setSelected, label, icon: Icon, maxSel
       <div className="flex flex-wrap gap-2">
         {options.map((option) => {
           const isSelected = selected.includes(option);
-          const isDisabled = !isSelected && maxSelection && selected.length >= maxSelection;
+          const isDisabled =
+            !isSelected && maxSelection && selected.length >= maxSelection;
 
           return (
             <Badge
@@ -82,7 +136,7 @@ const MultiSelect = ({ options, selected, setSelected, label, icon: Icon, maxSel
                   ? "bg-primary text-black hover:bg-orange-400 cursor-pointer hover:scale-105"
                   : isDisabled
                     ? "opacity-40 cursor-not-allowed"
-                    : "hover:border-primary hover:bg-indigo-50 cursor-pointer hover:scale-105"
+                    : "hover:border-primary hover:bg-indigo-50 cursor-pointer hover:scale-105",
               )}
               onClick={() => !isDisabled && handleToggle(option)}
             >
@@ -93,15 +147,18 @@ const MultiSelect = ({ options, selected, setSelected, label, icon: Icon, maxSel
         })}
       </div>
       <p className="text-xs text-slate-500 italic">
-        {maxSelection ? `Select up to ${maxSelection} options` : 'Click to select / deselect'}
+        {maxSelection
+          ? `Select up to ${maxSelection} options`
+          : "Click to select / deselect"}
       </p>
     </div>
   );
 };
 
 function UpdateAstro() {
-
-  const { astrologer, loading: astroLoading } = useSelector((state) => state.astroAuth);
+  const { astrologer, loading: astroLoading } = useSelector(
+    (state) => state.astroAuth,
+  );
   const { user, loading: userLoading } = useSelector((state) => state.userAuth);
 
   const [role, setRole] = useState(localStorage.getItem("role_id"));
@@ -117,45 +174,44 @@ function UpdateAstro() {
   //   }
   // };
 
-
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       // Validation (optional)
-      if (!file.type.startsWith('image/')) {
-        toast.error('Please select an image file');
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file");
         return;
       }
       if (file.size > 2 * 1024 * 1024) {
-        toast.error('Image size must be less than 2MB');
+        toast.error("Image size must be less than 2MB");
         return;
       }
 
       try {
         const base64 = await fileToBase64(file);
         setProfileImageBase64(base64);
-        setPreviewImage(URL.createObjectURL(file));   // preview ke liye
+        setPreviewImage(URL.createObjectURL(file)); // preview ke liye
       } catch (error) {
-        toast.error('Failed to process image');
+        toast.error("Failed to process image");
       }
     }
   };
   const [formData, setFormData] = useState({
-    name: '',
-    username: '',
-    email: '',
-    mobile: '',
-    countryCode: '+91',
-    gender: '',
-    dob: '',
-    birthPlace: '',
-    birthTime: '',
-    about: '',
-    address: '',
-    pincode: '',
-    experience: '',
-    chatPrice: '',
-    callPrice: '',
+    name: "",
+    username: "",
+    email: "",
+    mobile: "",
+    countryCode: "+91",
+    gender: "",
+    dob: "",
+    birthPlace: "",
+    birthTime: "",
+    about: "",
+    address: "",
+    pincode: "",
+    experience: "",
+    chatPrice: "",
+    callPrice: "",
   });
 
   const [selectedExpertise, setSelectedExpertise] = useState([]);
@@ -163,65 +219,87 @@ function UpdateAstro() {
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedQualification, setSelectedQualification] = useState([]);
 
-
-  const expertiseOptions = ['tarot', 'vastu', 'numerology', 'palmistry', 'vedic', 'astrology', 'horoscope'];
-  const languageOptions = ['english', 'hindi', 'bengali', 'tamil', 'telugu', 'marathi', 'gujarati'];
-  const categoryOptions = ['love', 'marriage', 'health', 'career', 'finance', 'family', 'education'];
+  const expertiseOptions = [
+    "tarot",
+    "vastu",
+    "numerology",
+    "palmistry",
+    "vedic",
+    "astrology",
+    "horoscope",
+  ];
+  const languageOptions = [
+    "english",
+    "hindi",
+    "bengali",
+    "tamil",
+    "telugu",
+    "marathi",
+    "gujarati",
+  ];
+  const categoryOptions = [
+    "love",
+    "marriage",
+    "health",
+    "career",
+    "finance",
+    "family",
+    "education",
+  ];
   const qualificationOptions = [
     { value: "self_learned", label: "Self Learned" },
     { value: "diploma", label: "Diploma in Astrology" },
     { value: "acharya", label: "Acharya in Astrology" },
     { value: "phd", label: "PhD in Astrology" },
   ];
-// qualification ke value ko lebel and lebel ko value me convert karne ke liye kyuki backend ko value send karna hai jab bhi user label par click kare 
+  // qualification ke value ko lebel and lebel ko value me convert karne ke liye kyuki backend ko value send karna hai jab bhi user label par click kare
 
-const qualificationValueToLabel = Object.fromEntries(
-  qualificationOptions.map(opt => [opt.value, opt.label])
-);
-const qualificationLabelToValue = Object.fromEntries(
-  qualificationOptions.map(opt => [opt.label, opt.value])
-);
+  const qualificationValueToLabel = Object.fromEntries(
+    qualificationOptions.map((opt) => [opt.value, opt.label]),
+  );
+  const qualificationLabelToValue = Object.fromEntries(
+    qualificationOptions.map((opt) => [opt.label, opt.value]),
+  );
 
-// ham aise bhi kar sakte hain but future me agar koi value add karenge to yaha bhi change karna padega isliye upar wala use kar rahe hain
+  // ham aise bhi kar sakte hain but future me agar koi value add karenge to yaha bhi change karna padega isliye upar wala use kar rahe hain
 
-//   const qualificationValueToLabel = {
-//   "self_learned": "Self Learned",
-//   "diploma": "Diploma in Astrology",
-//   "acharya": "Acharya in Astrology",
-//   "phd": "PhD in Astrology"
-// };
-// const qualificationLabelToValue = {
-//   "Self Learned": "self_learned",
-//   "Diploma in Astrology": "diploma",
-//   "Acharya in Astrology": "acharya",
-//   "PhD in Astrology": "phd"
-// };
-
+  //   const qualificationValueToLabel = {
+  //   "self_learned": "Self Learned",
+  //   "diploma": "Diploma in Astrology",
+  //   "acharya": "Acharya in Astrology",
+  //   "phd": "PhD in Astrology"
+  // };
+  // const qualificationLabelToValue = {
+  //   "Self Learned": "self_learned",
+  //   "Diploma in Astrology": "diploma",
+  //   "Acharya in Astrology": "acharya",
+  //   "PhD in Astrology": "phd"
+  // };
 
   // Determine which data to use based on role
   const isAstrologer = role === "2";
   const currentProfile = isAstrologer ? astrologer : user;
   const loading = isAstrologer ? astroLoading : userLoading;
-  console.log("current profile", currentProfile)
+  console.log("current profile", currentProfile);
 
   useEffect(() => {
     if (currentProfile) {
       setFormData({
-        name: currentProfile?.name || '',
-        username: currentProfile?.username || '',
-        email: currentProfile?.email || '',
-        mobile: currentProfile?.mobile || '',
-        countryCode: currentProfile?.country_code || '+91',
-        gender: currentProfile?.gender || '',
-        dob: currentProfile?.dob || '',
-        birthPlace: currentProfile?.birth_place || '',
-        birthTime: currentProfile?.birth_time || '',
-        about: currentProfile?.about || '',
-        address: currentProfile?.address || '',
-        pincode: currentProfile?.pincode || '',
-        experience: currentProfile?.experience?.toString() || '',
-        chatPrice: currentProfile?.chat_price || '',
-        callPrice: currentProfile?.call_price || '',
+        name: currentProfile?.name || "",
+        username: currentProfile?.username || "",
+        email: currentProfile?.email || "",
+        mobile: currentProfile?.mobile || "",
+        countryCode: currentProfile?.country_code || "+91",
+        gender: currentProfile?.gender || "",
+        dob: currentProfile?.dob || "",
+        birthPlace: currentProfile?.birth_place || "",
+        birthTime: currentProfile?.birth_time || "",
+        about: currentProfile?.about || "",
+        address: currentProfile?.address || "",
+        pincode: currentProfile?.pincode || "",
+        experience: currentProfile?.experience?.toString() || "",
+        chatPrice: currentProfile?.chat_price || "",
+        callPrice: currentProfile?.call_price || "",
       });
 
       // Only set these for astrologers
@@ -230,8 +308,10 @@ const qualificationLabelToValue = Object.fromEntries(
         setSelectedLanguages(currentProfile?.languages || []);
         setSelectedCategories(currentProfile?.category || []);
         const values = currentProfile?.astro_education || [];
-const labels = values.map(v => qualificationValueToLabel[v]).filter(Boolean);
-setSelectedQualification(labels);
+        const labels = values
+          .map((v) => qualificationValueToLabel[v])
+          .filter(Boolean);
+        setSelectedQualification(labels);
       }
     }
   }, [currentProfile, isAstrologer]);
@@ -299,7 +379,7 @@ setSelectedQualification(labels);
       about: formData.about,
       address: formData.address,
       pincode: formData.pincode,
-      profile_image: profileImageBase64 || null,   // ✅ Base64 string
+      profile_image: profileImageBase64 || null, // ✅ Base64 string
     };
 
     if (isAstrologer) {
@@ -309,7 +389,9 @@ setSelectedQualification(labels);
       updateData.expertise = selectedExpertise;
       updateData.languages = selectedLanguages;
       updateData.category = selectedCategories;
-      updateData.astro_education = selectedQualification.map(label => qualificationLabelToValue[label]);
+      updateData.astro_education = selectedQualification.map(
+        (label) => qualificationLabelToValue[label],
+      );
     }
 
     try {
@@ -320,14 +402,14 @@ setSelectedQualification(labels);
         await dispatch(userUpdate(updateData)).unwrap();
         await dispatch(userProfile()).unwrap();
       }
-      toast.success('Profile updated successfully');
+      toast.success("Profile updated successfully");
     } catch (error) {
-      console.error('Update failed:', error);
-      toast.error('Update failed');
+      console.error("Update failed:", error);
+      toast.error("Update failed");
     }
   };
   const handleCancel = () => {
-    if (confirm('Are you sure you want to discard changes?')) {
+    if (confirm("Are you sure you want to discard changes?")) {
       window.history.back();
     }
   };
@@ -350,8 +432,8 @@ setSelectedQualification(labels);
           </h2>
           <p className="text-slate-600">
             {isAstrologer
-              ? 'Keep your professional & cosmic details up to date'
-              : 'Keep your personal information up to date'}
+              ? "Keep your professional & cosmic details up to date"
+              : "Keep your personal information up to date"}
           </p>
         </div>
 
@@ -365,7 +447,9 @@ setSelectedQualification(labels);
                     className="relative cursor-pointer group block rounded-full overflow-hidden"
                   >
                     <Avatar className="w-20 h-20  border-4 border-primary/20 transition-transform duration-300 group-hover:scale-105">
-                      <AvatarImage src={previewImage || currentProfile?.profile_image} />
+                      <AvatarImage
+                        src={previewImage || currentProfile?.profile_image}
+                      />
                       <AvatarFallback className="bg-gradient-to-br from-primary to-orange-500 text-white text-2xl">
                         {currentProfile?.name?.charAt(0).toUpperCase()}
                       </AvatarFallback>
@@ -403,13 +487,13 @@ setSelectedQualification(labels);
                   />
                 </div>
 
-
-
-
-
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800">{formData.name}</h2>
-                  <p className="text-slate-500 text-md!">@{formData.username}</p>
+                  <h2 className="text-xl font-bold text-slate-800">
+                    {formData.name}
+                  </h2>
+                  <p className="text-slate-500 text-md!">
+                    @{formData.username}
+                  </p>
                   {isAstrologer && (
                     <Badge className="m-1 bg-primary/20 text-primary border-primary">
                       Astrologer
@@ -454,7 +538,12 @@ setSelectedQualification(labels);
                     <User className="w-4 h-4 text-slate-500" />
                     Gender
                   </Label>
-                  <Select value={formData.gender} onValueChange={(v) => setFormData((p) => ({ ...p, gender: v }))}>
+                  <Select
+                    value={formData.gender}
+                    onValueChange={(v) =>
+                      setFormData((p) => ({ ...p, gender: v }))
+                    }
+                  >
                     <SelectTrigger className="border-slate-200 w-full focus:border-indigo-400 focus:ring-indigo-200">
                       <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
@@ -526,7 +615,12 @@ setSelectedQualification(labels);
                   <div className="flex gap-2">
                     <Input
                       value={formData.countryCode}
-                      onChange={(e) => setFormData((p) => ({ ...p, countryCode: e.target.value }))}
+                      onChange={(e) =>
+                        setFormData((p) => ({
+                          ...p,
+                          countryCode: e.target.value,
+                        }))
+                      }
                       className="w-24 border-slate-200 focus:border-indigo-400 focus:ring-indigo-200"
                     />
                     <Input
@@ -605,14 +699,13 @@ setSelectedQualification(labels);
                   maxSelection={3}
                 />
                 <MultiSelect
-                  options={qualificationOptions.map(opt => opt.label)}  // MultiSelect expects array of strings
+                  options={qualificationOptions.map((opt) => opt.label)} // MultiSelect expects array of strings
                   selected={selectedQualification}
                   setSelected={setSelectedQualification}
                   label="Astrology Qualification"
                   icon={Award}
-                  maxSelection={null}  // allow multiple (as per registration)
+                  maxSelection={null} // allow multiple (as per registration)
                 />
-
               </CardContent>
             </Card>
           )}
@@ -626,21 +719,28 @@ setSelectedQualification(labels);
             </CardHeader>
             <CardContent className="">
               <div className="space-y-2 mb-4">
-                <Label htmlFor="about" className="text-sm font-medium text-slate-700">
-                  {isAstrologer ? 'Professional Bio & Approach' : 'About Yourself'}
+                <Label
+                  htmlFor="about"
+                  className="text-sm font-medium text-slate-700"
+                >
+                  {isAstrologer
+                    ? "Professional Bio & Approach"
+                    : "About Yourself"}
                   <p className="text-xs text-slate-500 italic">
                     {isAstrologer
-                      ? 'Appears on your public profile — make it warm and authentic'
-                      : 'Tell us a bit about yourself'}
+                      ? "Appears on your public profile — make it warm and authentic"
+                      : "Tell us a bit about yourself"}
                   </p>
                 </Label>
                 <Textarea
                   id="about"
                   name="about"
                   rows={6}
-                  placeholder={isAstrologer
-                    ? "Share your journey, philosophy, and what makes your practice special..."
-                    : "Share a bit about yourself, your interests, and what brings you here..."}
+                  placeholder={
+                    isAstrologer
+                      ? "Share your journey, philosophy, and what makes your practice special..."
+                      : "Share a bit about yourself, your interests, and what brings you here..."
+                  }
                   value={formData.about}
                   onChange={handleInputChange}
                   className="border-slate-200 focus:border-indigo-400 focus:ring-indigo-200 resize-none"
@@ -652,7 +752,11 @@ setSelectedQualification(labels);
 
         <div className="fixed bottom-0 left-0 right-0 z-50 bg-white backdrop-blur-md border-t border-gray-200 shadow-2xl py-4 px-4 sm:px-8">
           <div className="max-w-5xl mx-auto flex justify-end gap-4">
-            <Button variant="outline" onClick={handleCancel} className="min-w-32 hover:bg-slate-50">
+            <Button
+              variant="outline"
+              onClick={handleCancel}
+              className="min-w-32 hover:bg-slate-50"
+            >
               <X className="w-4 h-4 mr-2" />
               Cancel
             </Button>
