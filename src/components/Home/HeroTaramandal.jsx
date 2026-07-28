@@ -172,9 +172,9 @@ const HeroTaramandal = ({ wheelSize = 520, compact = false }) => {
         <ZodiacWheel />
       </div>
 
-      <div className="absolute inset-[8%] animate-taramandal-counter">
+      {/* <div className="absolute inset-[8%] animate-taramandal-counter">
         <ConstellationLayer />
-      </div>
+      </div> */}
 
       <div className="absolute inset-0 grid place-items-center">
         {RING_FRACS.map((frac) => (

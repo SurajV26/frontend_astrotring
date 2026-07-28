@@ -25,7 +25,7 @@ const Banner = () => {
       if (window.innerWidth < 768) return;
       const width = el.getBoundingClientRect().width;
       if (width <= 0) return;
-      const fitted = Math.min(520, Math.max(260, width - 8));
+      const fitted = Math.min(450, Math.max(260, width - 8));
       setWheelSize(fitted);
     };
 
