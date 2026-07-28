@@ -1953,7 +1953,7 @@ const AstroRegister = () => {
                     <Link
                       to="/astrologer-serviceProvider-TnC"
                       target="_blank"
-                      className="text-amber-600 hover:underline"
+                      className="text-orange-600 hover:underline"
                     >
                       Terms & Conditions
                     </Link>{" "}

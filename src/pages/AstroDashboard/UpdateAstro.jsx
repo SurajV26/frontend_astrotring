@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   User,
   Mail,
@@ -42,6 +42,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AstrologerProfile, AstrologerUpdate } from "@/redux/slice/AstroAuth";
 import { userProfile, userUpdate } from "@/redux/slice/UserAuth";
 import { fileToBase64 } from "@/hooks/fileToBase64"; // ✅ import
+import axios from "axios";
 
 // Move FormField component OUTSIDE
 import { toast } from "react-toastify";
@@ -174,6 +175,93 @@ function UpdateAstro() {
   //   }
   // };
 
+// 🔥 BIRTH PLACE AUTOCOMPLETE के लिए नए STATES (formData वाले useState के नीचे डालें)
+const [birthPlaceInput, setBirthPlaceInput] = useState("");        // Input में दिखने वाला टेक्स्ट (String)
+const [placeSuggestions, setPlaceSuggestions] = useState([]);      // API से आए सुझाव (Array)
+const [showSuggestions, setShowSuggestions] = useState(false);     // Dropdown खुला/बंद (Boolean)
+const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false); // Loading स्पिनर
+const debounceTimerRef = useRef(null);        // 300ms वाला Timer Ref (Debounce के लिए)
+const suggestionRef = useRef(null);           // Dropdown के बाहर क्लिक पकड़ने के लिए Ref
+
+
+
+
+
+
+
+// 🔥 Dropdown के बाहर क्लिक करने पर बंद करें
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  };
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+// 🔥 API से सुझाव लाने का Function
+const fetchPlaceSuggestions = async (query) => {
+  if (!query || query.length < 2) {
+    setPlaceSuggestions([]);
+    setShowSuggestions(false);
+    return;
+  }
+  setIsLoadingSuggestions(true);
+  try {
+    const response = await axios.get(
+      `https://jagannatha-hora-359167915530.europe-west1.run.app/location/autocomplete?q=${encodeURIComponent(query)}`
+    );
+    const data = response.data;
+    setPlaceSuggestions(data.results || []);
+    setShowSuggestions(true);
+  } catch (error) {
+    console.error("Failed to fetch place suggestions:", error);
+    setPlaceSuggestions([]);
+    toast.error("Failed to load suggestions.");
+  } finally {
+    setIsLoadingSuggestions(false);
+  }
+};
+
+
+
+
+
+// 🔥 जब यूजर इनपुट में टाइप करे
+const handleBirthPlaceChange = (e) => {
+  const value = e.target.value;
+  setBirthPlaceInput(value);
+
+  // पुराना सेलेक्टेड Place (Object) हटाओ, ताकि पुराना Data न भेजा जाए
+  setFormData((prev) => ({ ...prev, birthPlace: null }));
+
+  // Debounce Timer
+  if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+  debounceTimerRef.current = setTimeout(() => {
+    fetchPlaceSuggestions(value);
+  }, 300);
+};
+
+
+
+
+// 🔥 जब यूजर सुझाव (Dropdown) पर क्लिक करे
+const handlePlaceSelect = (place) => {
+  // 1. Input में Display Name दिखाओ (जैसे "New Delhi, Delhi, India")
+  setBirthPlaceInput(place.displayName);
+  
+  // 2. Dropdown बंद करो
+  setShowSuggestions(false);
+  setPlaceSuggestions([]);
+
+  // 3. 🚀 formData.birthPlace में पूरा Object सेट करो!
+  // (अब यह String नहीं, बल्कि { displayName, latitude, longitude... } होगा)
+  setFormData((prev) => ({ ...prev, birthPlace: place }));
+};
+
+
+
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -301,6 +389,17 @@ function UpdateAstro() {
         chatPrice: currentProfile?.chat_price || "",
         callPrice: currentProfile?.call_price || "",
       });
+
+    if (currentProfile?.birth_place) {
+      if (typeof currentProfile.birth_place === "object" && currentProfile.birth_place.place) {
+        setBirthPlaceInput(currentProfile.birth_place?.place);
+      } else if (typeof currentProfile.birth_place === "string") {
+        setBirthPlaceInput(currentProfile.birth_place);
+      }
+    } else {
+      setBirthPlaceInput(""); // अगर कोई डेटा नहीं है तो खाली करो
+    }
+
 
       // Only set these for astrologers
       if (isAstrologer) {
@@ -506,7 +605,7 @@ function UpdateAstro() {
         </div>
 
         <div className="space-y-6">
-          <Card className="border-2 pt-0 border-primary/50 shadow-lg overflow-hidden ">
+          <Card className="border-2 pt-0 border-primary/50 shadow-lg overflow-visible ">
             <CardHeader className="bg-primary/70 py-2 ">
               <CardTitle className="flex items-center gap-2 ">
                 <User className="w-5 h-5 text-primary-forground" />
@@ -557,20 +656,67 @@ function UpdateAstro() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <FormField
-                  label="Date of Birth"
-                  name="dob"
-                  type="date"
-                  icon={Calendar}
-                  value={formData.dob}
-                  onChange={handleInputChange}
-                />
-                <FormField
+               
+                {/* <FormField
                   label="Birth Place"
                   name="birthPlace"
                   placeholder="City, State"
                   icon={MapPin}
                   value={formData.birthPlace}
+                  onChange={handleInputChange}
+                /> */}
+
+
+                {/* 🔥🔥🔥 NEW: BIRTH PLACE - AUTOCOMPLETE (पुराने FormField की जगह) 🔥🔥🔥 */}
+<div className="space-y-2 relative" ref={suggestionRef}>
+  <Label htmlFor="birthPlace" className="flex items-center gap-2 text-sm font-medium text-slate-700">
+    <MapPin className="w-4 h-4 text-slate-500" />
+    Birth Place
+  </Label>
+  <Input
+    id="birthPlace"
+    placeholder="Birth Place"
+    autoComplete="off"
+    value={birthPlaceInput} //  यह String है
+    onChange={handleBirthPlaceChange}
+    onFocus={() => {
+      // अगर पहले से suggestions हैं, तो फोकस करने पर दिखा दो
+      if (birthPlaceInput.length >= 2 && placeSuggestions.length > 0) {
+        setShowSuggestions(true);
+      }
+    }}
+    className="focus:ring-2 focus:ring-amber-400 transition"
+  />
+
+  {/* ✅ Dropdown (Suggestions Box) */}
+  {showSuggestions && (
+    <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+      {isLoadingSuggestions ? (
+        <div className="p-3 text-center text-gray-500 text-sm">Loading...</div>
+      ) : placeSuggestions.length > 0 ? (
+        placeSuggestions.map((place, index) => (
+          <div
+            key={index}
+            className="px-4 py-2 hover:bg-amber-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0"
+            onClick={() => handlePlaceSelect(place)} // 🟢 Select पर Object सेट होगा
+          >
+            <div className="font-medium text-gray-800 text-sm">{place.displayName}</div>
+            <div className="text-xs text-gray-500">{place.country} {place.state && `• ${place.state}`}</div>
+          </div>
+        ))
+      ) : (
+        <div className="p-3 text-center text-gray-400 text-sm">No places found</div>
+      )}
+    </div>
+  )}
+</div>
+
+ <FormField
+                  label="Date of Birth"
+                  name="dob"
+                  type="date"
+                  icon={Calendar}
+                  value={formData.dob}
                   onChange={handleInputChange}
                 />
                 <FormField

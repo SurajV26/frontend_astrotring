@@ -27,12 +27,16 @@ export const AstrologerLogin = createAsyncThunk(
       console.log("checking astro login data", res.data.astro);
 
       if (res?.data?.user?.role_id === 3) {
+
+        console.log("User cannot login from here")
         return thunkApi.rejectWithValue("User cannot login from here");
       } else {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("role_id", res?.data?.astro?.role_id);
 
         // localStorage.setItem("token", res.data.token);
+
+        console.log(res.data.astro)
         return res.data.astro;
       }
 
@@ -40,6 +44,8 @@ export const AstrologerLogin = createAsyncThunk(
       // localStorage.setItem("role_id", res?.data?.astro?.role_id);
       // return res.data.astro;
     } catch (error) {
+
+      console.log(error)
       return thunkApi.rejectWithValue(
         error.response?.data?.message || "Login failed",
       );
