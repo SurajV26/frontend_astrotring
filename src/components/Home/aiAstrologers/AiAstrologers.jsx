@@ -54,7 +54,7 @@ const AiAstrologers = () => {
   };
 
   return (
-    <div className="w-full container py-6">
+    <div className="w-full  py-6">
       <div className=" mx-auto px-4 mb-6">
         <ComponentHead
           heading="AI Astrologers"
