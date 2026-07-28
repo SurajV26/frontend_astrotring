@@ -786,7 +786,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
 
                     {/* यह है ड्रॉपडाउन (सुझावों वाला बॉक्स) */}
                     {showSuggestions && (
-                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      <div className="absolute z-50 w-full top-0  bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                         {isLoadingSuggestions ? (
                           <div className="p-3 text-center text-gray-500 text-sm">
                             Loading...

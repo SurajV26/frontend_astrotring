@@ -25,7 +25,7 @@ api.interceptors.response.use(
       const { store } = await import("./store");  // dynamic import
       const {logout} = await import("./slice/UserAuth")
       store.dispatch(logout());
-      if (window.location.pathname !== "/") {
+      if (window.location.pathname !== "/" && window.location.pathname !== "/astro-login") {
         window.location.href = "/";
       }
     }

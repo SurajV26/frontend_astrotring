@@ -118,7 +118,7 @@ console.log("user data",user)
                                     <div className="flex flex-col space-y-1">
                                         <p className="text-sm font-medium">{(astrologer?.name) || (user?.name)}</p>
                                         <p className="text-xs text-muted-foreground">
-                                            {(astrologer?.email) || (user?.name)}
+                                            {(astrologer?.email) || (user?.email)}
                                         </p>
                                     </div>
                                 </DropdownMenuLabel>
