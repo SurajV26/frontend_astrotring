@@ -193,9 +193,9 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
   }, [resendCooldown]);
 
   /* ---------------- HANDLERS ---------------- */
-  // 🔥 API से सुझाव लाने का Function
+  //  API suggetion Function
   const fetchPlaceSuggestions = async (query) => {
-    // अगर 2 अक्षर से कम है तो API call मत करो
+    // if less then 2 charactor do not API call 
     if (!query || query.length < 2) {
       setPlaceSuggestions([]);
       setShowSuggestions(false);
@@ -204,12 +204,11 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
 
     setIsLoadingSuggestions(true);
     try {
-      // 🔥 axios का उपयोग करें
       const response = await axios.get(
         `https://jagannatha-hora-359167915530.europe-west1.run.app/location/autocomplete?q=${encodeURIComponent(query)}`,
       );
 
-      // axios में .data में पूरा रिस्पॉन्स आता है
+
       const data = response.data;
       setPlaceSuggestions(data.results || []);
       setShowSuggestions(true);
@@ -217,44 +216,44 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
       console.error("Failed to fetch place suggestions:", error);
       setPlaceSuggestions([]);
 
-      // (Optional) यूजर को टोस्ट दिखाएं:
+      // (Optional) 
       toast.error("Failed to load suggestions.");
     } finally {
       setIsLoadingSuggestions(false);
     }
   };
 
-  // 🔥 जब यूजर इनपुट में टाइप करे
+  // when user input
   const handleBirthPlaceChange = (e) => {
     const value = e.target.value;
-    setBirthPlaceInput(value); // इनपुट का टेक्स्ट अपडेट करो
+    setBirthPlaceInput(value); 
 
-    // अगर यूजर नया टाइप कर रहा है, तो पुराना selected place हटाओ (क्योंकि उसने नई जगह टाइप की)
+    // if user is typing, remove old selected place
     setForm((prev) => ({ ...prev, birth_place: null }));
 
-    // पुराने Timer को Clear करो (ताकि 300ms से पहले वाली कॉल रुक जाए)
+    // clear timer
     if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
 
-    // 300ms बाद API Call करो
+    // 300ms after API Call
     debounceTimerRef.current = setTimeout(() => {
       fetchPlaceSuggestions(value);
     }, 300);
   };
 
-  // 🔥 जब यूजर किसी सुझाव (place) पर क्लिक करे
+  // if user click on any suuggetion (place)
   const handlePlaceSelect = (place) => {
-    // place = पूरा ऑब्जेक्ट { displayName, latitude, longitude, ... }
+    // place = full obj { displayName, latitude, longitude, ... }
 
     setBirthPlaceInput(place.displayName); // इनपुट में "New Delhi, Delhi, India" दिखाओ
-    setShowSuggestions(false); // ड्रॉपडाउन बंद करो
-    setPlaceSuggestions([]); // सुझाव खाली करो (मेमोरी बचाओ)
+    setShowSuggestions(false); // close dropdown
+    setPlaceSuggestions([]); //empty suggetion save memory
 
     // 🔥 सबसे जरूरी: फॉर्म में पूरा ऑब्जेक्ट डालो
     setForm((prev) => ({ ...prev, birth_place: place }));
 
-    // अगर पहले से कोई Zod Error था (जैसे "Please select..."), तो उसे हटाओ
+    // if any Zod Error exist (eg: "Please select..."), then remove
     setErrors((prev) => ({
       ...prev,
       fields: { ...prev.fields, birth_place: undefined },
@@ -618,7 +617,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                       formatOptionLabel={(option, { context }) => {
                         //  Show only value in the input (context === 'value')
                         if (context === "value") {
-                          // Input में: Mobile पर सिर्फ Value, बड़े पर Full Label
+                          // in Input: Mobile ->only Value, desktop-> Full Label
                           return (
                             <div className="flex items-center justify-center">
                               <span className="block sm:hidden">
@@ -763,17 +762,19 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                       </p>
                     )}
                   </div> */}
-                  {/*  नया Birth Place - Autocomplete वाला */}
+                  {/*  new Birth Place - Autocomplete wala */}
                   <div className="space-y-2 relative" ref={suggestionRef}>
                     <Label htmlFor="birth_place">Place of Birth</Label>
                     <Input
                       id="birth_place"
                       name="birth_place"
+                      autoComplete="off"
                       placeholder="Birth Place"
-                      value={birthPlaceInput} // 🔥 यहां form.birth_place नहीं, बल्कि birthPlaceInput दिखेगा
+                      value={birthPlaceInput} //  here not form.birth_place , Instead birthPlaceInput visible
                       onChange={handleBirthPlaceChange}
                       onFocus={() => {
-                        // अगर पहले से suggestions हैं, तो फोकस करने पर दिखा दो
+                        
+// If there are existing suggestions, show them upon focusing
                         if (
                           birthPlaceInput.length >= 2 &&
                           placeSuggestions.length > 0
@@ -784,7 +785,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                       className="focus:ring-2 focus:ring-amber-400 transition"
                     />
 
-                    {/* यह है ड्रॉपडाउन (सुझावों वाला बॉक्स) */}
+                    {/* This is the dropdown (box with suggestions). */}
                     {showSuggestions && (
                       <div className="absolute z-50 w-full top-0  bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                         {isLoadingSuggestions ? (
@@ -796,7 +797,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                             <div
                               key={index}
                               className="px-4 py-2 hover:bg-amber-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0"
-                              onClick={() => handlePlaceSelect(place)} // 🔥 क्लिक करने पर पूरा ऑब्जेक्ट सेलेक्ट होगा
+                              onClick={() => handlePlaceSelect(place)} // Clicking will select the entire object.
                             >
                               <div className="font-medium text-gray-800 text-sm">
                                 {place.displayName}
@@ -815,7 +816,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
                       </div>
                     )}
 
-                    {/* Zod से आया हुआ Error दिखाने के लिए */}
+                    {/* To display the error received from Zod */}
                     {errors.fields.birth_place && (
                       <p className="text-red-500 text-xs">
                         {errors.fields.birth_place[0]}

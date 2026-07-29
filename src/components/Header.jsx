@@ -97,8 +97,8 @@ const Header = () => {
   const [openMenu, setOpenMenu] = useState({ row: null, index: null });
   const [horosType, setHorosType] = useState([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const { astrologer } = useSelector((state) => state.astroAuth);
-  const { user } = useSelector((state) => state.userAuth);
+  const { astrologer, isAuthenticated } = useSelector((state) => state.astroAuth);
+  const { user ,isLoggedIn} = useSelector((state) => state.userAuth);
   const { horoscope } = useSelector((state) => state.horoscope);
   const [role, setRole] = useState(localStorage.getItem("role_id"));
   const navigate = useNavigate();
@@ -128,10 +128,12 @@ const Header = () => {
   }, []);
 
   useEffect(() => {
-    if (role == 2 && !astrologer) {
+    if (role == 2 && !astrologer && isAuthenticated) {
+       console.log("🚀 Dispatching astroProfile! in header");
       dispatch(AstrologerProfile());
     }
-    if (role == 3 && !user) {
+    if (role == 3 && !user && isLoggedIn) {
+      console.log("🚀 Dispatching userProfile! in header");
       dispatch(userProfile());
     }
   }, [dispatch, role, astrologer, user]);
@@ -147,6 +149,8 @@ const Header = () => {
       }
       localStorage.removeItem("token");
       localStorage.removeItem("role_id");
+
+      // navigate("/")
     } catch (err) {
       console.log("Logout error:", err);
     }

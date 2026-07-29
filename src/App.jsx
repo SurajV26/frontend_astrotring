@@ -97,8 +97,8 @@ const GlobalRechargeModal = lazy(() => import("./components/recharge/GlobalRecha
 const App = () => {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
-  const { astrologer } = useSelector((state) => state.astroAuth);
-  const { user } = useSelector((state) => state.userAuth);
+  const { astrologer,isAuthenticated } = useSelector((state) => state.astroAuth);
+  const { user, isLoggedIn } = useSelector((state) => state.userAuth);
   const [role, setRole] = useState(localStorage.getItem("role_id"));
 
   useEffect(() => {
@@ -107,11 +107,13 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    if (role == 2 && !astrologer) {
+    if (role == 2 && !astrologer && isAuthenticated ) {
+       console.log("🚀 Dispatching astroProfile! in app");
       dispatch(AstrologerProfile());
     }
 
-    if (role == 3 && !user) {
+    if (role == 3 && !user && isLoggedIn) {
+       console.log("🚀 Dispatching userProfile! in app");
       dispatch(userProfile());
     }
   }, [dispatch, role, astrologer, user]);

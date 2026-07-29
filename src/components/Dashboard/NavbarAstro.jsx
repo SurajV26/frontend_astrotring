@@ -30,8 +30,8 @@ const NavbarAstro = () => {
     const dispatch = useDispatch()
 
     // const  astrologer  = useSelector((state) => console.log(state));
-    const { astrologer } = useSelector((state) => state.astroAuth);
-    const { user } = useSelector((state) => state.userAuth)
+    const { astrologer, isAuthenticated } = useSelector((state) => state.astroAuth);
+    const { user, isLoggedIn } = useSelector((state) => state.userAuth)
     const [role, setRole] = useState(localStorage.getItem("role_id"))
     const navigate = useNavigate()
 
@@ -48,11 +48,13 @@ console.log("user data",user)
 
 
     useEffect(() => {
-        if (role == 2 && !astrologer) {
+        if (role == 2 && !astrologer && isAuthenticated) {
+             console.log("🚀 Dispatching astroProfile! in astronav");
             dispatch(AstrologerProfile())
         }
 
-        if (role == 3 && !user) {
+        if (role == 3 && !user && isLoggedIn) {
+             console.log("🚀 Dispatching userProfile! in astronav");
             dispatch(userProfile())
         }
     }, [dispatch, role, astrologer, user])
