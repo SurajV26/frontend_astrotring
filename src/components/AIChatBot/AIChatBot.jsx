@@ -14,7 +14,7 @@ import {
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { toast } from "react-toastify";
-import { ChevronLeft, Wallet, X } from "lucide-react";
+import { ChevronLeft, Plus, Wallet, X } from "lucide-react";
 import { fetchWalletDetails } from "@/redux/slice/walletSlice";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
 
@@ -23,6 +23,7 @@ const AIChatBot = () => {
   const dispatch = useDispatch();
 
   const { astrologerSlug, expertiseSlug } = useParams();
+  const { isLoggedIn } = useSelector((state) => state.userAuth); 
 
   const {
     sessionId,
@@ -63,7 +64,7 @@ const AIChatBot = () => {
   };
 
   useEffect(() => {
-    if (expertiseSlug && astrologerSlug) {
+    if (isLoggedIn && !sessionId && expertiseSlug && astrologerSlug) {
       dispatch(
         startSession({
           astrologerSlug: astrologerSlug,
@@ -73,7 +74,7 @@ const AIChatBot = () => {
     }
   }, [dispatch, expertiseSlug, astrologerSlug]);
 
-  //  Astrologer Details Fetch करें (Refresh के बाद भी दिखे)
+  //  Astrologer Details Fetch करें (visible after Refresh also )
   useEffect(() => {
     if (astrologerSlug) {
       dispatch(fetchAiAstrologerDetails(astrologerSlug));
@@ -105,13 +106,14 @@ const AIChatBot = () => {
       await dispatch(
         sendChatMessage({ sessionId, message: question }),
       ).unwrap();
+      dispatch(fetchWalletDetails());
       setShowRechargeModal(false);
     } catch (err) {
       const errData = err;
       if (
-        errData?.type === "wallet_error" ||
-        errData?.type === "insufficient_balance" ||
-        errData?.type === "free_limit_exceeded"
+        errData?.type == "wallet_error" ||
+        errData?.type == "insufficient_balance" ||
+        errData?.type == "free_limit_exceeded"
       ) {
         setShowRechargeModal(true);
       } else {
@@ -134,7 +136,8 @@ const AIChatBot = () => {
       const errData = err;
       if (
         errData?.type === "wallet_error" ||
-        errData?.type === "free_limit_exceeded"
+        errData?.type === "free_limit_exceeded" ||
+        errData?.type == "insufficient_balance"
       ) {
         setShowRechargeModal(true);
       } else {
@@ -228,6 +231,7 @@ const AIChatBot = () => {
             {/* Right: Wallet Balance */}
             <div className="flex-shrink-0">
               <div className="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg shadow-sm">
+              <Plus className="w-4 h-4 text-green-600 rounded border bg-amber-200 cursor-pointer" onClick={() => navigate("/dashboard/wallet")}/>
                 <Wallet className="w-4 h-4 text-amber-600" />
                 <span className="text-sm font-bold text-gray-800">
                   ₹{walletBalance}
@@ -452,7 +456,7 @@ const AIChatBot = () => {
                 </div>
               ) : (
                 // 🔵 जब Input खुला है, तो Textarea और Send Button दिखेगा
-                <div className="flex gap-2">
+                <div className="flex gap-2 items-start">
                   <textarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -464,15 +468,15 @@ const AIChatBot = () => {
                     }}
                     placeholder="Type your question..."
                     rows={1}
-                    // 🟢 जब यह दिखे, तो Auto-Focus हो जाए
+                    //  जब यह दिखे, तो Auto-Focus हो जाए
                     autoFocus
-                    className="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white text-sm resize-none placeholder:text-xs"
+                    className="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white text-sm resize-none placeholder:text-xs field-sizing-content"
                     disabled={!sessionId || isLoading}
                   />
                   <button
                     onClick={handleSendMessage}
                     disabled={!sessionId || isLoading}
-                    className="bg-amber-500 text-white px-5 py-2 rounded-lg hover:bg-amber-600 disabled:opacity-50 transition text-sm cursor-pointer"
+                    className="bg-amber-500 text-white px-5 py-2 rounded-lg h-fit self-end hover:bg-amber-600 disabled:opacity-50 transition text-sm cursor-pointer "
                   >
                     Send
                   </button>

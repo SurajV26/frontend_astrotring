@@ -3,8 +3,9 @@ import { MessageCircle, GraduationCap, Target } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import UserLogin from "@/components/UserLogin";
-import { fetchAiAstrologerDetails, clearAstrologerDetails } from "@/redux/slice/aiChatSlice";
+import { fetchAiAstrologerDetails, clearAstrologerDetails, startSession } from "@/redux/slice/aiChatSlice";
 import Loader from "@/components/common/Loader";
+import { toast } from "react-toastify";
 
 const AiAstrologerDetails = () => {
   const { slug } = useParams();
@@ -15,6 +16,7 @@ const AiAstrologerDetails = () => {
   const { astrologerDetails: astro, isFetchingAstrologerDetails, error } = useSelector((state) => state.aiChat);
 
   const [showLogin, setShowLogin] = useState(false);
+
 
   // console.log("astro", astro)
 
@@ -35,20 +37,79 @@ const AiAstrologerDetails = () => {
       }
     : null;
 
-  const handleChatClick = () => {
-    if (isLoggedIn) {
-      navigate(`/ai-chat/${astro.slug}/${astro.expertises?.[0]?.slug}`);
-    } else {
-      setShowLogin(true);
+  // const handleChatClick = () => {
+  //   if (isLoggedIn) {
+  //     navigate(`/ai-chat/${astro.slug}/${astro.expertises?.[0]?.slug}`);
+  //   } else {
+  //     setShowLogin(true);
+  //   }
+  // };
+
+
+  const handleChatClick = async () => {
+  if (!astro?.expertises?.[0]) {
+    toast.error("Astrologer details not available");
+    return;
+  }
+
+  const astrologerSlug = astro.slug;
+  const expertiseSlug = astro.expertises[0].slug;
+
+  try {
+    //  Session Start 
+    await dispatch(startSession({ astrologerSlug, expertiseSlug })).unwrap();
+    //  Success → Chat Page 
+    navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`);
+  } catch (err) {
+    //  Error →show Login Pop-up and  Toast 
+    toast.error(err);
+    setShowLogin(true);
+
+    console.error("Session error:", err);
+  }
+};
+
+
+
+useEffect(() => {
+  // Create an async function inside useEffect
+  const handleLoginSuccess = async () => {
+    // 1. Check if user is logged in, modal is open, and astro details exist
+    if (isLoggedIn && showLogin && astro) {
+      const roleId = localStorage.getItem("role_id");
+
+      // 2. Only allow users (Role 3) to chat
+      if (Number(roleId) === 3) {
+        const astrologerSlug = astro.slug;
+        const expertiseSlug = astro.expertises[0].slug;
+
+        try {
+          // 3.  RETRY: Start the session (ab token valid hai, isliye success hoga)
+          await dispatch(startSession({ astrologerSlug, expertiseSlug })).unwrap();
+
+          // 4. Success: Chat page par navigate karo
+          navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`, {
+            state: chatState,
+          });
+          // 5. Close the login modal
+          setShowLogin(false);
+        } catch (err) {
+          // 6. Agar session fail ho (rare case)
+          toast.error("Failed to start chat. Please try again.");
+          setShowLogin(false);
+          console.error("Session retry error:", err);
+        }
+      } else {
+        // 7. Astrologer login case: close modal, but stay on page
+        // toast.error("Invalid User");
+        setShowLogin(true);
+      }
     }
   };
 
-  useEffect(() => {
-    if (isLoggedIn && showLogin && astro) {
-      navigate(`/ai-chat/${astro.slug}/${astro.expertises?.[0]?.slug}`, { state: chatState });
-      setShowLogin(false);
-    }
-  }, [isLoggedIn, showLogin, navigate, astro, chatState]);
+  // Call the async function
+  handleLoginSuccess();
+}, [isLoggedIn, showLogin, navigate, astro, dispatch]);
 
   if (isFetchingAstrologerDetails) {
     return (
@@ -57,8 +118,8 @@ const AiAstrologerDetails = () => {
   }
 
 
-  console.log(error)
-  if (error || !astro) {
+  // console.log(error)
+  if (!astro) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50 to-white">
         <div className="text-center">
@@ -245,9 +306,9 @@ const AiAstrologerDetails = () => {
           defaultOpen={true}
           onOpenChange={(open) => {
             setShowLogin(open);
-            if (!open && isLoggedIn) {
-              navigate("/ai-chat");
-            }
+            // if (!open && isLoggedIn) {
+            //   navigate("/ai-chat");
+            // }
           }}
         />
       )}

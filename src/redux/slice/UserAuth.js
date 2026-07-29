@@ -174,6 +174,7 @@ export const userResendLoginOtp = createAsyncThunk(
 );
 
 const tokenFromStorage = localStorage.getItem("token");
+// console.log("tokenFromStorage",tokenFromStorage)
 
 const initialState = {
   user: null,
@@ -193,6 +194,7 @@ const UserAuthSlice = createSlice({
       state.loading = false;
       state.error = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("role_id");
     },
   },
 

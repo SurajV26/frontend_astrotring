@@ -214,7 +214,7 @@ const aiChatSlice = createSlice({
       // start session
       .addCase(startSession.pending, (state) => {
         state.isStartingSession = true;
-        state.error = null;
+       
         state.messages = []; // clear old messages
         state.sessionQuestions = []; // clear old questions
       })
@@ -225,7 +225,6 @@ const aiChatSlice = createSlice({
       })
       .addCase(startSession.rejected, (state, action) => {
         state.isStartingSession = false;
-        state.error = action.payload;
         state.sessionId = null;
         state.sessionQuestions = [];
       })
