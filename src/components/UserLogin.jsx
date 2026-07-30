@@ -112,7 +112,7 @@ const signupSchema = z.object({
     }),
   gender: z.string().min(1, "Gender required"),
   marital_status: z.string().min(1, "Marital status required"),
-  occupation: z.string().min(1, "Occupation required"),
+  occupation: z.string().optional(),
   terms_accepted: z.number().optional(),
 });
 
@@ -239,14 +239,14 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
     // 300ms after API Call
     debounceTimerRef.current = setTimeout(() => {
       fetchPlaceSuggestions(value);
-    }, 300);
+    }, 200);
   };
 
   // if user click on any suuggetion (place)
   const handlePlaceSelect = (place) => {
     // place = full obj { displayName, latitude, longitude, ... }
 
-    setBirthPlaceInput(place.displayName); // इनपुट में "New Delhi, Delhi, India" दिखाओ
+    setBirthPlaceInput(place.displayName); //in input "New Delhi, Delhi, India" show
     setShowSuggestions(false); // close dropdown
     setPlaceSuggestions([]); //empty suggetion save memory
 
@@ -787,7 +787,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
 
                     {/* This is the dropdown (box with suggestions). */}
                     {showSuggestions && (
-                      <div className="absolute z-50 w-full top-0  bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      <div className="absolute z-50 w-full bottom  bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                         {isLoadingSuggestions ? (
                           <div className="p-3 text-center text-gray-500 text-sm">
                             Loading...

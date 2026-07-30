@@ -175,13 +175,13 @@ function UpdateAstro() {
   //   }
   // };
 
-// 🔥 BIRTH PLACE AUTOCOMPLETE के लिए नए STATES (formData वाले useState के नीचे डालें)
-const [birthPlaceInput, setBirthPlaceInput] = useState("");        // Input में दिखने वाला टेक्स्ट (String)
-const [placeSuggestions, setPlaceSuggestions] = useState([]);      // API से आए सुझाव (Array)
-const [showSuggestions, setShowSuggestions] = useState(false);     // Dropdown खुला/बंद (Boolean)
+//  New states for BIRTH PLACE AUTOCOMPLETE (place below the `useState` containing `formData`)
+const [birthPlaceInput, setBirthPlaceInput] = useState("");        //Text (string) displayed in the input
+const [placeSuggestions, setPlaceSuggestions] = useState([]);  // Suggestions from the API (Array)
+const [showSuggestions, setShowSuggestions] = useState(false);     // Dropdown open/closed (Boolean)
 const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false); // Loading स्पिनर
-const debounceTimerRef = useRef(null);        // 300ms वाला Timer Ref (Debounce के लिए)
-const suggestionRef = useRef(null);           // Dropdown के बाहर क्लिक पकड़ने के लिए Ref
+const debounceTimerRef = useRef(null);        // 300ms Timer Ref (for debounce)
+const suggestionRef = useRef(null);           // Detecting clicks outside the dropdown
 
 
 
@@ -189,7 +189,7 @@ const suggestionRef = useRef(null);           // Dropdown के बाहर �
 
 
 
-// 🔥 Dropdown के बाहर क्लिक करने पर बंद करें
+//  Close when clicking outside the dropdown
 useEffect(() => {
   const handleClickOutside = (event) => {
     if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
@@ -200,7 +200,7 @@ useEffect(() => {
   return () => document.removeEventListener("mousedown", handleClickOutside);
 }, []);
 
-// 🔥 API से सुझाव लाने का Function
+//  Function to fetch suggestions from the API
 const fetchPlaceSuggestions = async (query) => {
   if (!query || query.length < 2) {
     setPlaceSuggestions([]);
@@ -228,12 +228,12 @@ const fetchPlaceSuggestions = async (query) => {
 
 
 
-// 🔥 जब यूजर इनपुट में टाइप करे
+// When the user types in the input
 const handleBirthPlaceChange = (e) => {
   const value = e.target.value;
   setBirthPlaceInput(value);
 
-  // पुराना सेलेक्टेड Place (Object) हटाओ, ताकि पुराना Data न भेजा जाए
+  // Remove the previously selected place (object) so that the old data is not sent.
   setFormData((prev) => ({ ...prev, birthPlace: null }));
 
   // Debounce Timer
@@ -246,17 +246,17 @@ const handleBirthPlaceChange = (e) => {
 
 
 
-// 🔥 जब यूजर सुझाव (Dropdown) पर क्लिक करे
+//  When the user clicks on the suggestion (dropdown)
 const handlePlaceSelect = (place) => {
-  // 1. Input में Display Name दिखाओ (जैसे "New Delhi, Delhi, India")
+  // 1. Show the display name in the input (e.g., "New Delhi, Delhi, India").
   setBirthPlaceInput(place.displayName);
   
   // 2. Dropdown बंद करो
   setShowSuggestions(false);
   setPlaceSuggestions([]);
 
-  // 3. 🚀 formData.birthPlace में पूरा Object सेट करो!
-  // (अब यह String नहीं, बल्कि { displayName, latitude, longitude... } होगा)
+  // 3. Set the entire object in formData.birthPlace!
+  // (Now, instead of a String, this will be { displayName, latitude, longitude... })
   setFormData((prev) => ({ ...prev, birthPlace: place }));
 };
 
@@ -464,7 +464,7 @@ const handlePlaceSelect = (place) => {
   // };
 
   const handleSubmit = async () => {
-    // ✅ JSON object banayein
+    //  JSON object banayein
     const updateData = {
       name: formData.name,
       username: formData.username,
@@ -478,7 +478,7 @@ const handlePlaceSelect = (place) => {
       about: formData.about,
       address: formData.address,
       pincode: formData.pincode,
-      profile_image: profileImageBase64 || null, // ✅ Base64 string
+      profile_image: profileImageBase64 || null, //  Base64 string
     };
 
     if (isAstrologer) {
@@ -667,7 +667,7 @@ const handlePlaceSelect = (place) => {
                 /> */}
 
 
-                {/* 🔥🔥🔥 NEW: BIRTH PLACE - AUTOCOMPLETE (पुराने FormField की जगह) 🔥🔥🔥 */}
+                {/*  NEW: Birthplace - Autocomplete (replaces the old FormField)  */}
 <div className="space-y-2 relative" ref={suggestionRef}>
   <Label htmlFor="birthPlace" className="flex items-center gap-2 text-sm font-medium text-slate-700">
     <MapPin className="w-4 h-4 text-slate-500" />
@@ -677,10 +677,10 @@ const handlePlaceSelect = (place) => {
     id="birthPlace"
     placeholder="Birth Place"
     autoComplete="off"
-    value={birthPlaceInput} //  यह String है
+    value={birthPlaceInput} // this is String 
     onChange={handleBirthPlaceChange}
     onFocus={() => {
-      // अगर पहले से suggestions हैं, तो फोकस करने पर दिखा दो
+      //If there are existing suggestions, display them when the element gets focus.
       if (birthPlaceInput.length >= 2 && placeSuggestions.length > 0) {
         setShowSuggestions(true);
       }

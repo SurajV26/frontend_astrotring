@@ -11,12 +11,13 @@ import {
   fetchAiAstrologerDetails,
 } from "@/redux/slice/aiChatSlice";
 // import { api } from "@/redux/baseApi";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { toast } from "react-toastify";
-import { ChevronLeft, Plus, Wallet, X } from "lucide-react";
+import { ChevronLeft, Plus, SendHorizontal, Wallet, X } from "lucide-react";
 import { fetchWalletDetails } from "@/redux/slice/walletSlice";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
+import MarkdownRenderer from "./MarkdownRenderer";
+import { BeatLoader } from "react-spinners";
+
 
 const AIChatBot = () => {
   const navigate = useNavigate();
@@ -49,19 +50,6 @@ const AIChatBot = () => {
 
   const bottomRef = useRef();
 
-
-
-  const formatMarkdownText = (text) => {
-    if (!text) return text;
-
-    let formatted = text
-      .replace(/(\d+\.\s+)/g, "\n$1") // Numbered List: 1., 2.
-      .replace(/(\*\s+)/g, "\n$1") // Bullet: *
-      .replace(/(-\s+)/g, "\n$1") //  new – Bullet: -
-      .replace(/\n{3,}/g, "\n\n"); // Extra newlines clean
-
-    return formatted.trimStart();
-  };
 
   useEffect(() => {
     if (isLoggedIn && !sessionId && expertiseSlug && astrologerSlug) {
@@ -296,92 +284,21 @@ const AIChatBot = () => {
               )} */}
 
               {messages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <span
-                    className={`inline-block px-4 rounded-md max-w-[85%] ${
-                      msg.sender === "user"
-                        ? "bg-amber-400 text-white"
-                        : "bg-white border border-gray-100"
-                    }`}
-                  >
-                    <div className="prose prose-sm max-w-none prose-p:my-2 prose-pre:bg-gray-900 prose-code:text-red-500">
-                      <Markdown
-                        remarkPlugins={[remarkGfm]}
-                        components={{
-                          //  Ordered List (Numbered) को सुंदर बनाएँ
-                          ol: ({ node, children, ...props }) => (
-                            <ol
-                              className="list-decimal pl-5 my-2 space-y-1"
-                              {...props}
-                            >
-                              {children}
-                            </ol>
-                          ),
-                          //  Unordered List (Bullet) को सुंदर बनाएँ
-                          ul: ({ node, children, ...props }) => (
-                            <ul
-                              className="list-none pl-0 my-2 space-y-1"
-                              {...props}
-                            >
-                              {children}
-                            </ul>
-                          ),
-                          //  List Items को थोड़ा Padding दें
-                          li: ({ node, children, ...props }) => (
-                            <li
-                              className="flex items-start gap-2 text-sm text-gray-800"
-                              {...props}
-                            >
-                              <span className="text-amber-500 text-base flex-shrink-0">
-                                ✦
-                              </span>
-                              <span>{children}</span>
-                            </li>
-                          ),
-                          //  Bold Text को Highlight करें
-                          strong: ({ node, children, ...props }) => (
-                            <strong
-                              className="font-bold text-amber-700"
-                              {...props}
-                            >
-                              {children}
-                            </strong>
-                          ),
-                          //  Paragraphs के बीच थोड़ा Gap दें
-                          p: ({ node, children, ...props }) => (
-                            <p className="mb-2 leading-relaxed" {...props}>
-                              {children}
-                            </p>
-                          ),
-                          //  Links (पहले से है, वैसा ही रखें)
-                          a: ({ href, children }) => (
-                            <a
-                              href={href}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-blue-600 underline hover:text-blue-800"
-                            >
-                              {children}
-                            </a>
-                          ),
-                        }}
-                      >
-                        {/*  `formatMarkdownText` Function Apply here*/}
-                        {formatMarkdownText(msg.message)}
-                      </Markdown>
-                    </div>
-                  </span>
+                <div key={idx} className={`flex w-full mb-4 ${msg.sender === "user" ? "justify-end " : "justify-start"}`}>
+                  <div className={`max-w-[90%] md:max-w-[80%] px-5 py-2 rounded-2xl ${msg.sender === "user" ? "bg-amber-400 text-gray-800 rounded-br-none shadow-sm mr-1 sm:mr-0" : "bg-white shadow-sm border border-gray-100 rounded-bl-sm"}`}>
+                    {msg.sender === "user" ? (
+                      <div className="text-sm text whitespace-pre-wrap leading-relaxed">{msg.message}</div>
+                    ) : (
+                      <MarkdownRenderer content={msg.message} />
+                    )}
+                  </div>
                 </div>
               ))}
-
               {isLoading && (
-                <div className="flex justify-start">
-                  <span className="inline-block px-4 py-2 bg-white border border-gray-100 rounded-md text-gray-500 text-xs">
-                    Typing...
-                  </span>
+                <div className="flex w-full mb-4 ml-4 justify-start">
+                  <div className="px-5 py-4 bg-white shadow-sm border border-gray-100 rounded-2xl rounded-bl-sm flex items-center justify-center min-w-[70px]">
+                    <BeatLoader size={8} color="#f59e0b" margin={3} speedMultiplier={0.7} />
+                  </div>
                 </div>
               )}
               {/* Follow-up Questions (Reply के नीचे) */}
@@ -441,9 +358,9 @@ const AIChatBot = () => {
             )}
 
             {/* Input area */}
-            <div className="py-4 px-4 sm:px-20 bg-white  flex-shrink-0">
+            <div className="sticky bottom-0 z-10  px-4 sm:px-20 bg-transparent backdrop-blur-xs flex-shrink-0">
               {!showCustomInput ? (
-                // 🟢 जब Input छिपा है, तो यह Clickable Prompt दिखेगा
+                //  When the input is hidden, this clickable prompt will appear.
                 <div
                   onClick={() => setShowCustomInput(true)}
                   className="w-full  px-4 py-4 text-center text-sm text-gray-500 "
@@ -455,8 +372,8 @@ const AIChatBot = () => {
                   to type your own question.
                 </div>
               ) : (
-                // 🔵 जब Input खुला है, तो Textarea और Send Button दिखेगा
-                <div className="flex gap-2 items-start">
+                // When the input is open, the textarea and send button will be visible.
+                <div className="flex gap-2 pb-4 items-center">
                   <textarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -468,17 +385,17 @@ const AIChatBot = () => {
                     }}
                     placeholder="Type your question..."
                     rows={1}
-                    //  जब यह दिखे, तो Auto-Focus हो जाए
+                    //  It should auto-focus when this appears.
                     autoFocus
-                    className="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white text-sm resize-none placeholder:text-xs field-sizing-content"
+                    className="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white text-sm resize-none placeholder:text-xs field-sizing-content  max-h-32 overflow-y-auto scrollbar-hide"
                     disabled={!sessionId || isLoading}
                   />
                   <button
                     onClick={handleSendMessage}
                     disabled={!sessionId || isLoading}
-                    className="bg-amber-500 text-white px-5 py-2 rounded-lg h-fit self-end hover:bg-amber-600 disabled:opacity-50 transition text-sm cursor-pointer "
+                    className="bg-amber-500 rounded-full p-2 self-end hover:bg-amber-600 disabled:opacity-50 transition cursor-pointer "
                   >
-                    Send
+                    <SendHorizontal strokeWidth={2} className="w-6 h-6 text-gray-700"/>
                   </button>
                 </div>
               )}

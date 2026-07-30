@@ -11,6 +11,7 @@ const AiAstrologerDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+    const [isChatStarting, setIsChatStarting] = useState(false);
 
   const { isLoggedIn } = useSelector((state) => state.userAuth);
   const { astrologerDetails: astro, isFetchingAstrologerDetails, error } = useSelector((state) => state.aiChat);
@@ -52,8 +53,11 @@ const AiAstrologerDetails = () => {
     return;
   }
 
+if (isChatStarting) return;
+
   const astrologerSlug = astro.slug;
   const expertiseSlug = astro.expertises[0].slug;
+  setIsChatStarting(true);
 
   try {
     //  Session Start 
@@ -66,6 +70,8 @@ const AiAstrologerDetails = () => {
     setShowLogin(true);
 
     console.error("Session error:", err);
+  }finally {
+      setIsChatStarting(false);
   }
 };
 
@@ -102,7 +108,7 @@ useEffect(() => {
       } else {
         // 7. Astrologer login case: close modal, but stay on page
         // toast.error("Invalid User");
-        setShowLogin(true);
+        setShowLogin(false);
       }
     }
   };
@@ -190,10 +196,11 @@ useEffect(() => {
                 {/* CHAT BUTTON */}
                 <button
                   onClick={handleChatClick}
-                  className="w-full sm:w-auto h-14 md:h-[70px] bg-gradient-to-r from-amber-500 to-orange-500 rounded-full text-white font-bold flex items-center justify-center gap-2 hover:from-amber-600 hover:to-orange-600 transition-colors px-8 md:px-10 cursor-pointer shadow-md"
+                  disabled={isChatStarting}
+                  className="w-full sm:w-auto h-14 md:h-[70px] bg-gradient-to-r from-amber-500 to-orange-500 rounded-full text-white font-bold flex items-center justify-center gap-2 hover:from-amber-600 hover:to-orange-600 transition-colors px-8 md:px-10 cursor-pointer shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
-                  Chat Now
+                  {isChatStarting ? <Loader message="Starting..."/> : <>  <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
+                    Chat Now</>}
                 </button>
               </div>
             </div>

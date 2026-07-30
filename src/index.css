@@ -5,6 +5,7 @@
 @import "tw-animate-css";
 
 
+
 @custom-variant dark (&:is(.dark *));
 /* Banner Section */
 .banner-section {
@@ -284,7 +285,7 @@ h4 {
   font-family: "Montserrat", sans-serif;
 }
 label {
-  font-family:  sans-serif,"Montserrat",;
+  font-family:  sans-serif,"Montserrat";
   font-size: 16px;
  
 }
@@ -535,6 +536,14 @@ Select {
 .swiper-wrapper{
     transition-timing-function: linear !important;
 }
+
+
+
+
+
+
+
+
 
 
 
