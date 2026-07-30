@@ -1,9 +1,13 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { MessageCircle, GraduationCap, Target } from "lucide-react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { MessageCircle, GraduationCap, Target, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import UserLogin from "@/components/UserLogin";
-import { fetchAiAstrologerDetails, clearAstrologerDetails, startSession } from "@/redux/slice/aiChatSlice";
+import {
+  fetchAiAstrologerDetails,
+  clearAstrologerDetails,
+  startSession,
+} from "@/redux/slice/aiChatSlice";
 import Loader from "@/components/common/Loader";
 import { toast } from "react-toastify";
 
@@ -11,13 +15,16 @@ const AiAstrologerDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-    const [isChatStarting, setIsChatStarting] = useState(false);
+  const [isChatStarting, setIsChatStarting] = useState(false);
 
   const { isLoggedIn } = useSelector((state) => state.userAuth);
-  const { astrologerDetails: astro, isFetchingAstrologerDetails, error } = useSelector((state) => state.aiChat);
+  const {
+    astrologerDetails: astro,
+    isFetchingAstrologerDetails,
+    error,
+  } = useSelector((state) => state.aiChat);
 
   const [showLogin, setShowLogin] = useState(false);
-
 
   // console.log("astro", astro)
 
@@ -25,8 +32,6 @@ const AiAstrologerDetails = () => {
     if (slug) {
       dispatch(fetchAiAstrologerDetails(slug));
     }
-
-  
   }, [slug, dispatch]);
 
   // Pass slug + all expertise slugs so AIChatBot can fetch questions from API
@@ -46,103 +51,115 @@ const AiAstrologerDetails = () => {
   //   }
   // };
 
-
   const handleChatClick = async () => {
-  if (!astro?.expertises?.[0]) {
-    toast.error("Astrologer details not available");
-    return;
-  }
+    if (!astro?.expertises?.[0]) {
+      toast.error("Astrologer details not available");
+      return;
+    }
 
-if (isChatStarting) return;
+    if (isChatStarting) return;
 
-  const astrologerSlug = astro.slug;
-  const expertiseSlug = astro.expertises[0].slug;
-  setIsChatStarting(true);
+    const astrologerSlug = astro.slug;
+    const expertiseSlug = astro.expertises[0].slug;
+    setIsChatStarting(true);
 
-  try {
-    //  Session Start 
-    await dispatch(startSession({ astrologerSlug, expertiseSlug })).unwrap();
-    //  Success → Chat Page 
-    navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`);
-  } catch (err) {
-    //  Error →show Login Pop-up and  Toast 
-    toast.error(err);
-    setShowLogin(true);
+    try {
+      //  Session Start
+      await dispatch(startSession({ astrologerSlug, expertiseSlug })).unwrap();
+      //  Success → Chat Page
+      navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`);
+    } catch (err) {
+      //  Error →show Login Pop-up and  Toast
+      toast.error(err);
+      setShowLogin(true);
 
-    console.error("Session error:", err);
-  }finally {
+      console.error("Session error:", err);
+    } finally {
       setIsChatStarting(false);
-  }
-};
-
-
-
-useEffect(() => {
-  // Create an async function inside useEffect
-  const handleLoginSuccess = async () => {
-    // 1. Check if user is logged in, modal is open, and astro details exist
-    if (isLoggedIn && showLogin && astro) {
-      const roleId = localStorage.getItem("role_id");
-
-      // 2. Only allow users (Role 3) to chat
-      if (Number(roleId) === 3) {
-        const astrologerSlug = astro.slug;
-        const expertiseSlug = astro.expertises[0].slug;
-
-        try {
-          // 3.  RETRY: Start the session (ab token valid hai, isliye success hoga)
-          await dispatch(startSession({ astrologerSlug, expertiseSlug })).unwrap();
-
-          // 4. Success: Chat page par navigate karo
-          navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`, {
-            state: chatState,
-          });
-          // 5. Close the login modal
-          setShowLogin(false);
-        } catch (err) {
-          // 6. Agar session fail ho (rare case)
-          toast.error("Failed to start chat. Please try again.");
-          setShowLogin(false);
-          console.error("Session retry error:", err);
-        }
-      } else {
-        // 7. Astrologer login case: close modal, but stay on page
-        // toast.error("Invalid User");
-        setShowLogin(false);
-      }
     }
   };
 
-  // Call the async function
-  handleLoginSuccess();
-}, [isLoggedIn, showLogin, navigate, astro, dispatch]);
+  useEffect(() => {
+    // Create an async function inside useEffect
+    const handleLoginSuccess = async () => {
+      // 1. Check if user is logged in, modal is open, and astro details exist
+      if (isLoggedIn && showLogin && astro) {
+        const roleId = localStorage.getItem("role_id");
+
+        // 2. Only allow users (Role 3) to chat
+        if (Number(roleId) === 3) {
+          const astrologerSlug = astro.slug;
+          const expertiseSlug = astro.expertises[0].slug;
+
+          try {
+            // 3.  RETRY: Start the session (ab token valid hai, isliye success hoga)
+            await dispatch(
+              startSession({ astrologerSlug, expertiseSlug }),
+            ).unwrap();
+
+            // 4. Success: Chat page par navigate karo
+            navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`, {
+              state: chatState,
+            });
+            // 5. Close the login modal
+            setShowLogin(false);
+          } catch (err) {
+            // 6. Agar session fail ho (rare case)
+            toast.error("Failed to start chat. Please try again.");
+            setShowLogin(false);
+            console.error("Session retry error:", err);
+          }
+        } else {
+          // 7. Astrologer login case: close modal, but stay on page
+          // toast.error("Invalid User");
+          setShowLogin(false);
+        }
+      }
+    };
+
+    // Call the async function
+    handleLoginSuccess();
+  }, [isLoggedIn, showLogin, navigate, astro, dispatch]);
 
   if (isFetchingAstrologerDetails) {
-    return (
-      <Loader message="Loading astrologer details..."/>
-    );
+    return <Loader message="Loading astrologer details..." />;
   }
-
 
   // console.log(error)
   if (!astro) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-amber-50 to-white">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800">Astrologer not found</h2>
-          <p className="text-gray-500 mt-2">{error || "The astrologer you are looking for does not exist."}</p>
-          <button onClick={() => navigate(-1)} className="mt-4 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 cursor-pointer">Go Back</button>
+          <h2 className="text-2xl font-bold text-gray-800">
+            Astrologer not found
+          </h2>
+          <p className="text-gray-500 mt-2">
+            {error || "The astrologer you are looking for does not exist."}
+          </p>
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-4 px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 cursor-pointer"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
   }
 
-
-
   return (
     <>
       <div className="relative min-h-screen mt-4 bg-gradient-to-t from-amber-100 to-white py-8 px-4 sm:px-10">
         <div className="w-full mx-auto">
+          {/* BREADCRUMB */}
+          <nav className="flex items-center text-sm mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide text-gray-600 font-medium">
+            <Link to="/" className="hover:text-amber-500 transition-colors cursor-pointer">Home</Link>
+            <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" strokeWidth={2.5} />
+            <Link to="/chat/all-ai-astrologer" className="hover:text-amber-500 transition-colors cursor-pointer">Astrologers</Link>
+            <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" strokeWidth={2.5} />
+            <span className="font-semibold text-amber-600 truncate">{astro.name}</span>
+          </nav>
+
           {/* HERO SECTION */}
           <div className="flex flex-col sm:flex-row gap-6 mb-8">
             {/* LEFT COLUMN - Profile Card */}
@@ -175,10 +192,12 @@ useEffect(() => {
                   {astro.expertises[0].name}
                 </p>
                 <p className="text-sm sm:text-base">
-                  <span className="font-bold text-amber-900">Experience:</span> {astro.experience || "N/A"} of Experience
+                  <span className="font-bold text-amber-900">Experience:</span>{" "}
+                  {astro.experience || "N/A"} of Experience
                 </p>
                 <p className="text-sm sm:text-base">
-                  <span className="font-bold text-amber-900">Language:</span> {astro.language || "English, Hindi"}
+                  <span className="font-bold text-amber-900">Language:</span>{" "}
+                  {astro.language || "English, Hindi"}
                 </p>
               </div>
 
@@ -186,10 +205,14 @@ useEffect(() => {
               <div className="mt-6 flex flex-col sm:flex-row sm:items-center gap-4">
                 {/* Chat Rate Box */}
                 <div className="bg-white border border-amber-200 rounded-lg p-3 min-w-[140px] flex items-center gap-2 sm:flex-col sm:gap-0 sm:text-center">
-                  <p className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wide">Chat Rate : </p>
+                  <p className="text-xs text-gray-500 mb-1 font-medium uppercase tracking-wide">
+                    Chat Rate :{" "}
+                  </p>
                   <p className="text-xl md:text-2xl font-bold text-amber-600">
                     ₹{astro.chat_price ?? "—"}
-                    <span className="text-xs font-normal text-gray-400">/msg</span>
+                    <span className="text-xs font-normal text-gray-400">
+                      /msg
+                    </span>
                   </p>
                 </div>
 
@@ -199,8 +222,11 @@ useEffect(() => {
                   disabled={isChatStarting}
                   className="w-full sm:w-auto h-14 md:h-[70px] bg-gradient-to-r from-amber-500 to-orange-500 rounded-full text-white font-bold flex items-center justify-center gap-2 hover:from-amber-600 hover:to-orange-600 transition-colors px-8 md:px-10 cursor-pointer shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isChatStarting ? <Loader message="Starting..."/> : <>  <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
-                    Chat Now</>}
+                 
+                  <>
+                    <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
+                    {isChatStarting ? "Starting..." : "Chat Now"}
+                  </>
                 </button>
               </div>
             </div>
@@ -227,7 +253,9 @@ useEffect(() => {
                   Education
                   <span className="absolute bottom-0 left-0 w-[150px] md:w-[200px] h-1 bg-amber-500"></span>
                 </h3>
-                <p className="text-base md:text-[18px] text-gray-700 mt-4 md:mt-6">{astro.education}</p>
+                <p className="text-base md:text-[18px] text-gray-700 mt-4 md:mt-6">
+                  {astro.education}
+                </p>
               </div>
             </div>
           )}
@@ -243,21 +271,17 @@ useEffect(() => {
                 <span className="absolute bottom-0 left-0 w-[150px] md:w-[220px] h-1 bg-orange-500"></span>
               </h3>
               <div className="flex flex-wrap gap-2 mt-4 md:mt-6">
-                {astro.expertises.map(
-                  (tag, i) => (
-                    <span
-                      key={i}
-                      className="text-sm font-semibold text-amber-900 bg-amber-100 border border-amber-300 rounded-full px-3 py-1"
-                    >
-                      {tag.name}
-                    </span>
-                  )
-                )}
+                {astro.expertises.map((tag, i) => (
+                  <span
+                    key={i}
+                    className="text-sm font-semibold text-amber-900 bg-amber-100 border border-amber-300 rounded-full px-3 py-1"
+                  >
+                    {tag.name}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
-
-
 
           {/* LANGUAGES KNOWN CARD */}
           <div className="mb-12">
@@ -266,19 +290,30 @@ useEffect(() => {
                 Languages Known:
               </p>
               <div className="flex gap-2 flex-wrap justify-center">
-                {astro.language ? astro.language.split(',').map((lang, idx) => (
-                  <div key={idx} className="relative h-[38px] px-[18px] bg-gradient-to-r from-amber-500 to-orange-500 flex items-center">
-                    <span className="text-white font-semibold uppercase text-sm">{lang.trim()}</span>
-                    <div className="absolute right-2 w-2 h-2 rounded-full bg-white opacity-50"></div>
-                  </div>
-                )) : (
+                {astro.language ? (
+                  astro.language.split(",").map((lang, idx) => (
+                    <div
+                      key={idx}
+                      className="relative h-[38px] px-[18px] bg-gradient-to-r from-amber-500 to-orange-500 flex items-center"
+                    >
+                      <span className="text-white font-semibold uppercase text-sm">
+                        {lang.trim()}
+                      </span>
+                      <div className="absolute right-2 w-2 h-2 rounded-full bg-white opacity-50"></div>
+                    </div>
+                  ))
+                ) : (
                   <>
                     <div className="relative h-[38px] px-[18px] bg-gradient-to-r from-amber-500 to-orange-500 flex items-center">
-                      <span className="text-white font-semibold uppercase text-sm">ENGLISH</span>
+                      <span className="text-white font-semibold uppercase text-sm">
+                        ENGLISH
+                      </span>
                       <div className="absolute right-2 w-2 h-2 rounded-full bg-white opacity-50"></div>
                     </div>
                     <div className="relative h-[38px] px-[18px] bg-gradient-to-r from-amber-500 to-orange-500 flex items-center">
-                      <span className="text-white font-semibold uppercase text-sm">HINDI</span>
+                      <span className="text-white font-semibold uppercase text-sm">
+                        HINDI
+                      </span>
                       <div className="absolute right-2 w-2 h-2 rounded-full bg-white opacity-50"></div>
                     </div>
                   </>
@@ -288,7 +323,7 @@ useEffect(() => {
           </div>
         </div>
 
-          <div className="hidden lg:inline absolute  top-8 right-10">
+        <div className="hidden lg:inline absolute  top-8 right-10">
           <a
             href="https://astrotring.shop/product/metal-dhan-yog-bracelet-with-free-raw-selenite-plate"
             target="__blank"
@@ -304,7 +339,6 @@ useEffect(() => {
               Ad
             </span>
           </a>
-         
         </div>
       </div>
 
@@ -319,7 +353,6 @@ useEffect(() => {
           }}
         />
       )}
-
     </>
   );
 };

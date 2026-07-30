@@ -17,6 +17,7 @@ import { fetchWalletDetails } from "@/redux/slice/walletSlice";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { BeatLoader } from "react-spinners";
+import UserLogin from "@/components/UserLogin";
 
 
 const AIChatBot = () => {
@@ -47,9 +48,16 @@ const AIChatBot = () => {
   const [input, setInput] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showRechargeModal, setShowRechargeModal] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
 
   const bottomRef = useRef();
 
+  // Show login modal if unauthenticated user tries to access chat
+  useEffect(() => {
+    if (!isLoggedIn) {
+      setShowLogin(true);
+    }
+  }, [isLoggedIn]);
 
   useEffect(() => {
     if (isLoggedIn && !sessionId && expertiseSlug && astrologerSlug) {
@@ -60,16 +68,16 @@ const AIChatBot = () => {
         }),
       );
     }
-  }, [dispatch, expertiseSlug, astrologerSlug]);
+  }, [dispatch, expertiseSlug, astrologerSlug, isLoggedIn, sessionId]);
 
-  //  Astrologer Details Fetch करें (visible after Refresh also )
+  // Get astrologer details (will remain visible even after refreshing)
   useEffect(() => {
     if (astrologerSlug) {
       dispatch(fetchAiAstrologerDetails(astrologerSlug));
     }
   }, [astrologerSlug, dispatch]);
 
-  //  जब sessionId आ जाए, तो history fetch करें
+  //  Fetch the history once the sessionId is received.
   useEffect(() => {
     if (sessionId) {
       dispatch(fetchChatHistory(sessionId));
@@ -85,6 +93,10 @@ const AIChatBot = () => {
   }, [dispatch]);
 
   const handleQuestionClick = async (question) => {
+    if (!isLoggedIn) {
+      setShowLogin(true);
+      return;
+    }
     if (!sessionId) {
       toast.error("No active session. Please wait.");
       return;
@@ -111,6 +123,10 @@ const AIChatBot = () => {
   };
 
   const handleSendMessage = async () => {
+    if (!isLoggedIn) {
+      setShowLogin(true);
+      return;
+    }
     const message = input.trim();
     if (!message || !sessionId) return;
     dispatch(addUserMessageLocally(message));
@@ -437,6 +453,13 @@ const AIChatBot = () => {
           </a>
         </div>
       </div>
+      
+      {showLogin && (
+        <UserLogin
+          defaultOpen={true}
+          onOpenChange={(open) => setShowLogin(open)}
+        />
+      )}
     </div>
   );
 };
