@@ -26,7 +26,7 @@ const RECHARGE_PACKS = [
 const RechargePackList = () => {
   const dispatch = useDispatch();
   const { details } = useSelector((state) => state.wallet);
-  const balance = details?.balance || 0;
+  const balance = details?.data?.balance || 0;
   const { user } = useSelector((state) => state.userAuth);
   const { astrologer } = useSelector((state) => state.astroAuth);
 
