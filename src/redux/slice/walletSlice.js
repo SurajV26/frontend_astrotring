@@ -9,7 +9,19 @@ export const fetchWalletDetails = createAsyncThunk(
     try {
       const response = await api.get('/wallet');
       console.log("fetch wallet",response)
-      return response.data.data;
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch wallet details');
+    }
+  }
+);
+export const fetchWalletChatStatistics = createAsyncThunk(
+  'wallet/fetchWalletChatStatistics',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get('/wallet/chat-statistics');
+      console.log("fetch wallet chat statistics",response)
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch wallet details');
     }
@@ -23,7 +35,7 @@ export const fetchRechargeHistory = createAsyncThunk(
     try {
       const response = await api.get('/wallet/recharge-history');
        console.log("fetch recharge history",response)
-      return response.data.data;
+      return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch recharge history');
     }
@@ -93,6 +105,7 @@ const walletSlice = createSlice({
   name: 'wallet',
   initialState: {
     details: null,
+    chatStatistics:null,
     rechargeHistory: [],
     payoutHistory: [],
     loading: false,
@@ -115,6 +128,18 @@ const walletSlice = createSlice({
         state.details = action.payload;
       })
       .addCase(fetchWalletDetails.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      .addCase(fetchWalletChatStatistics.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWalletChatStatistics.fulfilled, (state, action) => {
+        state.loading = false;
+        state.chatStatistics = action.payload;
+      })
+      .addCase(fetchWalletChatStatistics.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

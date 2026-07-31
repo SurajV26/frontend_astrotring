@@ -16,7 +16,7 @@ const faqData = [
         It's quite simple. Visit{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , browse through our carefully verified astrologers based on their
@@ -38,7 +38,7 @@ const faqData = [
         emotional needs, communication style, and what you seek in a partner. At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , our Kundli matching service compares two birth charts to assess
@@ -59,7 +59,7 @@ const faqData = [
         suitable career fields, and the timing of professional growth or
         challenges. At {" "}
         <Link to="https://astrotring.com/">
-          <strong className="text-[#0066CC] cursor-pointer">AstroTring.com</strong>
+          <strong className="text-[#0066CC] cursor-pointer">Astrotring.com</strong>
         </Link>{" "}
         , our astrologers help you identify the
         right planetary periods for starting a business, seeking a promotion, or
@@ -67,7 +67,7 @@ const faqData = [
         patience. Astrology doesn't replace hard work, but combined with
         {" "}
         <Link to="https://astrotring.com/">
-          <strong className="text-[#0066CC] cursor-pointer">AstroTring.com's</strong>
+          <strong className="text-[#0066CC] cursor-pointer">Astrotring.com's</strong>
         </Link>{" "}
         expert guidance, it helps you align your efforts
         with the right cosmic timing for better outcomes.
@@ -83,7 +83,7 @@ const faqData = [
         is associated with specific body parts and health tendencies. At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , our astrologers can highlight periods when you may be more vulnerable
@@ -105,7 +105,7 @@ const faqData = [
         houses. At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , our astrologers work with whatever details you have — even without an
@@ -125,7 +125,7 @@ const faqData = [
         influences are strong, remedies suggested by {" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com's
+            Astrotring.com's
           </strong>
         </Link>{" "}
         expert
@@ -146,14 +146,14 @@ const faqData = [
         Reliable astrology platforms like{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         are quite trustworthy, especially for daily horoscopes, birth chart
         generation, and connecting with verified astrologers. At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , every astrologer is carefully screened for qualifications and
@@ -173,7 +173,7 @@ const faqData = [
         At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , we believe that divine guidance should be accessible to everyone.
@@ -184,7 +184,7 @@ const faqData = [
         to traditional in-person visits,{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         delivers the same quality of expert guidance at a fraction of the cost —
@@ -194,13 +194,13 @@ const faqData = [
   },
   {
     id: 16,
-    que: "What benefits can I expect from AstroTring.com's astrology services?",
+    que: "What benefits can I expect from Astrotring.com's astrology services?",
     ans: (
       <>
         The benefits are both practical and deeply personal.{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         gives you clarity when you're confused, direction when you feel lost,
@@ -210,7 +210,7 @@ const faqData = [
         prediction,{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         empowers you to make wiser choices, build better relationships, and walk
@@ -232,7 +232,7 @@ const Faq = () => {
               Here are the same answers, now branded with{" "}
               <Link to="https://astrotring.com/">
                 <strong className="text-[#0066CC] cursor-pointer">
-                  AstroTring.com
+                  Astrotring.com
                 </strong>
               </Link>{" "}
               wherever relevant:

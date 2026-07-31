@@ -27,6 +27,7 @@ import { useEffect } from "react";
 import {
   createRazorpayOrder,
   fetchWalletDetails,
+  fetchWalletChatStatistics,
   verifyRazorpayPayment,
   fetchRechargeHistory,
   fetchPayoutHistory,
@@ -34,21 +35,37 @@ import {
 } from "@/redux/slice/walletSlice";
 import { toast } from "react-toastify";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
+import { useNavigate } from "react-router-dom";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 function WalletDashboard() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { astrologer } = useSelector((state) => state.astroAuth);
   const { user } = useSelector((state) => state.userAuth);
-  const dispatch = useDispatch();
-  const { details, loading } = useSelector((state) => state.wallet);
+  const { details, loading, chatStatistics } = useSelector(
+    (state) => state.wallet,
+  );
   const { chatHistory } = useSelector((state) => state.aiChat);
 
-  console.log("chatHistory",chatHistory)
-
+  // console.log("chatHistory",chatHistory)
+  
+  console.log("wwallet details", details);
+  console.log("chatStatistics", chatStatistics);
   useEffect(() => {
     dispatch(fetchWalletDetails());
   }, [dispatch]);
   useEffect(() => {
     dispatch(fetchRechargeHistory());
+  }, [dispatch]);
+  useEffect(() => {
+    dispatch(fetchWalletChatStatistics());
   }, [dispatch]);
 
   if (loading && !details) {
@@ -63,7 +80,7 @@ function WalletDashboard() {
 
   // Use only real data. If details is undefined, we use fallback 0s to prevent crash before loading triggers, though the loading check above handles it mostly.
   const walletData = details || {};
-  console.log("walletData", walletData);
+  console.log("walletData?.data", walletData);
 
   const formatCurrency = (amount) => `₹${parseFloat(amount).toFixed(2)}`;
   const formatDate = (dateString) => {
@@ -107,8 +124,8 @@ function WalletDashboard() {
     </Card>
   );
 
-  const InfoRow = ({ label, value, icon: Icon }) => (
-    <div className="flex items-center justify-between py-3 border-b last:border-0">
+  const InfoRow = ({ label, value, icon: Icon ,className=null}) => (
+    <div className={`flex ${className} items-center justify-between py-3 border-b last:border-0`}>
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         {Icon && <Icon className="w-4 h-4" />}
         <span>{label}</span>
@@ -150,17 +167,17 @@ function WalletDashboard() {
               </div>
               <div className="flex items-baseline gap-3">
                 <h2 className="text-5xl font-bold text-primary">
-                  {formatCurrency(walletData.balance || 0)}
+                  {formatCurrency(walletData?.data?.balance || 0)}
                 </h2>
                 {/* <Badge variant="outline" className="text-xs">
-                  Wallet ID: {walletData.id || "N/A"}
+                  Wallet ID: {walletData?.data.id || "N/A"}
                 </Badge> */}
               </div>
               <div className="grid grid-cols-2 gap-4 mt-6">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground">Last Updated</p>
                   <p className="text-sm font-medium">
-                    {formatDate(walletData.updated_at)}
+                    {formatDate(walletData?.data?.last_recharge_at)}
                   </p>
                 </div>
                 <div className="space-y-1">
@@ -168,7 +185,7 @@ function WalletDashboard() {
                     Account Created
                   </p>
                   <p className="text-sm font-medium">
-                    {formatDate(walletData.created_at)}
+                    {formatDate(walletData?.data?.created_at)}
                   </p>
                 </div>
               </div>
@@ -181,28 +198,28 @@ function WalletDashboard() {
           {/* <StatCard
             icon={TrendingUp}
             title="Total Earned"
-            value={formatCurrency(walletData.total_earned || 0)}
+            value={formatCurrency(walletData?.data?.total_earned || 0)}
             colorClass="text-green-600"
             borderColor={'border-green-200 bg-green-50'}
           />
           <StatCard
             icon={TrendingDown}
             title="Total Withdrawn"
-            value={formatCurrency(walletData.total_withdrawn || 0)}
+            value={formatCurrency(walletData?.data.total_withdrawn || 0)}
             colorClass="text-orange-600"
             borderColor={'border-orange-200 bg-orange-50'}
           /> */}
           <StatCard
             icon={ArrowDownRight}
             title="Total Added"
-            value={formatCurrency(walletData.total_added || 0)}
+            value={formatCurrency(walletData?.data?.total_added || 0)}
             colorClass="text-blue-600"
             borderColor={"border-blue-200 bg-blue-50"}
           />
           <StatCard
             icon={ArrowDownRight}
             title="Total Spent"
-            value={formatCurrency(walletData.total_spent || 0)}
+            value={formatCurrency(walletData?.data?.total_spent || 0)}
             colorClass="text-red-600"
             borderColor={"border-red-200 bg-red-50"}
           />
@@ -221,22 +238,22 @@ function WalletDashboard() {
             <CardContent className="space-y-1">
               <InfoRow
                 label="Total Call Duration"
-                value={`${walletData.total_call_minutes || 0} minutes`}
+                value={`${walletData?.data?.total_call_minutes || 0} minutes`}
                 icon={Clock}
               />
               <InfoRow
                 label="Total Call Revenue"
-                value={formatCurrency(walletData.total_call_spent || 0)}
+                value={formatCurrency(walletData?.data?.total_call_spent || 0)}
                 icon={IndianRupee}
               />
               <InfoRow
                 label="Average Per Minute"
                 value={
-                  (walletData.total_call_minutes || 0) > 0
+                  (walletData?.data?.total_call_minutes || 0) > 0
                     ? formatCurrency(
                         (
-                          parseFloat(walletData.total_call_spent || 0) /
-                          walletData.total_call_minutes
+                          parseFloat(walletData?.data?.total_call_spent || 0) /
+                          walletData?.data?.total_call_minutes
                         ).toFixed(2),
                       )
                     : "₹0.00"
@@ -257,18 +274,47 @@ function WalletDashboard() {
             <CardContent className="space-y-1">
               <InfoRow
                 label="Paid Messages Count"
-                value={`${chatHistory?.paid_messages || 0} `}
+                value={`${chatStatistics?.summary?.total_paid_chats || 0} `}
                 icon={Clock}
               />
               <InfoRow
                 label="Free Messages Count"
-                value={`${chatHistory?.free_messages_used || 0} `}
+                value={`${chatStatistics?.summary?.total_free_chats || 0} `}
                 icon={IndianRupee}
               />
               <InfoRow
                 label="Total Spent"
-                value={`${chatHistory?.total_amount || 0} `}
+                value={`${chatStatistics?.summary?.total_spent || 0} `}
                 icon={TrendingUp}
+              />
+
+              <InfoRow
+                label="All Connected Astrologers"
+                icon={MessageSquare}
+                className="flex-col gap-2 sm:flex-row sm:gap-0"
+                value={
+                  <Select onValueChange={(value) => navigate(value)}>
+                    <SelectTrigger className="font-normal text-sm w-full sm:w-auto min-w-0">
+                      <SelectValue placeholder="Select astrologer" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {chatStatistics?.history?.length > 0 ? (
+                        chatStatistics.history.map((item) => (
+                          <SelectItem
+                            key={item.astrologer.slug || item.id}
+                            value={`/ai-chat/${item?.astrologer?.slug}/${item?.expertise.slug}`}
+                          >
+                            {item.astrologer.name}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <div className="p-2 text-sm text-gray-400 text-center">
+                          No chats yet
+                        </div>
+                      )}
+                    </SelectContent>
+                  </Select>
+                }
               />
             </CardContent>
           </Card>
@@ -290,15 +336,15 @@ function WalletDashboard() {
               <InfoRow
                 label="Last Recharge Amount"
                 value={
-                  walletData.last_recharge_amount
-                    ? formatCurrency(walletData.last_recharge_amount)
+                  walletData?.data?.last_recharge_amount
+                    ? formatCurrency(walletData?.data?.last_recharge_amount)
                     : "No recharge yet"
                 }
                 icon={ArrowUpRight}
               />
               <InfoRow
                 label="Last Recharge Date"
-                value={formatDate(walletData.last_recharge_at)}
+                value={formatDate(walletData?.data?.last_recharge_at)}
                 icon={Calendar}
               />
             </div>
@@ -318,22 +364,22 @@ function WalletDashboard() {
                   Account Status
                 </p>
                 <Badge variant="outline" className="text-sm">
-                  {walletData.deleted_at ? "Inactive" : "Active"}
+                  {walletData?.data?.deleted_at ? "Inactive" : "Active"}
                 </Badge>
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">
-                  User ID
+                  User Name
                 </p>
-                <p className="text-sm font-mono">
-                  {walletData.user_id || "N/A"}
+                <p className="text-sm font-mono uppercase">
+                  {walletData?.user?.name || "N/A"}
                 </p>
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-muted-foreground">
-                  Wallet ID
+                  Wallet Age
                 </p>
-                <p className="text-sm font-mono">{walletData.id || "N/A"}</p>
+                <p className="text-sm font-mono">{walletData?.data?.wallet_age || "N/A"}</p>
               </div>
             </div>
           </CardContent>

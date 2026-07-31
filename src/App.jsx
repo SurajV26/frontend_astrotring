@@ -137,7 +137,7 @@ const App = () => {
 
   return (
     <>
-      <Suspense fallback={<div className="text-center py-10">Loading...</div>}>
+      <Suspense  fallback={<div className="text-center py-10">Loading...</div>}>
         <GoogleTagManager />
         <Routes>
           <Route path="/" element={<Layout />}>
@@ -202,6 +202,8 @@ const App = () => {
             <Route path="/ai-astrologer/:slug" element={<AiAstrologerDetails />} />
             <Route path="/chat/all-ai-astrologer" element={<AllAiAstrologers />} />
           </Route>
+
+          {/* chatboat  */}
           <Route
             path="/ai-chat/:astrologerSlug/:expertiseSlug?" element={<AIChatBot />} />
 

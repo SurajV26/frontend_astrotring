@@ -21,6 +21,8 @@ import UserLogin from "@/components/UserLogin";
 
 
 const AIChatBot = () => {
+
+  console.log("chatbotloading..........................................................")
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -39,7 +41,7 @@ const AIChatBot = () => {
     error,
   } = useSelector((state) => state.aiChat);
   const { details: walletDetails } = useSelector((state) => state.wallet);
-  const walletBalance = walletDetails?.balance || 0;
+  const walletBalance = walletDetails?.data?.balance || 0;
 
   console.log("astrologer details", astrologerDetails);
   console.log("chat messages", messages);
@@ -60,7 +62,7 @@ const AIChatBot = () => {
   }, [isLoggedIn]);
 
   useEffect(() => {
-    if (isLoggedIn && !sessionId && expertiseSlug && astrologerSlug) {
+    if (isLoggedIn  && expertiseSlug && astrologerSlug) {
       dispatch(
         startSession({
           astrologerSlug: astrologerSlug,
@@ -160,6 +162,8 @@ const AIChatBot = () => {
       }
     }
   };
+
+  
 
   // console.log(sessionQuestions);
 

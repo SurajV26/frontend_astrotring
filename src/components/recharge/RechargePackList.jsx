@@ -41,7 +41,7 @@ const RechargePackList = () => {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: orderData.amount,
         currency: orderData.currency || "INR",
-        name: "AstroTring",
+        name: "Astrotring",
         description: "Wallet Recharge",
         order_id: orderData.order_id,
         handler: async function (response) {
@@ -64,7 +64,7 @@ const RechargePackList = () => {
         prefill: {
           name: user?.name || astrologer?.name || "",
           email: user?.email || astrologer?.email || "",
-          contact: user?.phone || astrologer?.phone || "",
+          contact: user?.mobile || astrologer?.mobile || "",
         },
         theme: { color: "#f59e0b" },
       };
