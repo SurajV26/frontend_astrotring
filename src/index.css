@@ -372,7 +372,7 @@ Select {
   animation: spin-slow 6s linear infinite;
 }
 
-/* AstroTring celestial wheel animation */
+/* Astrotring celestial wheel animation */
 @keyframes twinkle {
   0%,
   100% {

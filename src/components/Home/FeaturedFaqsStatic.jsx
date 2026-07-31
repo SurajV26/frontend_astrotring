@@ -18,7 +18,7 @@ const faqList = [
         an experienced astrologer on{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         reads your unique birth chart, they're not guessing — they're
@@ -39,7 +39,7 @@ const faqList = [
         tendencies in your life. Many people who consult astrologers on{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         find that astrological readings reflect their experiences surprisingly
@@ -58,7 +58,7 @@ const faqList = [
         born, these planets were positioned in specific places in the sky. At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , our astrologers map these positions into a birth chart and interpret
@@ -81,7 +81,7 @@ const faqList = [
         on the Sun sign and psychological personality traits. At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , we offer expert guidance in both systems, helping you choose the
@@ -100,7 +100,7 @@ const faqList = [
         your personal cosmic fingerprint — completely unique to you. At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , our experts use your birth chart to reveal your strengths, weaknesses,
@@ -118,7 +118,7 @@ const faqList = [
         planetary transits and how they interact with your birth chart. At{" "}
         <Link to="https://astrotring.com/">
           <strong className="text-[#0066CC] cursor-pointer">
-            AstroTring.com
+            Astrotring.com
           </strong>
         </Link>{" "}
         , our astrologers help identify favorable periods for career moves,

@@ -57,7 +57,7 @@ const Footer = () => {
             <Link to="/">
               <img src={faviconlogo} className="h-12 mb-4" alt="Logo" />
             </Link>
-            <p className="text-sm leading-relaxed">AstroTring offers accurate Vedic astrology insights including kundli matching, horoscope predictions, and expert astrologer consultations to guide important life decisions. Our platform blends ancient astrological wisdom with modern technology to provide guidance on love, marriage, career, health, and finance.</p>
+            <p className="text-sm leading-relaxed">Astrotring offers accurate Vedic astrology insights including kundli matching, horoscope predictions, and expert astrologer consultations to guide important life decisions. Our platform blends ancient astrological wisdom with modern technology to provide guidance on love, marriage, career, health, and finance.</p>
           </div>
 
           {/* HOROSCOPE + SHUBH MUHURAT */}

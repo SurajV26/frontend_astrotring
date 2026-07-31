@@ -187,7 +187,7 @@ const AiAstrologerDetails = () => {
 
               {/* Details */}
               <div className="space-y-3 md:space-y-5">
-                <p className="text-sm sm:text-base">
+                <p className="text-sm sm:text-base font-bold text-gray-800">
                   <span className="font-bold text-amber-900">Expertise:</span>{" "}
                   {astro.expertises[0].name}
                 </p>
@@ -197,7 +197,7 @@ const AiAstrologerDetails = () => {
                 </p>
                 <p className="text-sm sm:text-base">
                   <span className="font-bold text-amber-900">Language:</span>{" "}
-                  {astro.language || "English, Hindi"}
+                  {astro.language || "Your Preferred Language"}
                 </p>
               </div>
 
@@ -284,7 +284,7 @@ const AiAstrologerDetails = () => {
           </div>
 
           {/* LANGUAGES KNOWN CARD */}
-          <div className="mb-12">
+          {/* <div className="mb-12">
             <div className="w-full bg-amber-50 rounded-xl border border-amber-200 shadow-sm h-auto md:h-[95px] flex flex-col md:flex-row items-center  px-4 md:px-8 py-4 md:py-0 gap-4">
               <p className="text-base md:text-[20px] font-semibold text-gray-800">
                 Languages Known:
@@ -320,7 +320,7 @@ const AiAstrologerDetails = () => {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="hidden lg:inline absolute  top-8 right-10">

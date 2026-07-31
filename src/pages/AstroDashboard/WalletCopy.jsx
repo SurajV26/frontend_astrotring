@@ -120,7 +120,7 @@ const WalletDashboard = () => {
         key: RAZORPAY_KEY,
         amount: amountInPaise,
         currency,
-        name: "AstroTring",
+        name: "Astrotring",
         description: `Add ₹${numAmount} to wallet`,
         order_id,
         handler: async (response) => {
