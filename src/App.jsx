@@ -17,6 +17,7 @@ import { userProfile } from "./redux/slice/UserAuth";
 // import GrihaPravesh from "./pages/FooterMahurat/GrihaPravesh";
 // import Mundan from "./pages/FooterMahurat/Mundan";
 import GoogleTagManager from "./components/common/GoogleTagManager";
+import Loader from "./components/common/Loader";
 // import AuthHOC from "@/components/Home/AuthHOC";
 // import AIChatBot from "@/components/AIChatBot/AIChatBot";
 // import AllAiAstrologers from "./components/AIChatBot/AllAiAstrologers";
@@ -116,7 +117,7 @@ const App = () => {
        console.log("🚀 Dispatching userProfile! in app");
       dispatch(userProfile());
     }
-  }, [dispatch, role, astrologer, user]);
+  }, [dispatch, role, astrologer, user,isAuthenticated, isLoggedIn]);
 
   // useEffect(() => {
   //   window.scrollTo(0, 0);
@@ -205,7 +206,11 @@ const App = () => {
 
           {/* chatboat  */}
           <Route
-            path="/ai-chat/:astrologerSlug/:expertiseSlug?" element={<AIChatBot />} />
+            path="/ai-chat/:astrologerSlug/:expertiseSlug?" element={
+            <Suspense fallback={<Loader message="Loading Chat..."/>}>
+              <AIChatBot />
+            </Suspense>
+          } />
 
           {/* Dashboard starts from here */}
           <Route path="/dashboard" element={<AstroLayout />}>
@@ -219,8 +224,8 @@ const App = () => {
           </Route>
         </Routes>
 
-         <Suspense fallback={null}><GlobalRechargeModal /></Suspense>
       </Suspense>
+         <Suspense fallback={null}><GlobalRechargeModal /></Suspense>
     </>
   );
 };
