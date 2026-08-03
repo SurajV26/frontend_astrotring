@@ -291,7 +291,7 @@ function WalletDashboard() {
               <InfoRow
                 label="All Connected Astrologers"
                 icon={MessageSquare}
-                className="flex-col gap-2 sm:flex-row sm:gap-0"
+                className="flex-col gap-2 items-start sm:flex-row sm:gap-0"
                 value={
                   <Select onValueChange={(value) => navigate(value)}>
                     <SelectTrigger className="font-normal text-sm w-full sm:w-auto min-w-0">
