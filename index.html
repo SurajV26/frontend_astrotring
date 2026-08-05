@@ -1,77 +1,73 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#FFFEF7" />
-    <meta
-      name="description"
-      content="Astrotring is a trusted astrology website. Get accurate astrology predictions, horoscopes, tarot reading & kundli report from expert astrologers."
-    />
-    <link rel="manifest" href="/manifest.json" />
 
-    <title>Astrotring</title>
-    <!-- Google Tag Manager -->
-    <script>
-      (function (w, d, s, l, i) {
-        w[l] = w[l] || [];
-        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
-        var f = d.getElementsByTagName(s)[0],
-          j = d.createElement(s),
-          dl = l != "dataLayer" ? "&l=" + l : "";
-        j.async = true;
-        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
-        f.parentNode.insertBefore(j, f);
-      })(window, document, "script", "dataLayer", "GTM-PQT8J6NK");
-    </script>
-    <!-- End Google Tag Manager -->
-    <!-- Razorpay Checkout SDK -->
-    <script defer src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#FFFEF7" />
+  <meta name="description"
+    content="Astrotring is a trusted astrology website. Get accurate astrology predictions, horoscopes, tarot reading & kundli report from expert astrologers." />
+  <link rel="manifest" href="/manifest.json" />
 
-  <body>
-    <!-- Google Tag Manager (noscript) -->
-    <noscript
-      ><iframe
-        src="https://www.googletagmanager.com/ns.html?id=GTM-PQT8J6NK"
-        height="0"
-        width="0"
-        style="display: none; visibility: hidden"
-      ></iframe
-    ></noscript>
-    <!-- End Google Tag Manager (noscript) -->
+  <title>Astrotring</title>
+  <!-- Google Tag Manager -->
+  <script>
+    (function (w, d, s, l, i) {
+      w[l] = w[l] || [];
+      w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+      var f = d.getElementsByTagName(s)[0],
+        j = d.createElement(s),
+        dl = l != "dataLayer" ? "&l=" + l : "";
+      j.async = true;
+      j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+      f.parentNode.insertBefore(j, f);
+    })(window, document, "script", "dataLayer", "GTM-PQT8J6NK");
+  </script>
+  <!-- End Google Tag Manager -->
 
-    <div id="root">
-      <div
-        style="
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9374260028829566"
+    crossorigin="anonymous">
+  </script>
+
+  <!-- Razorpay Checkout SDK -->
+  <script defer src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQT8J6NK" height="0" width="0"
+      style="display: none; visibility: hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <div id="root">
+    <div style="
           display: flex;
           justify-content: center;
           align-items: center;
           background: #ffffff;
           padding-top: 48px;
-        "
-      >
-        <div
-          style="
+        ">
+      <div style="
             width: 48px;
             height: 48px;
             border: 2px solid #e5e7eb;
             border-top-color: #f59e0b;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-          "
-        ></div>
-      </div>
-      <style>
-        @keyframes spin {
-          to {
-            transform: rotate(360deg);
-          }
-        }
-      </style>
+          "></div>
     </div>
+    <style>
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+    </style>
+  </div>
 
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
