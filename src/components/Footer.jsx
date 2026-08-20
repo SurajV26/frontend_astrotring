@@ -181,6 +181,14 @@ const Footer = () => {
             <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <Link
+                  to="/contact-information"
+                  className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
+                >
+                  <FaAnglesRight />Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
                   to="/refund-policy"
                   className="flex items-center gap-2 hover:text-primary transition-all duration-200 hover:translate-x-1"
                 >
