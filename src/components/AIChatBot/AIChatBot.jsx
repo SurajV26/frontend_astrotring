@@ -4,15 +4,18 @@ import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import logo from "@/assets/logo.png";
 import {
   startSession,
+  startChat,
   sendChatMessage,
   closeSession,
   addUserMessageLocally,
   fetchChatHistory,
   fetchAiAstrologerDetails,
+  fetchAstrologerQuestions,
+  clearAstrologerQuestions,
 } from "@/redux/slice/aiChatSlice";
 // import { api } from "@/redux/baseApi";
 import { toast } from "react-toastify";
-import { ChevronLeft, Plus, SendHorizontal, Wallet, X } from "lucide-react";
+import { ChevronLeft, Plus, SendHorizontal, Wallet, X, Timer } from "lucide-react";
 import { fetchWalletDetails } from "@/redux/slice/walletSlice";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
 import MarkdownRenderer from "./MarkdownRenderer";
@@ -27,17 +30,19 @@ const AIChatBot = () => {
   const dispatch = useDispatch();
 
   const { astrologerSlug, expertiseSlug } = useParams();
-  const { isLoggedIn } = useSelector((state) => state.userAuth); 
+  const { isLoggedIn } = useSelector((state) => state.userAuth);
 
   const {
     sessionId,
-    sessionQuestions,
+    astrologerQuestions,
+    isFetchingAstrologerQuestions,
     messages,
     isLoading,
     isStartingSession,
     astrologerDetails,
     followUpQuestions,
-
+    chatBilling,
+    chatFreeUsed,
     error,
   } = useSelector((state) => state.aiChat);
   const { details: walletDetails } = useSelector((state) => state.wallet);
@@ -51,6 +56,7 @@ const AIChatBot = () => {
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showRechargeModal, setShowRechargeModal] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const bottomRef = useRef();
 
@@ -61,16 +67,46 @@ const AIChatBot = () => {
     }
   }, [isLoggedIn]);
 
+  // Navigation guard when chat is active
   useEffect(() => {
-    if (isLoggedIn  && expertiseSlug && astrologerSlug) {
-      dispatch(
-        startSession({
-          astrologerSlug: astrologerSlug,
-          expertiseSlug: expertiseSlug,
-        }),
-      );
+    const handleBeforeUnload = (e) => {
+      if (chatBilling?.isChatActive && sessionId) {
+        dispatch(closeSession(sessionId));
+        e.preventDefault();
+        e.returnValue = "";
+        return "";
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, [chatBilling?.isChatActive, sessionId, dispatch]);
+
+  // Close session on unmount when chat is active
+  useEffect(() => {
+    return () => {
+      if (chatBilling?.isChatActive && sessionId) {
+        dispatch(closeSession(sessionId));
+      }
+    };
+  }, [chatBilling?.isChatActive, sessionId, dispatch]);
+
+  // Refresh wallet balance periodically when chat is active
+  useEffect(() => {
+    if (!chatBilling?.isChatActive) {
+      return;
     }
-  }, [dispatch, expertiseSlug, astrologerSlug, isLoggedIn, sessionId]);
+
+    const interval = setInterval(() => {
+      dispatch(fetchWalletDetails());
+    }, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(interval);
+  }, [chatBilling?.isChatActive, dispatch]);
+
 
   // Get astrologer details (will remain visible even after refreshing)
   useEffect(() => {
@@ -79,12 +115,68 @@ const AIChatBot = () => {
     }
   }, [astrologerSlug, dispatch]);
 
-  //  Fetch the history once the sessionId is received.
+  // Fetch astrologer questions separately
   useEffect(() => {
+    if (astrologerSlug && expertiseSlug) {
+      dispatch(fetchAstrologerQuestions({ astrologerSlug, expertiseSlug }));
+    }
+    return () => {
+      dispatch(clearAstrologerQuestions());
+    };
+  }, [astrologerSlug, expertiseSlug, dispatch]);
+
+
+  useEffect(() => {
+  if (isLoggedIn && astrologerSlug && expertiseSlug) {
+    dispatch(
+    startSession({
+      astrologerSlug,
+      expertiseSlug,
+    }),
+  )
+  }
+}, []);
+  
+
+// Fetch the history once the sessionId is received.
+  useEffect(() => {
+    // console.log("sessionId in history effect1", sessionId);
     if (sessionId) {
+      // console.log("sessionId in history effect2", sessionId);
       dispatch(fetchChatHistory(sessionId));
     }
-  }, [sessionId, dispatch]);
+  }, [sessionId]);
+
+
+  useEffect(() => {
+    if (!chatBilling?.isChatActive || !chatBilling?.chatActiveSince) {
+      return;
+    }
+
+    const startTime = new Date(
+      chatBilling.chatActiveSince
+    ).getTime();
+
+    const updateTimer = () => {
+      const now = Date.now();
+
+      const difference = Math.floor(
+        (now - startTime) / 1000
+      );
+
+      setElapsedSeconds(Math.max(0, difference));
+    };
+
+    // Immediately calculate
+    updateTimer();
+
+    const interval = setInterval(updateTimer, 1000);
+
+    return () => clearInterval(interval);
+  }, [
+    chatBilling?.isChatActive,
+    chatBilling?.chatActiveSince,
+  ]);
 
   // Auto-scroll
   useEffect(() => {
@@ -99,16 +191,40 @@ const AIChatBot = () => {
       setShowLogin(true);
       return;
     }
-    if (!sessionId) {
-      toast.error("No active session. Please wait.");
-      return;
+    
+    let currentSessionId = sessionId;
+    
+    // Create session if not exists
+    if (!currentSessionId) {
+      try {
+        const result = await dispatch(
+          startSession({
+            astrologerSlug: astrologerSlug,
+            expertiseSlug: expertiseSlug,
+          })
+        ).unwrap();
+        currentSessionId = result.sessionId;
+      } catch (err) {
+        toast.error(err || "Failed to start session");
+        return;
+      }
     }
+    
+    // Start chat billing only if free quota is used
+    if (!chatBilling?.isChatActive && chatFreeUsed) {
+      try {
+        await dispatch(startChat(currentSessionId)).unwrap();
+      } catch (err) {
+        toast.error(err || "Failed to start chat");
+        return;
+      }
+    }
+    
     dispatch(addUserMessageLocally(question));
     try {
       await dispatch(
-        sendChatMessage({ sessionId, message: question }),
+        sendChatMessage({ sessionId: currentSessionId, message: question }),
       ).unwrap();
-      dispatch(fetchWalletDetails());
       setShowRechargeModal(false);
     } catch (err) {
       const errData = err;
@@ -130,13 +246,40 @@ const AIChatBot = () => {
       return;
     }
     const message = input.trim();
-    if (!message || !sessionId) return;
+    if (!message) return;
+    
+    let currentSessionId = sessionId;
+    
+    // Create session if not exists
+    if (!currentSessionId) {
+      try {
+        const result = await dispatch(
+          startSession({
+            astrologerSlug: astrologerSlug,
+            expertiseSlug: expertiseSlug,
+          })
+        ).unwrap();
+        currentSessionId = result.sessionId;
+      } catch (err) {
+        toast.error(err || "Failed to start session");
+        return;
+      }
+    }
+    
+    // Start chat billing only if free quota is used
+    if (!chatBilling?.isChatActive && chatFreeUsed) {
+      try {
+        await dispatch(startChat(currentSessionId)).unwrap();
+      } catch (err) {
+        toast.error(err || "Failed to start chat");
+        return;
+      }
+    }
+    
     dispatch(addUserMessageLocally(message));
     setInput("");
     try {
-      await dispatch(sendChatMessage({ sessionId, message })).unwrap();
-      // Refresh wallet balance after successful message
-    dispatch(fetchWalletDetails());
+      await dispatch(sendChatMessage({ sessionId: currentSessionId, message })).unwrap();
       setShowRechargeModal(false);
     } catch (err) {
       const errData = err;
@@ -157,13 +300,37 @@ const AIChatBot = () => {
     if (sessionId) {
       try {
         await dispatch(closeSession(sessionId)).unwrap();
+        setElapsedSeconds(0);
+dispatch(fetchWalletDetails());
+        toast.success("Chat ended successfully");
       } catch (err) {
-        console.error("Close session error:", err);
+        toast.error(err || "Something went wrong")
+        console.log("Close session error:::::::::::::::::::::::::::::::::::::::::::::::::::", err);
       }
     }
   };
 
-  
+
+
+  const formatTime = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+
+    const minutes = Math.floor(
+      (totalSeconds % 3600) / 60,
+    );
+
+    const seconds = totalSeconds % 60;
+
+    if (hours > 0) {
+      return `${String(hours).padStart(2, "0")}:${String(
+        minutes,
+      ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    }
+
+    return `${String(minutes).padStart(2, "0")}:${String(
+      seconds,
+    ).padStart(2, "0")}`;
+  };
 
   // console.log(sessionQuestions);
 
@@ -224,6 +391,7 @@ const AIChatBot = () => {
                     className="h-8 sm:h-10 w-auto max-w-[100px] sm:max-w-[150px] object-contain"
                   />
                 </Link>
+
                 {astrologerDetails?.name && (
                   <div className="flex items-center gap-1 text-[9px] pl-1">
                     <span className="w-1 h-1 bg-green-500 rounded-full inline-block animate-pulse"></span>
@@ -236,38 +404,54 @@ const AIChatBot = () => {
               </div>
             </div>
 
+            {/* Center: Timer */}
+            {chatBilling?.chatActiveSince && (
+              <div className="flex-1 flex justify-center">
+                <div className={`flex items-center gap-2 px-2 py-1 rounded-lg shadow-md border ${chatBilling?.isChatActive ? 'bg-white/90 border-amber-300' : 'bg-gray-100 border-gray-300'}`}>
+                  <Timer className={`w-4 h-4 ${chatBilling?.isChatActive ? 'text-amber-600' : 'text-gray-500'}`} />
+                  <span className="text-sm font-bold text-gray-700">
+                    {formatTime(elapsedSeconds)}
+                  </span>
+                  <span className="text-xs text-gray-600 font-medium">
+                    {chatBilling?.isChatActive ? 'Active' : 'Paused'}
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Right: Wallet Balance */}
-            <div className="flex-shrink-0">
+            <div className=" flex items-center gap-1">
               <div className="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg shadow-sm">
-              <Plus className="w-4 h-4 text-green-600 rounded border bg-amber-200 cursor-pointer" onClick={() => navigate("/dashboard/wallet")}/>
+                <Plus className="w-4 h-4 text-green-600 rounded border bg-amber-200 cursor-pointer" onClick={() => navigate("/dashboard/wallet")} />
                 <Wallet className="w-4 h-4 text-amber-600" />
                 <span className="text-sm font-bold text-gray-800">
                   ₹{walletBalance}
                 </span>
               </div>
+              {chatBilling?.isChatActive && (
+                <div className=" ">
+                  <button
+                    onClick={handleManualCloseSession}
+                    className="px-2 py-1.5 rounded-lg text-xs font-semibold bg-red-100 text-red-600 hover:bg-red-200 cursor-pointer"
+                  >
+                    End Chat
+                  </button>
+                </div>
+              )}
             </div>
 
-            {sessionId && (
-              <div className="flex-shrink-0 hidden">
-                <button
-                  onClick={handleManualCloseSession}
-                  className="p-1.5 sm:p-2 rounded-lg text-xs font-medium bg-red-100 text-red-600 hover:bg-red-200 "
-                >
-                  ❌ Close Session
-                </button>
-              </div>
-            )}
+
           </div>
 
           <div className="flex-1 mt-2 flex flex-col overflow-y-auto">
             {/* Question chips */}
             <div className="grid grid-cols-1 md:grid-cols-2  gap-2 px-4 sm:px-10">
-              {isStartingSession ? (
+              {isFetchingAstrologerQuestions ? (
                 <span className="text-xs text-gray-400 col-span-full text-center">
                   Loading questions...
                 </span>
-              ) : sessionQuestions?.length > 0 ? (
-                sessionQuestions?.map((q, idx) => (
+              ) : astrologerQuestions?.questions?.length > 0 ? (
+                astrologerQuestions?.questions?.map((q, idx) => (
                   <button
                     key={q.id ?? idx}
                     onClick={() =>
@@ -415,7 +599,7 @@ const AIChatBot = () => {
                     disabled={!sessionId || isLoading}
                     className="bg-amber-500 rounded-full p-2 self-end hover:bg-amber-600 disabled:opacity-50 transition cursor-pointer "
                   >
-                    <SendHorizontal strokeWidth={2} className="w-6 h-6 text-gray-700"/>
+                    <SendHorizontal strokeWidth={2} className="w-6 h-6 text-gray-700" />
                   </button>
                 </div>
               )}
@@ -457,7 +641,7 @@ const AIChatBot = () => {
           </a>
         </div>
       </div>
-      
+
       {showLogin && (
         <UserLogin
           defaultOpen={true}

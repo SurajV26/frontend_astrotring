@@ -34,7 +34,7 @@ export const AiAstrologerCard = ({ astro, className = "" }) => {
         {price && (
           <span className="text-sm sm:text-base font-medium text-amber-500 mt-0.5 whitespace-nowrap">
             {price}
-            <span className="text-xs text-amber-500 font-semibold">/msg</span>
+            <span className="text-xs text-amber-500 font-semibold">/min</span>
           </span>
         )}
       </div>

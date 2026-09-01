@@ -6,7 +6,6 @@ import UserLogin from "@/components/UserLogin";
 import {
   fetchAiAstrologerDetails,
   clearAstrologerDetails,
-  startSession,
 } from "@/redux/slice/aiChatSlice";
 import Loader from "@/components/common/Loader";
 import { toast } from "react-toastify";
@@ -15,7 +14,6 @@ const AiAstrologerDetails = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [isChatStarting, setIsChatStarting] = useState(false);
 
   const { isLoggedIn } = useSelector((state) => state.userAuth);
   const {
@@ -51,75 +49,35 @@ const AiAstrologerDetails = () => {
   //   }
   // };
 
-  const handleChatClick = async () => {
+  const handleChatClick = () => {
     if (!astro?.expertises?.[0]) {
       toast.error("Astrologer details not available");
       return;
     }
 
-    if (isChatStarting) return;
+    if (!isLoggedIn) {
+      setShowLogin(true);
+      return;
+    }
 
     const astrologerSlug = astro.slug;
     const expertiseSlug = astro.expertises[0].slug;
-    setIsChatStarting(true);
-
-    try {
-      //  Session Start
-      await dispatch(startSession({ astrologerSlug, expertiseSlug })).unwrap();
-      //  Success → Chat Page
-      navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`);
-    } catch (err) {
-      //  Error →show Login Pop-up and  Toast
-      toast.error(err);
-      setShowLogin(true);
-
-      console.error("Session error:", err);
-    } finally {
-      setIsChatStarting(false);
-    }
+    navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`);
   };
 
   useEffect(() => {
-    // Create an async function inside useEffect
-    const handleLoginSuccess = async () => {
-      // 1. Check if user is logged in, modal is open, and astro details exist
-      if (isLoggedIn && showLogin && astro) {
-        const roleId = localStorage.getItem("role_id");
-
-        // 2. Only allow users (Role 3) to chat
-        if (Number(roleId) === 3) {
-          const astrologerSlug = astro.slug;
-          const expertiseSlug = astro.expertises[0].slug;
-
-          try {
-            // 3.  RETRY: Start the session (ab token valid hai, isliye success hoga)
-            await dispatch(
-              startSession({ astrologerSlug, expertiseSlug }),
-            ).unwrap();
-
-            // 4. Success: Chat page par navigate karo
-            navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`, {
-              state: chatState,
-            });
-            // 5. Close the login modal
-            setShowLogin(false);
-          } catch (err) {
-            // 6. Agar session fail ho (rare case)
-            toast.error("Failed to start chat. Please try again.");
-            setShowLogin(false);
-            console.error("Session retry error:", err);
-          }
-        } else {
-          // 7. Astrologer login case: close modal, but stay on page
-          // toast.error("Invalid User");
-          setShowLogin(false);
-        }
+    if (isLoggedIn && showLogin && astro) {
+      const roleId = localStorage.getItem("role_id");
+      if (Number(roleId) === 3) {
+        const astrologerSlug = astro.slug;
+        const expertiseSlug = astro.expertises[0].slug;
+        navigate(`/ai-chat/${astrologerSlug}/${expertiseSlug}`);
+        setShowLogin(false);
+      } else {
+        setShowLogin(false);
       }
-    };
-
-    // Call the async function
-    handleLoginSuccess();
-  }, [isLoggedIn, showLogin, navigate, astro, dispatch]);
+    }
+  }, [isLoggedIn, showLogin, navigate, astro]);
 
   if (isFetchingAstrologerDetails) {
     return <Loader message="Loading astrologer details..." />;
@@ -153,11 +111,11 @@ const AiAstrologerDetails = () => {
         <div className="w-full mx-auto">
           {/* BREADCRUMB */}
           <nav className="flex items-center text-sm mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide text-gray-600 font-medium">
-            <Link to="/" className="hover:text-amber-500 transition-colors cursor-pointer">Home</Link>
+            <Link to="/" className=" transition-colors cursor-pointer">Home</Link>
             <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" strokeWidth={2.5} />
-            <Link to="/chat/all-ai-astrologer" className="hover:text-amber-500 transition-colors cursor-pointer">Astrologers</Link>
+            <Link to="/chat/all-ai-astrologer" className="text-amber-600 transition-colors cursor-pointer">Astrologers</Link>
             <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" strokeWidth={2.5} />
-            <span className="font-semibold text-amber-600 truncate">{astro.name}</span>
+            <span className=" text-amber-600 truncate">{astro.name}</span>
           </nav>
 
           {/* HERO SECTION */}
@@ -211,7 +169,7 @@ const AiAstrologerDetails = () => {
                   <p className="text-xl md:text-2xl font-bold text-amber-600">
                     ₹{astro.chat_price ?? "—"}
                     <span className="text-xs font-normal text-gray-400">
-                      /msg
+                      /min
                     </span>
                   </p>
                 </div>
@@ -219,13 +177,12 @@ const AiAstrologerDetails = () => {
                 {/* CHAT BUTTON */}
                 <button
                   onClick={handleChatClick}
-                  disabled={isChatStarting}
-                  className="w-full sm:w-auto h-14 md:h-[70px] bg-gradient-to-r from-amber-500 to-orange-500 rounded-full text-white font-bold flex items-center justify-center gap-2 hover:from-amber-600 hover:to-orange-600 transition-colors px-8 md:px-10 cursor-pointer shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto h-14 md:h-[70px] bg-gradient-to-r from-amber-500 to-orange-500 rounded-full text-white font-bold flex items-center justify-center gap-2 hover:from-amber-600 hover:to-orange-600 transition-colors px-8 md:px-10 cursor-pointer shadow-md"
                 >
                  
                   <>
                     <MessageCircle className="w-6 h-6 md:w-7 md:h-7" />
-                    {isChatStarting ? "Starting..." : "Chat Now"}
+                    Chat Now
                   </>
                 </button>
               </div>
