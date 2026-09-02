@@ -104,7 +104,7 @@ export const startChat = createAsyncThunk(
       console.error("START CHAT ERROR:", error.response?.data);
 
       return rejectWithValue(
-        error.response?.data?.message || "Failed to start chat",
+        error.response?.data || "Failed to start chat",
       );
     }
   },
