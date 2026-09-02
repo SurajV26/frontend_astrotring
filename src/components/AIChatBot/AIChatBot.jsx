@@ -25,7 +25,7 @@ import UserLogin from "@/components/UserLogin";
 
 const AIChatBot = () => {
 
-  console.log("chatbotloading..........................................................")
+  console.log("chatbotloading....................")
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -48,13 +48,14 @@ const AIChatBot = () => {
   const { details: walletDetails } = useSelector((state) => state.wallet);
   const walletBalance = walletDetails?.data?.balance || 0;
 
-  console.log("astrologer details", astrologerDetails);
-  console.log("chat messages", messages);
-  console.log("followUpQuestions", followUpQuestions);
+  // console.log("astrologer details", astrologerDetails);
+  // console.log("chat messages", messages);
+  // console.log("followUpQuestions", followUpQuestions);
 
   const [input, setInput] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
   const [showRechargeModal, setShowRechargeModal] = useState(false);
+  const [rechargeMessage, setRechargeMessage] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
@@ -66,33 +67,6 @@ const AIChatBot = () => {
       setShowLogin(true);
     }
   }, [isLoggedIn]);
-
-  // Navigation guard when chat is active
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (chatBilling?.isChatActive && sessionId) {
-        dispatch(closeSession(sessionId));
-        e.preventDefault();
-        e.returnValue = "";
-        return "";
-      }
-    };
-
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [chatBilling?.isChatActive, sessionId, dispatch]);
-
-  // Close session on unmount when chat is active
-  useEffect(() => {
-    return () => {
-      if (chatBilling?.isChatActive && sessionId) {
-        dispatch(closeSession(sessionId));
-      }
-    };
-  }, [chatBilling?.isChatActive, sessionId, dispatch]);
 
   // Refresh wallet balance periodically when chat is active
   useEffect(() => {
@@ -127,18 +101,18 @@ const AIChatBot = () => {
 
 
   useEffect(() => {
-  if (isLoggedIn && astrologerSlug && expertiseSlug) {
-    dispatch(
-    startSession({
-      astrologerSlug,
-      expertiseSlug,
-    }),
-  )
-  }
-}, []);
-  
+    if (isLoggedIn && astrologerSlug && expertiseSlug) {
+      dispatch(
+        startSession({
+          astrologerSlug,
+          expertiseSlug,
+        }),
+      )
+    }
+  }, []);
 
-// Fetch the history once the sessionId is received.
+
+  // Fetch the history once the sessionId is received.
   useEffect(() => {
     // console.log("sessionId in history effect1", sessionId);
     if (sessionId) {
@@ -191,9 +165,9 @@ const AIChatBot = () => {
       setShowLogin(true);
       return;
     }
-    
+
     let currentSessionId = sessionId;
-    
+
     // Create session if not exists
     if (!currentSessionId) {
       try {
@@ -209,17 +183,24 @@ const AIChatBot = () => {
         return;
       }
     }
-    
+
     // Start chat billing only if free quota is used
     if (!chatBilling?.isChatActive && chatFreeUsed) {
       try {
         await dispatch(startChat(currentSessionId)).unwrap();
       } catch (err) {
-        toast.error(err || "Failed to start chat");
+        const errData = err;
+        // console.log("errData", errData);
+        if (errData?.type == "insufficient_balance") {
+          setRechargeMessage(errData?.message);
+          setShowRechargeModal(true);
+          return;
+        }
+        toast.error(err?.message || "Failed to start chat");
         return;
       }
     }
-    
+
     dispatch(addUserMessageLocally(question));
     try {
       await dispatch(
@@ -229,10 +210,13 @@ const AIChatBot = () => {
     } catch (err) {
       const errData = err;
       if (
-        errData?.type == "wallet_error" ||
-        errData?.type == "insufficient_balance" ||
-        errData?.type == "free_limit_exceeded"
+
+        errData?.type == "insufficient_balance"
+
       ) {
+
+        setRechargeMessage(errData?.message);
+
         setShowRechargeModal(true);
       } else {
         toast.error(errData?.message || "Failed to send message");
@@ -247,9 +231,9 @@ const AIChatBot = () => {
     }
     const message = input.trim();
     if (!message) return;
-    
+
     let currentSessionId = sessionId;
-    
+
     // Create session if not exists
     if (!currentSessionId) {
       try {
@@ -265,17 +249,23 @@ const AIChatBot = () => {
         return;
       }
     }
-    
+
     // Start chat billing only if free quota is used
     if (!chatBilling?.isChatActive && chatFreeUsed) {
       try {
         await dispatch(startChat(currentSessionId)).unwrap();
       } catch (err) {
+        const errData = err;
+        if (errData?.type == "insufficient_balance") {
+          setRechargeMessage(errData?.message);
+          setShowRechargeModal(true);
+          return;
+        }
         toast.error(err || "Failed to start chat");
         return;
       }
     }
-    
+
     dispatch(addUserMessageLocally(message));
     setInput("");
     try {
@@ -301,11 +291,11 @@ const AIChatBot = () => {
       try {
         await dispatch(closeSession(sessionId)).unwrap();
         setElapsedSeconds(0);
-dispatch(fetchWalletDetails());
+        dispatch(fetchWalletDetails());
         toast.success("Chat ended successfully");
       } catch (err) {
         toast.error(err || "Something went wrong")
-        console.log("Close session error:::::::::::::::::::::::::::::::::::::::::::::::::::", err);
+        // console.log("Close session error:", err);
       }
     }
   };
@@ -381,7 +371,10 @@ dispatch(fetchWalletDetails());
                 size={24}
                 strokeWidth={2.5}
                 className="text-gray-500 cursor-pointer"
-                onClick={() => navigate(-1)}
+                onClick={() => {
+                  navigate(-1);
+                  handleManualCloseSession();
+                }}
               />
               <div className="flex flex-col items-start">
                 <Link to="/">
@@ -534,7 +527,10 @@ dispatch(fetchWalletDetails());
               <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
                 <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in duration-200">
                   <button
-                    onClick={() => setShowRechargeModal(false)}
+                    onClick={() => {
+                      setShowRechargeModal(false);
+                      setRechargeMessage("");
+                    }}
                     className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
                     aria-label="Close"
                   >
@@ -545,12 +541,13 @@ dispatch(fetchWalletDetails());
                       Insufficient wallet balance
                     </h3>
                     <p className="text-sm text-gray-500 mt-1">
-                      Your wallet balance is low. Please recharge to continue.
+                      {rechargeMessage || "Your wallet balance is low. Please recharge to continue."}
                     </p>
                     <button
                       onClick={() => {
                         dispatch(openRechargeModal());
                         setShowRechargeModal(false);
+                        setRechargeMessage("");
                       }}
                       className="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 px-4 rounded-xl transition-colors shadow-sm hover:shadow cursor-pointer"
                     >
