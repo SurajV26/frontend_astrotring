@@ -9,6 +9,7 @@ import {
   closeSession,
   addUserMessageLocally,
   fetchChatHistory,
+  fetchChatStatus,
   fetchAiAstrologerDetails,
   fetchAstrologerQuestions,
   clearAstrologerQuestions,
@@ -43,6 +44,8 @@ const AIChatBot = () => {
     followUpQuestions,
     chatBilling,
     chatFreeUsed,
+    chatEndType,
+    chatEndMessage,
     error,
   } = useSelector((state) => state.aiChat);
   const { details: walletDetails } = useSelector((state) => state.wallet);
@@ -76,10 +79,32 @@ const AIChatBot = () => {
 
     const interval = setInterval(() => {
       dispatch(fetchWalletDetails());
-    }, 30000); // Refresh every 30 seconds
+    }, 10000); // Refresh every 30 seconds
 
     return () => clearInterval(interval);
   }, [chatBilling?.isChatActive, dispatch]);
+
+  // Fetch chat status every 15 seconds for testing
+  useEffect(() => {
+    if (!sessionId) {
+      return;
+    }
+
+    const interval = setInterval(() => {
+      dispatch(fetchChatStatus(sessionId));
+    }, 10000); // Refresh every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [sessionId, dispatch]);
+
+  // Stop timer and show recharge modal when chat is ended by backend
+  useEffect(() => {
+    if (!chatBilling?.isChatActive && chatEndType === "insufficient_balance" && chatEndMessage) {
+      setElapsedSeconds(0);
+      setRechargeMessage(chatEndMessage);
+      setShowRechargeModal(true);
+    }
+  }, [chatBilling?.isChatActive, chatEndType, chatEndMessage]);
 
 
   // Get astrologer details (will remain visible even after refreshing)
@@ -290,7 +315,6 @@ const AIChatBot = () => {
     if (sessionId) {
       try {
         await dispatch(closeSession(sessionId)).unwrap();
-        setElapsedSeconds(0);
         dispatch(fetchWalletDetails());
         toast.success("Chat ended successfully");
       } catch (err) {
@@ -311,15 +335,9 @@ const AIChatBot = () => {
 
     const seconds = totalSeconds % 60;
 
-    if (hours > 0) {
-      return `${String(hours).padStart(2, "0")}:${String(
-        minutes,
-      ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-    }
-
-    return `${String(minutes).padStart(2, "0")}:${String(
-      seconds,
-    ).padStart(2, "0")}`;
+    return `${String(hours).padStart(2, "0")}:${String(
+      minutes,
+    ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
   // console.log(sessionQuestions);
@@ -405,9 +423,7 @@ const AIChatBot = () => {
                   <span className="text-sm font-bold text-gray-700">
                     {formatTime(elapsedSeconds)}
                   </span>
-                  <span className="text-xs text-gray-600 font-medium">
-                    {chatBilling?.isChatActive ? 'Active' : 'Paused'}
-                  </span>
+                  
                 </div>
               </div>
             )}

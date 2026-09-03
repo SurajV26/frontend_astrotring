@@ -147,6 +147,21 @@ export const fetchChatHistory = createAsyncThunk(
   },
 );
 
+export const fetchChatStatus = createAsyncThunk(
+  "aiChat/fetchStatus",
+  async (sessionId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/user/ai-chat/${sessionId}/status`);
+      console.log("chat status", response);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch chat status",
+      );
+    }
+  },
+);
+
 
 // ---------- Initial State ----------
 const initialState = {
@@ -165,17 +180,19 @@ const initialState = {
   isLoading: false,
   isStartingSession: false,
   followUpQuestions: [],
-  chatFreeUsed: false, 
+  chatFreeUsed: false,
 
   isHistoryLoading: false,
-  chatHistory:{},
+  chatHistory: {},
 
   chatBilling: {
-  chatActiveSince: null,
-  freeMinutes: 0,
-  pricePerMinute: 0,
-  isChatActive: false,
-},
+    chatActiveSince: null,
+    isChatActive: false,
+  },
+
+  // Chat end details from backend when chat_active is false
+  chatEndType: null,
+  chatEndMessage: null,
 
   error: null,
 };
@@ -250,6 +267,9 @@ const aiChatSlice = createSlice({
         state.isStartingSession = false;
         state.sessionId = action.payload.sessionId;
         state.chatFreeUsed = action.payload.chatFreeUsed;
+        // Clear chat end details when starting new session
+        state.chatEndType = null;
+        state.chatEndMessage = null;
       })
       .addCase(startSession.rejected, (state, action) => {
         state.isStartingSession = false;
@@ -267,12 +287,12 @@ const aiChatSlice = createSlice({
           sender: "assistant",
           message: action.payload.reply,
         });
-        // 🔥 नया: Remaining Questions को SessionQuestions में Set करें
+        //  नया: Remaining Questions को SessionQuestions में Set करें
         if (
           action.payload.remainingQuestions &&
           action.payload.remainingQuestions.length > 0
         ) {
-          state. followUpQuestions  = action.payload.remainingQuestions;
+          state.followUpQuestions = action.payload.remainingQuestions;
         }
         // Update chatFreeUsed from API response
         if (action.payload.chatFreeUsed !== undefined) {
@@ -316,31 +336,46 @@ const aiChatSlice = createSlice({
         state.isHistoryLoading = false;
         state.error = action.payload || "Something went wrong";
       })
+      // ----- chat status -----
+      .addCase(fetchChatStatus.fulfilled, (state, action) => {
+        const status = action.payload;
+        console.log("Chat status response:", status);
+
+        // Sync chat active state with backend
+        state.chatBilling.isChatActive = status.chat_active;
+
+        // If chat is not active, store the end details
+        if (!status.chat_active) {
+          state.chatEndType = status.type;
+          state.chatEndMessage = status.message;
+        } else {
+          state.chatEndType = null;
+          state.chatEndMessage = null;
+        }
+      })
+      .addCase(fetchChatStatus.rejected, (state, action) => {
+        console.error("Failed to fetch chat status:", action.payload);
+      })
       // ----- start chat billing -----
-.addCase(startChat.pending, (state) => {
-  state.error = null;
-})
+      .addCase(startChat.pending, (state) => {
+        state.error = null;
+      })
 
-.addCase(startChat.fulfilled, (state, action) => {
-  state.chatBilling.chatActiveSince =
-    action.payload.chat_active_since;
+      .addCase(startChat.fulfilled, (state, action) => {
+        state.chatBilling.chatActiveSince =
+          action.payload.chat_active_since;
 
-  state.chatBilling.freeMinutes =
-    action.payload.free_minutes;
 
-  state.chatBilling.pricePerMinute =
-    action.payload.price_per_minute;
+        state.chatBilling.isChatActive =
+          action.payload.chat_active;
+      })
 
-  state.chatBilling.isChatActive =
-    action.payload.status;
-})
+      .addCase(startChat.rejected, (state, action) => {
+        state.error =
+          action.payload?.message || "Failed to start chat";
 
-.addCase(startChat.rejected, (state, action) => {
-  state.error =
-    action.payload?.message || "Failed to start chat";
-
-  state.chatBilling.isChatActive = false;
-})
+        state.chatBilling.isChatActive = false;
+      })
   },
 });
 
