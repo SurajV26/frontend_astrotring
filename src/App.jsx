@@ -18,6 +18,7 @@ import { userProfile } from "./redux/slice/UserAuth";
 // import Mundan from "./pages/FooterMahurat/Mundan";
 import GoogleTagManager from "./components/common/GoogleTagManager";
 import Loader from "./components/common/Loader";
+import PageNotFound from "./components/common/PageNotFound";
 
 // import AuthHOC from "@/components/Home/AuthHOC";
 // import AIChatBot from "@/components/AIChatBot/AIChatBot";
@@ -225,6 +226,9 @@ const App = () => {
               element={<WidhdrowHistory />}
             />
           </Route>
+
+          {/* Fallback for every URL that does not match a route above. */}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
 
       </Suspense>

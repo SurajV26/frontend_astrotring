@@ -25,21 +25,29 @@ const items = [
   { title: "Profile", url: "/dashboard/profile", icon: Home },
   { title: "Update Profile", url: "/dashboard/update-astro", icon: Inbox },
   { title: "Wallet / Account", url: "/dashboard/wallet", icon: Wallet },
-//   {
-//     title: "Widhdrowl History",
-//     url: "/dashboard/widhdrow-history",
-//     icon: HistoryIcon,
-//   },
+  // {
+  //   title: "Wallet History",
+  //   url: "/dashboard/widhdrow-history",
+  //   icon: HistoryIcon,
+  // },
 ];
 
 export function AppSidebar() {
-  const { open, openMobile } = useSidebar();
+  const { open, openMobile, setOpenMobile } = useSidebar();
+
+  const closeMobileSidebar = () => setOpenMobile(false);
+
   return (
     <Sidebar collapsible="icon" className={"border-0"}>
       <SidebarHeader className={"bg-yellow-50  "}>
         <SidebarMenu>
           <SidebarMenuItem>
-            <NavLink to="/" end className={"flex justify-start pt-2"}>
+            <NavLink
+              to="/"
+              end
+              onClick={closeMobileSidebar}
+              className={"flex justify-start pt-2"}
+            >
               <img
                 src={faviconlogo}
                 className="h-8 w-8 rounded-md"
@@ -65,6 +73,7 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <NavLink
                       to={item.url}
+                      onClick={closeMobileSidebar}
                       className={({ isActive }) =>
                         `flex items-center gap-2 rounded-md px-3 py-2 transition
                         ${

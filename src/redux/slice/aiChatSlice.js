@@ -125,7 +125,8 @@ export const sendChatMessage = createAsyncThunk(
         "Sorry, I couldn't reply.";
       const remainingQuestions = response.data?.remaining_questions || [];
       const chatFreeUsed = response.data?.chat_free_used || response.data?.data?.chat_free_used;
-      return { reply, remainingQuestions, chatFreeUsed };
+      const createdAt = response.data?.created_at;
+      return { reply, remainingQuestions, chatFreeUsed, createdAt };
     } catch (error) {
       return rejectWithValue(error.response?.data);
     }
@@ -212,7 +213,11 @@ const aiChatSlice = createSlice({
       state.astrologerQuestions = [];
     },
     addUserMessageLocally: (state, action) => {
-      state.messages.push({ sender: "user", message: action.payload });
+      state.messages.push({
+        sender: "user",
+        message: action.payload,
+        created_at: new Date().toISOString(),
+      });
     },
   },
   extraReducers: (builder) => {
@@ -286,6 +291,7 @@ const aiChatSlice = createSlice({
         state.messages.push({
           sender: "assistant",
           message: action.payload.reply,
+          created_at: action.payload.createdAt || new Date().toISOString(),
         });
         //  नया: Remaining Questions को SessionQuestions में Set करें
         if (
@@ -341,8 +347,12 @@ const aiChatSlice = createSlice({
         const status = action.payload;
         console.log("Chat status response:", status);
 
-        // Sync chat active state with backend
         state.chatBilling.isChatActive = status.chat_active;
+        // The API provides this only while a chat is active. Preserve the
+        // existing start time when the chat stops so the displayed timer freezes.
+        if (status.chat_active_since) {
+          state.chatBilling.chatActiveSince = status.chat_active_since;
+        }
 
         // If chat is not active, store the end details
         if (!status.chat_active) {
