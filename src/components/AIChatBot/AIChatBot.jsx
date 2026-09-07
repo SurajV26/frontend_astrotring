@@ -16,7 +16,7 @@ import {
 } from "@/redux/slice/aiChatSlice";
 // import { api } from "@/redux/baseApi";
 import { toast } from "react-toastify";
-import { ChevronLeft, Plus, SendHorizontal, Wallet, X, Timer } from "lucide-react";
+import { CheckCheck, ChevronLeft, Plus, SendHorizontal, Wallet, X, Timer } from "lucide-react";
 import { fetchWalletDetails } from "@/redux/slice/walletSlice";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
 import MarkdownRenderer from "./MarkdownRenderer";
@@ -52,7 +52,7 @@ const AIChatBot = () => {
   const walletBalance = walletDetails?.data?.balance || 0;
 
   // console.log("astrologer details", astrologerDetails);
-  // console.log("chat messages", messages);
+  console.log("chat messages", messages);
   // console.log("followUpQuestions", followUpQuestions);
 
   const [input, setInput] = useState("");
@@ -63,6 +63,31 @@ const AIChatBot = () => {
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const bottomRef = useRef();
+  const activeChatRef = useRef({ sessionId: null, isActive: false });
+  const isClosingSessionRef = useRef(false);
+
+  useEffect(() => {
+    activeChatRef.current = {
+      sessionId,
+      isActive: Boolean(chatBilling?.isChatActive),
+    };
+
+    if (chatBilling?.isChatActive) {
+      isClosingSessionRef.current = false;
+    }
+  }, [chatBilling?.isChatActive, sessionId]);
+
+  // End an active chat when this route is unmounted (for example, navigating away).
+  useEffect(() => {
+    return () => {
+      const { sessionId: activeSessionId, isActive } = activeChatRef.current;
+
+      if (activeSessionId && isActive && !isClosingSessionRef.current) {
+        isClosingSessionRef.current = true;
+        dispatch(closeSession(activeSessionId));
+      }
+    };
+  }, [dispatch]);
 
   // Show login modal if unauthenticated user tries to access chat
   useEffect(() => {
@@ -71,31 +96,33 @@ const AIChatBot = () => {
     }
   }, [isLoggedIn]);
 
-  // Refresh wallet balance periodically when chat is active
+  // Keep the wallet balance current while the user is in the chat.
   useEffect(() => {
-    if (!chatBilling?.isChatActive) {
+    if (!isLoggedIn) {
       return;
     }
 
+    dispatch(fetchWalletDetails());
     const interval = setInterval(() => {
       dispatch(fetchWalletDetails());
-    }, 10000); // Refresh every 30 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, [chatBilling?.isChatActive, dispatch]);
+  }, [dispatch, isLoggedIn]);
 
-  // Fetch chat status every 15 seconds for testing
+  // Poll the active session so billing/end-of-chat updates are reflected promptly.
   useEffect(() => {
-    if (!sessionId) {
+    if (!sessionId || !chatBilling?.isChatActive) {
       return;
     }
 
+    dispatch(fetchChatStatus(sessionId));
     const interval = setInterval(() => {
       dispatch(fetchChatStatus(sessionId));
-    }, 10000); // Refresh every 10 seconds
+    }, 2000);
 
     return () => clearInterval(interval);
-  }, [sessionId, dispatch]);
+  }, [sessionId, chatBilling?.isChatActive, dispatch]);
 
   // Stop timer and show recharge modal when chat is ended by backend
   useEffect(() => {
@@ -134,7 +161,7 @@ const AIChatBot = () => {
         }),
       )
     }
-  }, []);
+  }, [dispatch, expertiseSlug, astrologerSlug, isLoggedIn]);
 
 
   // Fetch the history once the sessionId is received.
@@ -181,9 +208,6 @@ const AIChatBot = () => {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-  useEffect(() => {
-    dispatch(fetchWalletDetails());
-  }, [dispatch]);
 
   const handleQuestionClick = async (question) => {
     if (!isLoggedIn) {
@@ -313,11 +337,13 @@ const AIChatBot = () => {
   // Close session
   const handleManualCloseSession = async () => {
     if (sessionId) {
+      isClosingSessionRef.current = true;
       try {
         await dispatch(closeSession(sessionId)).unwrap();
         dispatch(fetchWalletDetails());
         toast.success("Chat ended successfully");
       } catch (err) {
+        isClosingSessionRef.current = false;
         toast.error(err || "Something went wrong")
         // console.log("Close session error:", err);
       }
@@ -340,13 +366,32 @@ const AIChatBot = () => {
     ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
+  const formatMessageTime = (createdAt) => {
+    if (!createdAt) return null;
+
+    // Convert "YYYY-MM-DD HH:MM:SS" to "YYYY-MM-DDTHH:MM:SS" for robust cross-browser parsing
+    const formattedDate = typeof createdAt === "string" ? createdAt.replace(" ", "T") : createdAt;
+
+    try {
+      const date = new Date(formattedDate);
+      if (isNaN(date.getTime())) return null;
+      return new Intl.DateTimeFormat("en-IN", {
+        hour: "numeric",
+        minute: "2-digit",
+      }).format(date);
+    } catch (e) {
+      console.error("Error formatting message time:", e);
+      return null;
+    }
+  };
+
   // console.log(sessionQuestions);
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden">
-      <div className="flex w-full h-screen">
+    <div className="fixed inset-0 flex h-[100dvh] min-h-[100dvh] flex-col overflow-hidden overscroll-contain bg-amber-50">
+      <div className="flex h-full w-full min-h-0">
         {/* Left Advertisement */}
-        <div className="hidden lg:flex lg:flex-col flex-1 items-center justify-center gap-4">
+        <div className="hidden 2xl:flex 2xl:basis-1/5 2xl:flex-none 2xl:flex-col items-center justify-center gap-4">
           <a
             href="https://astrotring.shop/product/metal-dhan-yog-bracelet-with-free-raw-selenite-plate"
             target="_blank"
@@ -380,9 +425,9 @@ const AIChatBot = () => {
         </div>
 
         {/* Chat Box Container */}
-        <div className="flex-1 flex flex-col sm:min-w-4xl mx-auto w-full shadow-2xl overflow-hidden bg-white">
+        <div className="relative mx-auto flex min-w-0 w-full flex-1 flex-col overflow-hidden bg-white pt-16 shadow-2xl lg:max-w-4xl">
           {/* Header */}
-          <div className="flex flex-wrap items-center justify-between gap-2 p-2 border-2 border-gray-300 bg-amber-400">
+          <div className="absolute inset-x-0 top-0 z-40 flex h-16 items-center justify-between gap-2 border-b border-amber-300 bg-amber-400 p-2 shadow-sm">
             {/* Left: Back + Logo + Astrologer Info */}
             <div className="flex items-center gap-2 flex-shrink-0">
               <ChevronLeft
@@ -429,7 +474,7 @@ const AIChatBot = () => {
             )}
 
             {/* Right: Wallet Balance */}
-            <div className=" flex items-center gap-1">
+            <div className="flex shrink-0 items-center gap-1">
               <div className="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg shadow-sm">
                 <Plus className="w-4 h-4 text-green-600 rounded border bg-amber-200 cursor-pointer" onClick={() => navigate("/dashboard/wallet")} />
                 <Wallet className="w-4 h-4 text-amber-600" />
@@ -437,24 +482,14 @@ const AIChatBot = () => {
                   ₹{walletBalance}
                 </span>
               </div>
-              {chatBilling?.isChatActive && (
-                <div className=" ">
-                  <button
-                    onClick={handleManualCloseSession}
-                    className="px-2 py-1.5 rounded-lg text-xs font-semibold bg-red-100 text-red-600 hover:bg-red-200 cursor-pointer"
-                  >
-                    End Chat
-                  </button>
-                </div>
-              )}
             </div>
 
 
           </div>
 
-          <div className="flex-1 mt-2 flex flex-col overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto">
             {/* Question chips */}
-            <div className="grid grid-cols-1 md:grid-cols-2  gap-2 px-4 sm:px-10">
+            <div className="grid grid-cols-1 gap-2 border-b border-amber-100 bg-amber-50/60 px-3 py-3 sm:grid-cols-2 sm:px-6">
               {isFetchingAstrologerQuestions ? (
                 <span className="text-xs text-gray-400 col-span-full text-center">
                   Loading questions...
@@ -481,7 +516,7 @@ const AIChatBot = () => {
             </div>
 
             {/* Messages area */}
-            <div className="flex-1 py-2 space-y-3">
+            <div className="space-y-3 px-3 py-4 sm:px-6">
               {!sessionId && messages.length === 0 && (
                 <div className="text-center text-gray-400 mt-20">
                   {astrologerDetails
@@ -500,9 +535,22 @@ const AIChatBot = () => {
                 <div key={idx} className={`flex w-full mb-4 ${msg.sender === "user" ? "justify-end " : "justify-start"}`}>
                   <div className={`max-w-[90%] md:max-w-[80%] px-5 py-2 rounded-2xl ${msg.sender === "user" ? "bg-amber-400 text-gray-800 rounded-br-none shadow-sm mr-1 sm:mr-0" : "bg-white shadow-sm border border-gray-100 rounded-bl-sm"}`}>
                     {msg.sender === "user" ? (
-                      <div className="text-sm text whitespace-pre-wrap leading-relaxed">{msg.message}</div>
+                      <div>
+                        <div className="text-sm text whitespace-pre-wrap leading-relaxed">{msg.message}</div>
+                        <div className="mt-1 flex items-center justify-end gap-1 text-[10px] text-gray-500">
+                          {formatMessageTime(msg.created_at)}
+                          <CheckCheck className="h-3.5 w-3.5 text-blue-600" strokeWidth={2.5} aria-label="Message sent" />
+                        </div>
+                      </div>
                     ) : (
-                      <MarkdownRenderer content={msg.message} />
+                      <div>
+                        <MarkdownRenderer content={msg.message} />
+                        {formatMessageTime(msg.created_at) && (
+                          <div className="mt-1 text-right text-[10px] text-gray-400">
+                            {formatMessageTime(msg.created_at)}
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
                 </div>
@@ -537,60 +585,57 @@ const AIChatBot = () => {
               )}
               <div ref={bottomRef} />
             </div>
+          </div>
 
-            {/* Recharge Modal */}
-            {showRechargeModal && (
-              <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in duration-200">
+          {/* Recharge Modal */}
+          {showRechargeModal && (
+            <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+              <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in duration-200">
+                <button
+                  onClick={() => {
+                    setShowRechargeModal(false);
+                    setRechargeMessage("");
+                  }}
+                  className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+                  aria-label="Close"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+                <div className="flex flex-col items-center text-center">
+                  <h3 className="text-lg font-semibold text-gray-800">
+                    Insufficient wallet balance
+                  </h3>
+                  <p className="text-sm text-gray-500 mt-1">
+                    {rechargeMessage || "Your wallet balance is low. Please recharge to continue."}
+                  </p>
                   <button
                     onClick={() => {
+                      dispatch(openRechargeModal());
                       setShowRechargeModal(false);
                       setRechargeMessage("");
                     }}
-                    className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
-                    aria-label="Close"
+                    className="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 px-4 rounded-xl transition-colors shadow-sm hover:shadow cursor-pointer"
                   >
-                    <X className="w-5 h-5" />
+                    Recharge Now
                   </button>
-                  <div className="flex flex-col items-center text-center">
-                    <h3 className="text-lg font-semibold text-gray-800">
-                      Insufficient wallet balance
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      {rechargeMessage || "Your wallet balance is low. Please recharge to continue."}
-                    </p>
-                    <button
-                      onClick={() => {
-                        dispatch(openRechargeModal());
-                        setShowRechargeModal(false);
-                        setRechargeMessage("");
-                      }}
-                      className="mt-6 w-full bg-amber-500 hover:bg-amber-600 text-white font-medium py-2.5 px-4 rounded-xl transition-colors shadow-sm hover:shadow cursor-pointer"
-                    >
-                      Recharge Now
-                    </button>
-                  </div>
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* Input area */}
-            <div className="sticky bottom-0 z-10  px-4 sm:px-20 bg-transparent backdrop-blur-xs flex-shrink-0">
+          {/* Input area */}
+          <div className="z-20 shrink-0 border-t border-amber-100 bg-white/95 px-3 py-3 shadow-[0_-6px_18px_rgba(0,0,0,0.04)] backdrop-blur sm:px-6">
               {!showCustomInput ? (
-                //  When the input is hidden, this clickable prompt will appear.
-                <div
+                <button
+                  type="button"
                   onClick={() => setShowCustomInput(true)}
-                  className="w-full  px-4 py-4 text-center text-sm text-gray-500 "
+                  className="flex w-full items-center rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-sm text-gray-500 transition hover:border-amber-400 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-400"
                 >
-                  Choose a question from above, or{" "}
-                  <span className="font-medium text-amber-500 cursor-pointer">
-                    click here
-                  </span>{" "}
-                  to type your own question.
-                </div>
+                  <span className="mr-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-400 text-lg text-white">+</span>
+                  <span>Tap here to write your own question</span>
+                </button>
               ) : (
-                // When the input is open, the textarea and send button will be visible.
-                <div className="flex gap-2 pb-4 items-center">
+                <div className="flex items-end gap-2">
                   <textarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
@@ -604,24 +649,33 @@ const AIChatBot = () => {
                     rows={1}
                     //  It should auto-focus when this appears.
                     autoFocus
-                    className="flex-1 border rounded-md px-4 py-2 focus:outline-none focus:ring-1 focus:ring-amber-500 bg-white text-sm resize-none placeholder:text-xs field-sizing-content  max-h-32 overflow-y-auto scrollbar-hide"
-                    disabled={!sessionId || isLoading}
+                    className="field-sizing-content max-h-32 flex-1 resize-none overflow-y-auto rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm placeholder:text-xs focus:outline-none focus:ring-2 focus:ring-amber-400"
+                    disabled={isLoading}
                   />
                   <button
                     onClick={handleSendMessage}
-                    disabled={!sessionId || isLoading}
-                    className="bg-amber-500 rounded-full p-2 self-end hover:bg-amber-600 disabled:opacity-50 transition cursor-pointer "
+                    disabled={isLoading}
+                    aria-label="Send message"
+                    className="cursor-pointer rounded-full bg-amber-500 p-3 text-white shadow-sm transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    <SendHorizontal strokeWidth={2} className="w-6 h-6 text-gray-700" />
+                    <SendHorizontal strokeWidth={2} className="h-5 w-5" />
                   </button>
                 </div>
               )}
-            </div>
           </div>
+
+          {chatBilling?.isChatActive && (
+            <button
+              onClick={handleManualCloseSession}
+              className="absolute bottom-20 right-4 z-30 rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 cursor-pointer sm:bottom-24"
+            >
+              End Chat
+            </button>
+          )}
         </div>
 
         {/* Right Advertisement */}
-        <div className="hidden lg:flex lg:flex-col flex-1 items-center justify-center gap-4">
+        <div className="hidden 2xl:flex 2xl:basis-1/5 2xl:flex-none 2xl:flex-col items-center justify-center gap-4">
           <a
             href="https://astrotring.shop/product/money-magnet-bracelet"
             target="_blank"
