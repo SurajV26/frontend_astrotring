@@ -25,13 +25,8 @@ import { Separator } from "@/components/ui/separator";
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
 import {
-  createRazorpayOrder,
   fetchWalletDetails,
   fetchWalletChatStatistics,
-  verifyRazorpayPayment,
-  fetchRechargeHistory,
-  fetchPayoutHistory,
-  createPayoutRequest,
 } from "@/redux/slice/walletSlice";
 import { toast } from "react-toastify";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
@@ -55,14 +50,11 @@ function WalletDashboard() {
   const { chatHistory } = useSelector((state) => state.aiChat);
 
   // console.log("chatHistory",chatHistory)
-  
+
   console.log("wwallet details", details);
   console.log("chatStatistics", chatStatistics);
   useEffect(() => {
     dispatch(fetchWalletDetails());
-  }, [dispatch]);
-  useEffect(() => {
-    dispatch(fetchRechargeHistory());
   }, [dispatch]);
   useEffect(() => {
     dispatch(fetchWalletChatStatistics());
@@ -71,9 +63,9 @@ function WalletDashboard() {
   if (loading && !details) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="text-xl font-semibold text-gray-500 animate-pulse">
+        <p className="text-md text-gray-900 animate-pulse">
           Loading Wallet Data...
-        </div>
+        </p>
       </div>
     );
   }
@@ -124,8 +116,10 @@ function WalletDashboard() {
     </Card>
   );
 
-  const InfoRow = ({ label, value, icon: Icon ,className=null}) => (
-    <div className={`flex ${className} items-center justify-between py-3 border-b last:border-0`}>
+  const InfoRow = ({ label, value, icon: Icon, className = null }) => (
+    <div
+      className={`flex ${className} items-center justify-between py-3 border-b last:border-0`}
+    >
       <div className="flex items-center gap-2 text-sm text-muted-foreground">
         {Icon && <Icon className="w-4 h-4" />}
         <span>{label}</span>
@@ -227,7 +221,8 @@ function WalletDashboard() {
 
         {/* Service Usage */}
         <div className="grid lg:grid-cols-2 gap-6">
-          <Card className={"border-2 border-green-300 p-6"}>
+          {/* call statics */}
+          {/* <Card className={"border-2 border-green-300 p-6"}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Phone className="w-5 h-5 text-green-600" />
@@ -261,8 +256,8 @@ function WalletDashboard() {
                 icon={TrendingUp}
               />
             </CardContent>
-          </Card>
-
+          </Card> */}
+          {/* chat statics */}
           <Card className={"border-2 border-primary/30 p-6"}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -273,13 +268,13 @@ function WalletDashboard() {
             </CardHeader>
             <CardContent className="space-y-1">
               <InfoRow
-                label="Paid Messages Count"
-                value={`${chatStatistics?.summary?.total_paid_chats || 0} `}
+                label="Total Paid Messages"
+                value={`${chatStatistics?.summary?.total_paid_messages || 0} `}
                 icon={Clock}
               />
               <InfoRow
-                label="Free Messages Count"
-                value={`${chatStatistics?.summary?.total_free_chats || 0} `}
+                label="Total Free Messages"
+                value={`${chatStatistics?.summary?.total_free_messages || 0} `}
                 icon={IndianRupee}
               />
               <InfoRow
@@ -379,7 +374,9 @@ function WalletDashboard() {
                 <p className="text-sm font-medium text-muted-foreground">
                   Wallet Age
                 </p>
-                <p className="text-sm font-mono">{walletData?.data?.wallet_age || "N/A"}</p>
+                <p className="text-sm font-mono">
+                  {walletData?.data?.wallet_age || "N/A"}
+                </p>
               </div>
             </div>
           </CardContent>

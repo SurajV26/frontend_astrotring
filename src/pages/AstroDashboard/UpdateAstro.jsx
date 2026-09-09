@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import {format} from 'date-fns'
 import {
   User,
   Mail,
@@ -57,8 +58,8 @@ const FormField = ({
   value,
   onChange,
 }) => {
-  // console.log("type",type)
-  // console.log("value",type)
+  console.log("type",type)
+  console.log("value",value)
   return (
     <div className="space-y-2">
       <Label
@@ -74,7 +75,7 @@ const FormField = ({
         name={name}
         type={type}
         placeholder={placeholder}
-        value={type !== "date" ? value : value?.split("T")[0]}
+        value={type !== "date" ? value : (value?  format(new Date(value), 'yyyy-MM-dd'): "")}
         onChange={onChange}
         lang="en-GB"
         className={cn(
@@ -175,92 +176,80 @@ function UpdateAstro() {
   //   }
   // };
 
-//  New states for BIRTH PLACE AUTOCOMPLETE (place below the `useState` containing `formData`)
-const [birthPlaceInput, setBirthPlaceInput] = useState("");        //Text (string) displayed in the input
-const [placeSuggestions, setPlaceSuggestions] = useState([]);  // Suggestions from the API (Array)
-const [showSuggestions, setShowSuggestions] = useState(false);     // Dropdown open/closed (Boolean)
-const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false); // Loading स्पिनर
-const debounceTimerRef = useRef(null);        // 300ms Timer Ref (for debounce)
-const suggestionRef = useRef(null);           // Detecting clicks outside the dropdown
+  //  New states for BIRTH PLACE AUTOCOMPLETE (place below the `useState` containing `formData`)
+  const [birthPlaceInput, setBirthPlaceInput] = useState(""); //Text (string) displayed in the input
+  const [placeSuggestions, setPlaceSuggestions] = useState([]); // Suggestions from the API (Array)
+  const [showSuggestions, setShowSuggestions] = useState(false); // Dropdown open/closed (Boolean)
+  const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(false); // Loading स्पिनर
+  const debounceTimerRef = useRef(null); // 300ms Timer Ref (for debounce)
+  const suggestionRef = useRef(null); // Detecting clicks outside the dropdown
 
+  //  Close when clicking outside the dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        suggestionRef.current &&
+        !suggestionRef.current.contains(event.target)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-
-
-
-
-
-//  Close when clicking outside the dropdown
-useEffect(() => {
-  const handleClickOutside = (event) => {
-    if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
+  //  Function to fetch suggestions from the API
+  const fetchPlaceSuggestions = async (query) => {
+    if (!query || query.length < 2) {
+      setPlaceSuggestions([]);
       setShowSuggestions(false);
+      return;
+    }
+    setIsLoadingSuggestions(true);
+    try {
+      const response = await axios.get(
+        `https://jagannatha-hora-359167915530.europe-west1.run.app/location/autocomplete?q=${encodeURIComponent(query)}`,
+      );
+      const data = response.data;
+      setPlaceSuggestions(data.results || []);
+      setShowSuggestions(true);
+    } catch (error) {
+      console.error("Failed to fetch place suggestions:", error);
+      setPlaceSuggestions([]);
+      toast.error("Failed to load suggestions.");
+    } finally {
+      setIsLoadingSuggestions(false);
     }
   };
-  document.addEventListener("mousedown", handleClickOutside);
-  return () => document.removeEventListener("mousedown", handleClickOutside);
-}, []);
 
-//  Function to fetch suggestions from the API
-const fetchPlaceSuggestions = async (query) => {
-  if (!query || query.length < 2) {
-    setPlaceSuggestions([]);
+  // When the user types in the input
+  const handleBirthPlaceChange = (e) => {
+    const value = e.target.value;
+    setBirthPlaceInput(value);
+
+    // Remove the previously selected place (object) so that the old data is not sent.
+    setFormData((prev) => ({ ...prev, birthPlace: null }));
+
+    // Debounce Timer
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      fetchPlaceSuggestions(value);
+    }, 300);
+  };
+
+  //  When the user clicks on the suggestion (dropdown)
+  const handlePlaceSelect = (place) => {
+    // 1. Show the display name in the input (e.g., "New Delhi, Delhi, India").
+    setBirthPlaceInput(place.displayName);
+
+    // 2. Dropdown बंद करो
     setShowSuggestions(false);
-    return;
-  }
-  setIsLoadingSuggestions(true);
-  try {
-    const response = await axios.get(
-      `https://jagannatha-hora-359167915530.europe-west1.run.app/location/autocomplete?q=${encodeURIComponent(query)}`
-    );
-    const data = response.data;
-    setPlaceSuggestions(data.results || []);
-    setShowSuggestions(true);
-  } catch (error) {
-    console.error("Failed to fetch place suggestions:", error);
     setPlaceSuggestions([]);
-    toast.error("Failed to load suggestions.");
-  } finally {
-    setIsLoadingSuggestions(false);
-  }
-};
 
-
-
-
-
-// When the user types in the input
-const handleBirthPlaceChange = (e) => {
-  const value = e.target.value;
-  setBirthPlaceInput(value);
-
-  // Remove the previously selected place (object) so that the old data is not sent.
-  setFormData((prev) => ({ ...prev, birthPlace: null }));
-
-  // Debounce Timer
-  if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-  debounceTimerRef.current = setTimeout(() => {
-    fetchPlaceSuggestions(value);
-  }, 300);
-};
-
-
-
-
-//  When the user clicks on the suggestion (dropdown)
-const handlePlaceSelect = (place) => {
-  // 1. Show the display name in the input (e.g., "New Delhi, Delhi, India").
-  setBirthPlaceInput(place.displayName);
-  
-  // 2. Dropdown बंद करो
-  setShowSuggestions(false);
-  setPlaceSuggestions([]);
-
-  // 3. Set the entire object in formData.birthPlace!
-  // (Now, instead of a String, this will be { displayName, latitude, longitude... })
-  setFormData((prev) => ({ ...prev, birthPlace: place }));
-};
-
-
+    // 3. Set the entire object in formData.birthPlace!
+    // (Now, instead of a String, this will be { displayName, latitude, longitude... })
+    setFormData((prev) => ({ ...prev, birthPlace: place }));
+  };
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -390,16 +379,18 @@ const handlePlaceSelect = (place) => {
         callPrice: currentProfile?.call_price || "",
       });
 
-    if (currentProfile?.birth_place) {
-      if (typeof currentProfile.birth_place === "object" && currentProfile.birth_place.place) {
-        setBirthPlaceInput(currentProfile.birth_place?.place);
-      } else if (typeof currentProfile.birth_place === "string") {
-        setBirthPlaceInput(currentProfile.birth_place);
+      if (currentProfile?.birth_place) {
+        if (
+          typeof currentProfile.birth_place === "object" &&
+          currentProfile.birth_place.place
+        ) {
+          setBirthPlaceInput(currentProfile.birth_place?.place);
+        } else if (typeof currentProfile.birth_place === "string") {
+          setBirthPlaceInput(currentProfile.birth_place);
+        }
+      } else {
+        setBirthPlaceInput(""); // अगर कोई डेटा नहीं है तो खाली करो
       }
-    } else {
-      setBirthPlaceInput(""); // अगर कोई डेटा नहीं है तो खाली करो
-    }
-
 
       // Only set these for astrologers
       if (isAstrologer) {
@@ -493,7 +484,11 @@ const handlePlaceSelect = (place) => {
       );
     }
 
+
+    
+
     try {
+      console.log("update data",updateData)
       if (isAstrologer) {
         await dispatch(AstrologerUpdate(updateData)).unwrap();
         await dispatch(AstrologerProfile()).unwrap();
@@ -513,13 +508,13 @@ const handlePlaceSelect = (place) => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex flex-1 items-center justify-center">
-        <div className="text-center">Loading profile...</div>
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="min-h-screen flex flex-1 items-center justify-center">
+  //       <div className="text-center">Loading profile...</div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="min-h-screen pb-24">
@@ -656,7 +651,6 @@ const handlePlaceSelect = (place) => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-               
                 {/* <FormField
                   label="Birth Place"
                   name="birthPlace"
@@ -666,57 +660,71 @@ const handlePlaceSelect = (place) => {
                   onChange={handleInputChange}
                 /> */}
 
-
                 {/*  NEW: Birthplace - Autocomplete (replaces the old FormField)  */}
-<div className="space-y-2 relative" ref={suggestionRef}>
-  <Label htmlFor="birthPlace" className="flex items-center gap-2 text-sm font-medium text-slate-700">
-    <MapPin className="w-4 h-4 text-slate-500" />
-    Birth Place
-  </Label>
-  <Input
-    id="birthPlace"
-    placeholder="Birth Place"
-    autoComplete="off"
-    value={birthPlaceInput} // this is String 
-    onChange={handleBirthPlaceChange}
-    onFocus={() => {
-      //If there are existing suggestions, display them when the element gets focus.
-      if (birthPlaceInput.length >= 2 && placeSuggestions.length > 0) {
-        setShowSuggestions(true);
-      }
-    }}
-    className="focus:ring-2 focus:ring-amber-400 transition"
-  />
+                <div className="space-y-2 relative" ref={suggestionRef}>
+                  <Label
+                    htmlFor="birthPlace"
+                    className="flex items-center gap-2 text-sm font-medium text-slate-700"
+                  >
+                    <MapPin className="w-4 h-4 text-slate-500" />
+                    Birth Place
+                  </Label>
+                  <Input
+                    id="birthPlace"
+                    placeholder="Birth Place"
+                    autoComplete="off"
+                    value={birthPlaceInput} // this is String
+                    onChange={handleBirthPlaceChange}
+                    onFocus={() => {
+                      //If there are existing suggestions, display them when the element gets focus.
+                      if (
+                        birthPlaceInput.length >= 2 &&
+                        placeSuggestions.length > 0
+                      ) {
+                        setShowSuggestions(true);
+                      }
+                    }}
+                    className="focus:ring-2 focus:ring-amber-400 transition"
+                  />
 
-  {/* ✅ Dropdown (Suggestions Box) */}
-  {showSuggestions && (
-    <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-      {isLoadingSuggestions ? (
-        <div className="p-3 text-center text-gray-500 text-sm">Loading...</div>
-      ) : placeSuggestions.length > 0 ? (
-        placeSuggestions.map((place, index) => (
-          <div
-            key={index}
-            className="px-4 py-2 hover:bg-amber-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0"
-            onClick={() => handlePlaceSelect(place)} // 🟢 Select पर Object सेट होगा
-          >
-            <div className="font-medium text-gray-800 text-sm">{place.displayName}</div>
-            <div className="text-xs text-gray-500">{place.country} {place.state && `• ${place.state}`}</div>
-          </div>
-        ))
-      ) : (
-        <div className="p-3 text-center text-gray-400 text-sm">No places found</div>
-      )}
-    </div>
-  )}
-</div>
+                  {/* ✅ Dropdown (Suggestions Box) */}
+                  {showSuggestions && (
+                    <div className="absolute z-50 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                      {isLoadingSuggestions ? (
+                        <div className="p-3 text-center text-gray-500 text-sm">
+                          Loading...
+                        </div>
+                      ) : placeSuggestions.length > 0 ? (
+                        placeSuggestions.map((place, index) => (
+                          <div
+                            key={index}
+                            className="px-4 py-2 hover:bg-amber-50 cursor-pointer transition-colors border-b border-gray-100 last:border-0"
+                            onClick={() => handlePlaceSelect(place)} // 🟢 Select पर Object सेट होगा
+                          >
+                            <div className="font-medium text-gray-800 text-sm">
+                              {place.displayName}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {place.country}{" "}
+                              {place.state && `• ${place.state}`}
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="p-3 text-center text-gray-400 text-sm">
+                          No places found
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
 
- <FormField
+                <FormField
                   label="Date of Birth"
                   name="dob"
                   type="date"
                   icon={Calendar}
-                  value={formData.dob}
+                  value={formData?.dob}
                   onChange={handleInputChange}
                 />
                 <FormField
@@ -907,11 +915,14 @@ const handlePlaceSelect = (place) => {
               Cancel
             </Button>
             <Button
+
               onClick={handleSubmit}
+              disabled={loading}
               className="min-w-32 bg-primary text-black hover:from-indigo-700 hover:to-purple-700 shadow-lg shadow-indigo-200/40"
             >
               <Save className="w-4 h-4 mr-2" />
-              Save Changes
+              {loading? "Saving.." :
+              "Save Changes"}
             </Button>
           </div>
         </div>

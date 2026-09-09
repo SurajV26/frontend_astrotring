@@ -16,17 +16,23 @@ import {
 } from "@/redux/slice/aiChatSlice";
 // import { api } from "@/redux/baseApi";
 import { toast } from "react-toastify";
-import { CheckCheck, ChevronLeft, Plus, SendHorizontal, Wallet, X, Timer } from "lucide-react";
+import {
+  CheckCheck,
+  ChevronLeft,
+  Plus,
+  SendHorizontal,
+  Wallet,
+  X,
+  Timer,
+} from "lucide-react";
 import { fetchWalletDetails } from "@/redux/slice/walletSlice";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
 import MarkdownRenderer from "./MarkdownRenderer";
 import { BeatLoader } from "react-spinners";
 import UserLogin from "@/components/UserLogin";
 
-
 const AIChatBot = () => {
-
-  console.log("chatbotloading....................")
+  console.log("chatbotloading....................");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -126,13 +132,16 @@ const AIChatBot = () => {
 
   // Stop timer and show recharge modal when chat is ended by backend
   useEffect(() => {
-    if (!chatBilling?.isChatActive && chatEndType === "insufficient_balance" && chatEndMessage) {
+    if (
+      !chatBilling?.isChatActive &&
+      chatEndType === "insufficient_balance" &&
+      chatEndMessage
+    ) {
       setElapsedSeconds(0);
       setRechargeMessage(chatEndMessage);
       setShowRechargeModal(true);
     }
   }, [chatBilling?.isChatActive, chatEndType, chatEndMessage]);
-
 
   // Get astrologer details (will remain visible even after refreshing)
   useEffect(() => {
@@ -151,7 +160,6 @@ const AIChatBot = () => {
     };
   }, [astrologerSlug, expertiseSlug, dispatch]);
 
-
   useEffect(() => {
     if (isLoggedIn && astrologerSlug && expertiseSlug) {
       dispatch(
@@ -159,10 +167,9 @@ const AIChatBot = () => {
           astrologerSlug,
           expertiseSlug,
         }),
-      )
+      );
     }
   }, [dispatch, expertiseSlug, astrologerSlug, isLoggedIn]);
-
 
   // Fetch the history once the sessionId is received.
   useEffect(() => {
@@ -173,22 +180,17 @@ const AIChatBot = () => {
     }
   }, [sessionId]);
 
-
   useEffect(() => {
     if (!chatBilling?.isChatActive || !chatBilling?.chatActiveSince) {
       return;
     }
 
-    const startTime = new Date(
-      chatBilling.chatActiveSince
-    ).getTime();
+    const startTime = new Date(chatBilling.chatActiveSince).getTime();
 
     const updateTimer = () => {
       const now = Date.now();
 
-      const difference = Math.floor(
-        (now - startTime) / 1000
-      );
+      const difference = Math.floor((now - startTime) / 1000);
 
       setElapsedSeconds(Math.max(0, difference));
     };
@@ -199,10 +201,7 @@ const AIChatBot = () => {
     const interval = setInterval(updateTimer, 1000);
 
     return () => clearInterval(interval);
-  }, [
-    chatBilling?.isChatActive,
-    chatBilling?.chatActiveSince,
-  ]);
+  }, [chatBilling?.isChatActive, chatBilling?.chatActiveSince]);
 
   // Auto-scroll
   useEffect(() => {
@@ -224,7 +223,7 @@ const AIChatBot = () => {
           startSession({
             astrologerSlug: astrologerSlug,
             expertiseSlug: expertiseSlug,
-          })
+          }),
         ).unwrap();
         currentSessionId = result.sessionId;
       } catch (err) {
@@ -258,12 +257,7 @@ const AIChatBot = () => {
       setShowRechargeModal(false);
     } catch (err) {
       const errData = err;
-      if (
-
-        errData?.type == "insufficient_balance"
-
-      ) {
-
+      if (errData?.type == "insufficient_balance") {
         setRechargeMessage(errData?.message);
 
         setShowRechargeModal(true);
@@ -290,7 +284,7 @@ const AIChatBot = () => {
           startSession({
             astrologerSlug: astrologerSlug,
             expertiseSlug: expertiseSlug,
-          })
+          }),
         ).unwrap();
         currentSessionId = result.sessionId;
       } catch (err) {
@@ -318,7 +312,9 @@ const AIChatBot = () => {
     dispatch(addUserMessageLocally(message));
     setInput("");
     try {
-      await dispatch(sendChatMessage({ sessionId: currentSessionId, message })).unwrap();
+      await dispatch(
+        sendChatMessage({ sessionId: currentSessionId, message }),
+      ).unwrap();
       setShowRechargeModal(false);
     } catch (err) {
       const errData = err;
@@ -344,33 +340,31 @@ const AIChatBot = () => {
         toast.success("Chat ended successfully");
       } catch (err) {
         isClosingSessionRef.current = false;
-        toast.error(err || "Something went wrong")
+        toast.error(err || "Something went wrong");
         // console.log("Close session error:", err);
       }
     }
   };
 
-
-
   const formatTime = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
 
-    const minutes = Math.floor(
-      (totalSeconds % 3600) / 60,
-    );
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
 
     const seconds = totalSeconds % 60;
 
-    return `${String(hours).padStart(2, "0")}:${String(
-      minutes,
-    ).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0",
+    )}:${String(seconds).padStart(2, "0")}`;
   };
 
   const formatMessageTime = (createdAt) => {
     if (!createdAt) return null;
 
     // Convert "YYYY-MM-DD HH:MM:SS" to "YYYY-MM-DDTHH:MM:SS" for robust cross-browser parsing
-    const formattedDate = typeof createdAt === "string" ? createdAt.replace(" ", "T") : createdAt;
+    const formattedDate =
+      typeof createdAt === "string" ? createdAt.replace(" ", "T") : createdAt;
 
     try {
       const date = new Date(formattedDate);
@@ -463,12 +457,15 @@ const AIChatBot = () => {
             {/* Center: Timer */}
             {chatBilling?.chatActiveSince && (
               <div className="flex-1 flex justify-center">
-                <div className={`flex items-center gap-2 px-2 py-1 rounded-lg shadow-md border ${chatBilling?.isChatActive ? 'bg-white/90 border-amber-300' : 'bg-gray-100 border-gray-300'}`}>
-                  <Timer className={`w-4 h-4 ${chatBilling?.isChatActive ? 'text-amber-600' : 'text-gray-500'}`} />
+                <div
+                  className={`flex items-center gap-2 px-2 py-1 rounded-lg shadow-md border ${chatBilling?.isChatActive ? "bg-white/90 border-amber-300" : "bg-gray-100 border-gray-300"}`}
+                >
+                  <Timer
+                    className={`w-4 h-4 ${chatBilling?.isChatActive ? "text-amber-600" : "text-gray-500"}`}
+                  />
                   <span className="text-sm font-bold text-gray-700">
                     {formatTime(elapsedSeconds)}
                   </span>
-                  
                 </div>
               </div>
             )}
@@ -476,15 +473,18 @@ const AIChatBot = () => {
             {/* Right: Wallet Balance */}
             <div className="flex shrink-0 items-center gap-1">
               <div className="flex items-center gap-1 bg-white/80 px-2 py-1 rounded-lg shadow-sm">
-                <Plus className="w-4 h-4 text-green-600 rounded border bg-amber-200 cursor-pointer" onClick={() => navigate("/dashboard/wallet")} />
+                <Plus
+                  className="w-4 h-4 text-green-600 rounded border bg-amber-200 cursor-pointer"
+                  onClick={() => {
+                    dispatch(openRechargeModal());
+                  }}
+                />
                 <Wallet className="w-4 h-4 text-amber-600" />
                 <span className="text-sm font-bold text-gray-800">
                   ₹{walletBalance}
                 </span>
               </div>
             </div>
-
-
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto">
@@ -532,14 +532,25 @@ const AIChatBot = () => {
               )} */}
 
               {messages.map((msg, idx) => (
-                <div key={idx} className={`flex w-full mb-4 ${msg.sender === "user" ? "justify-end " : "justify-start"}`}>
-                  <div className={`max-w-[90%] md:max-w-[80%] px-5 py-2 rounded-2xl ${msg.sender === "user" ? "bg-amber-400 text-gray-800 rounded-br-none shadow-sm mr-1 sm:mr-0" : "bg-white shadow-sm border border-gray-100 rounded-bl-sm"}`}>
+                <div
+                  key={idx}
+                  className={`flex w-full mb-4 ${msg.sender === "user" ? "justify-end " : "justify-start"}`}
+                >
+                  <div
+                    className={`max-w-[90%] md:max-w-[80%] px-5 py-2 rounded-2xl ${msg.sender === "user" ? "bg-amber-400 text-gray-800 rounded-br-none shadow-sm mr-1 sm:mr-0" : "bg-white shadow-sm border border-gray-100 rounded-bl-sm"}`}
+                  >
                     {msg.sender === "user" ? (
                       <div>
-                        <div className="text-sm text whitespace-pre-wrap leading-relaxed">{msg.message}</div>
+                        <div className="text-sm text whitespace-pre-wrap leading-relaxed">
+                          {msg.message}
+                        </div>
                         <div className="mt-1 flex items-center justify-end gap-1 text-[10px] text-gray-500">
                           {formatMessageTime(msg.created_at)}
-                          <CheckCheck className="h-3.5 w-3.5 text-blue-600" strokeWidth={2.5} aria-label="Message sent" />
+                          <CheckCheck
+                            className="h-3.5 w-3.5 text-blue-600"
+                            strokeWidth={2.5}
+                            aria-label="Message sent"
+                          />
                         </div>
                       </div>
                     ) : (
@@ -558,7 +569,12 @@ const AIChatBot = () => {
               {isLoading && (
                 <div className="flex w-full mb-4 ml-4 justify-start">
                   <div className="px-5 py-4 bg-white shadow-sm border border-gray-100 rounded-2xl rounded-bl-sm flex items-center justify-center min-w-[70px]">
-                    <BeatLoader size={8} color="#f59e0b" margin={3} speedMultiplier={0.7} />
+                    <BeatLoader
+                      size={8}
+                      color="#f59e0b"
+                      margin={3}
+                      speedMultiplier={0.7}
+                    />
                   </div>
                 </div>
               )}
@@ -606,7 +622,8 @@ const AIChatBot = () => {
                     Insufficient wallet balance
                   </h3>
                   <p className="text-sm text-gray-500 mt-1">
-                    {rechargeMessage || "Your wallet balance is low. Please recharge to continue."}
+                    {rechargeMessage ||
+                      "Your wallet balance is low. Please recharge to continue."}
                   </p>
                   <button
                     onClick={() => {
@@ -625,43 +642,45 @@ const AIChatBot = () => {
 
           {/* Input area */}
           <div className="z-20 shrink-0 border-t border-amber-100 bg-white/95 px-3 py-3 shadow-[0_-6px_18px_rgba(0,0,0,0.04)] backdrop-blur sm:px-6">
-              {!showCustomInput ? (
+            {!showCustomInput ? (
+              <button
+                type="button"
+                onClick={() => setShowCustomInput(true)}
+                className="flex w-full items-center rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-sm text-gray-500 transition hover:border-amber-400 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-400"
+              >
+                <span className="mr-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-400 text-lg text-white">
+                  +
+                </span>
+                <span>Tap here to write your own question</span>
+              </button>
+            ) : (
+              <div className="flex items-end gap-2">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      handleSendMessage();
+                    }
+                  }}
+                  placeholder="Type your question..."
+                  rows={1}
+                  //  It should auto-focus when this appears.
+                  autoFocus
+                  className="field-sizing-content max-h-32 flex-1 resize-none overflow-y-auto rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm placeholder:text-xs focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  disabled={isLoading}
+                />
                 <button
-                  type="button"
-                  onClick={() => setShowCustomInput(true)}
-                  className="flex w-full items-center rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-left text-sm text-gray-500 transition hover:border-amber-400 hover:bg-amber-100 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  onClick={handleSendMessage}
+                  disabled={isLoading}
+                  aria-label="Send message"
+                  className="cursor-pointer rounded-full bg-amber-500 p-3 text-white shadow-sm transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  <span className="mr-3 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-400 text-lg text-white">+</span>
-                  <span>Tap here to write your own question</span>
+                  <SendHorizontal strokeWidth={2} className="h-5 w-5" />
                 </button>
-              ) : (
-                <div className="flex items-end gap-2">
-                  <textarea
-                    value={input}
-                    onChange={(e) => setInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" && !e.shiftKey) {
-                        e.preventDefault();
-                        handleSendMessage();
-                      }
-                    }}
-                    placeholder="Type your question..."
-                    rows={1}
-                    //  It should auto-focus when this appears.
-                    autoFocus
-                    className="field-sizing-content max-h-32 flex-1 resize-none overflow-y-auto rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm placeholder:text-xs focus:outline-none focus:ring-2 focus:ring-amber-400"
-                    disabled={isLoading}
-                  />
-                  <button
-                    onClick={handleSendMessage}
-                    disabled={isLoading}
-                    aria-label="Send message"
-                    className="cursor-pointer rounded-full bg-amber-500 p-3 text-white shadow-sm transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <SendHorizontal strokeWidth={2} className="h-5 w-5" />
-                  </button>
-                </div>
-              )}
+              </div>
+            )}
           </div>
 
           {chatBilling?.isChatActive && (

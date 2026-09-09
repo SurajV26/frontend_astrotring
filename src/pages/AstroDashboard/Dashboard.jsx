@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {format} from 'date-fns'
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Award, Briefcase, Calendar, Clock, Globe, Languages, Mail, MapPin, MessageSquare, Phone, PhoneCall, Shield, Star, User } from 'lucide-react';
@@ -150,7 +151,7 @@ function Dashboard() {
                 <InfoItem icon={User} label="Gender" value={(astrologer?.gender) || (user?.gender)} />
 
                 {role == 3 && <>
-                  <InfoItem icon={Calendar} label="Date of Birth" value={user?.dob?.split("T")[0]} />
+                  <InfoItem icon={Calendar} label="Date of Birth" value={user?.dob ? format(new Date(user?.dob), 'dd-MM-yyyy'): ""} />
                   <InfoItem icon={MapPin} label="Birth Place" value={ user?.birth_place?.place} />
                   <InfoItem icon={Clock} label="Birth Time" value={user?.birth_time} />
                 </>}

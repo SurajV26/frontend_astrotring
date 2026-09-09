@@ -25,11 +25,11 @@ const items = [
   { title: "Profile", url: "/dashboard/profile", icon: Home },
   { title: "Update Profile", url: "/dashboard/update-astro", icon: Inbox },
   { title: "Wallet / Account", url: "/dashboard/wallet", icon: Wallet },
-  // {
-  //   title: "Wallet History",
-  //   url: "/dashboard/widhdrow-history",
-  //   icon: HistoryIcon,
-  // },
+  {
+    title: "Recharge History",
+    url: "/dashboard/recharge-history",
+    icon: HistoryIcon,
+  },
 ];
 
 export function AppSidebar() {

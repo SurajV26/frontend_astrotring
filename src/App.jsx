@@ -222,7 +222,7 @@ const App = () => {
             <Route path="/dashboard/update-astro" element={<UpdateAstro />} />
             <Route path="/dashboard/wallet" element={<Wallet />} />
             <Route
-              path="/dashboard/widhdrow-history"
+              path="/dashboard/recharge-history"
               element={<WidhdrowHistory />}
             />
           </Route>

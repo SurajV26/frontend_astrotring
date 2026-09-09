@@ -31,9 +31,11 @@ export const fetchWalletChatStatistics = createAsyncThunk(
 // ---------- Recharge History ----------
 export const fetchRechargeHistory = createAsyncThunk(
   'wallet/fetchRechargeHistory',
-  async (_, { rejectWithValue }) => {
+  async (page = 1, { rejectWithValue }) => {
     try {
-      const response = await api.get('/wallet/recharge-history');
+      const response = await api.get('/wallet/recharge-history', {
+        params: { page },
+      });
        console.log("fetch recharge history",response)
       return response.data;
     } catch (error) {
@@ -48,7 +50,7 @@ export const fetchPayoutHistory = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await api.get('/payout/history');
-       console.log("fetch payout history",response)
+      //  console.log("fetch payout history",response)
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch payout history');
