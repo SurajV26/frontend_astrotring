@@ -118,7 +118,7 @@ const AIChatBot = () => {
 
   // Poll the active session so billing/end-of-chat updates are reflected promptly.
   useEffect(() => {
-    if (!sessionId || !chatBilling?.isChatActive) {
+    if (!sessionId ) {
       return;
     }
 
