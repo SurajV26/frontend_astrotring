@@ -9,11 +9,11 @@ const Horoscopes = () => {
     const { date } = useParams();
     const { horoscope, loading } = useSelector((state) => state.horoscope);
 
-    console.log("PATH", horoscope)
-    console.log("date", date)
+    // console.log("PATH", horoscope)
+    // console.log("date", date)
 
     const horoscopeData = horoscope ? horoscope.filter(h => h.type.toLowerCase() === date.toLowerCase()) : null;
-    console.log("object",horoscopeData)
+    // console.log("object",horoscopeData)
 
 
 //     const horoscopeData = horoscope

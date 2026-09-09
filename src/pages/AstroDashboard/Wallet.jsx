@@ -51,8 +51,8 @@ function WalletDashboard() {
 
   // console.log("chatHistory",chatHistory)
 
-  console.log("wwallet details", details);
-  console.log("chatStatistics", chatStatistics);
+  // console.log("wwallet details", details);
+  // console.log("chatStatistics", chatStatistics);
   useEffect(() => {
     dispatch(fetchWalletDetails());
   }, [dispatch]);
@@ -72,7 +72,7 @@ function WalletDashboard() {
 
   // Use only real data. If details is undefined, we use fallback 0s to prevent crash before loading triggers, though the loading check above handles it mostly.
   const walletData = details || {};
-  console.log("walletData?.data", walletData);
+  // console.log("walletData?.data", walletData);
 
   const formatCurrency = (amount) => `₹${parseFloat(amount).toFixed(2)}`;
   const formatDate = (dateString) => {

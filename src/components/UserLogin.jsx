@@ -356,7 +356,7 @@ const UserLogin = ({ ele, defaultOpen = false, onOpenChange }) => {
 
     if (!parsed.success) {
     
-      console.log("Zod errors:", parsed.error);
+      // console.log("Zod errors:", parsed.error);
       setErrors({
         fields: parsed.error.flatten().fieldErrors,
         form: "Please fix the errors above",

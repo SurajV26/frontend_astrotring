@@ -38,7 +38,7 @@ const AstroLogin = () => {
       password: form.password,
     };
 
-    console.log("Login Data from astrologin:", submitData);
+    // console.log("Login Data from astrologin:", submitData);
 
     try {
       await dispatch(AstrologerLogin(submitData)).unwrap();

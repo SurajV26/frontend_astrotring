@@ -112,12 +112,12 @@ const App = () => {
 
   useEffect(() => {
     if (role == 2 && !astrologer && isAuthenticated) {
-      console.log("🚀 Dispatching astroProfile! in app");
+      // console.log(" Dispatching astroProfile! in app");
       dispatch(AstrologerProfile());
     }
 
     if (role == 3 && !user && isLoggedIn) {
-      console.log("🚀 Dispatching userProfile! in app");
+      // console.log(" Dispatching userProfile! in app");
       dispatch(userProfile());
     }
   }, [dispatch, role, astrologer, user, isAuthenticated, isLoggedIn]);

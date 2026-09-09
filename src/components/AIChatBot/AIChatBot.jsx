@@ -32,7 +32,7 @@ import { BeatLoader } from "react-spinners";
 import UserLogin from "@/components/UserLogin";
 
 const AIChatBot = () => {
-  console.log("chatbotloading....................");
+  // console.log("chatbotloading....................");
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -58,7 +58,7 @@ const AIChatBot = () => {
   const walletBalance = walletDetails?.data?.balance || 0;
 
   // console.log("astrologer details", astrologerDetails);
-  console.log("chat messages", messages);
+  // console.log("chat messages", messages);
   // console.log("followUpQuestions", followUpQuestions);
 
   const [input, setInput] = useState("");

@@ -5,7 +5,7 @@ const RelatedDosh = () => {
   const { slug } = useParams();
 
   const filtered = servicesData.filter((item) => item.slug !== slug);
-  console.log("filtered",filtered)
+  // console.log("filtered",filtered)
   
 
   return (

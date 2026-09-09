@@ -129,11 +129,11 @@ const Header = () => {
 
   useEffect(() => {
     if (role == 2 && !astrologer && isAuthenticated) {
-       console.log("🚀 Dispatching astroProfile! in header");
+      //  console.log(" Dispatching astroProfile! in header");
       dispatch(AstrologerProfile());
     }
     if (role == 3 && !user && isLoggedIn) {
-      console.log("🚀 Dispatching userProfile! in header");
+      // console.log(" Dispatching userProfile! in header");
       dispatch(userProfile());
     }
   }, [dispatch, role, astrologer, user]);

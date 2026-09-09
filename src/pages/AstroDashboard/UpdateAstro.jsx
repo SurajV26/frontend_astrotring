@@ -58,8 +58,8 @@ const FormField = ({
   value,
   onChange,
 }) => {
-  console.log("type",type)
-  console.log("value",value)
+  // console.log("type",type)
+  // console.log("value",value)
   return (
     <div className="space-y-2">
       <Label
@@ -357,7 +357,7 @@ function UpdateAstro() {
   const isAstrologer = role === "2";
   const currentProfile = isAstrologer ? astrologer : user;
   const loading = isAstrologer ? astroLoading : userLoading;
-  console.log("current profile", currentProfile);
+  // console.log("current profile", currentProfile);
 
   useEffect(() => {
     if (currentProfile) {
@@ -368,7 +368,9 @@ function UpdateAstro() {
         mobile: currentProfile?.mobile || "",
         countryCode: currentProfile?.country_code || "+91",
         gender: currentProfile?.gender || "",
-        dob: currentProfile?.dob || "",
+        dob: currentProfile?.dob
+        ? format(new Date(currentProfile.dob), "yyyy-MM-dd")
+        : "1971-01-01",
         birthPlace: currentProfile?.birth_place || "",
         birthTime: currentProfile?.birth_time || "",
         about: currentProfile?.about || "",
