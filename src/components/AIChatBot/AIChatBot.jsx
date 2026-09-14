@@ -118,11 +118,11 @@ const AIChatBot = () => {
 
   // Poll the active session so billing/end-of-chat updates are reflected promptly.
   useEffect(() => {
-    if (!sessionId ) {
+    if (!sessionId || !chatFreeUsed ) {
       return;
     }
 
-    dispatch(fetchChatStatus(sessionId));
+    dispatch(fetchChatStatus(sessionId ));
     const interval = setInterval(() => {
       dispatch(fetchChatStatus(sessionId));
     }, 2000);

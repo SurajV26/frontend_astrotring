@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import { IndianRupee } from 'lucide-react';
 
 const RECHARGE_PACKS = [
-  { pay: 80, label: "Get ₹80" },
+  { pay: 1, label: "Get ₹1" },
   { pay: 100, label: "Get ₹100" },
   { pay: 199, label: "Get ₹199" },
   { pay: 300, label: "Get ₹300" },
