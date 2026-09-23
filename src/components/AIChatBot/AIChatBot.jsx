@@ -28,6 +28,7 @@ import {
 import { fetchWalletDetails } from "@/redux/slice/walletSlice";
 import { openRechargeModal } from "@/redux/slice/uiSlice";
 import MarkdownRenderer from "./MarkdownRenderer";
+import AstrologerRecommendations from "./AstrologerRecommendations";
 import { BeatLoader } from "react-spinners";
 import UserLogin from "@/components/UserLogin";
 
@@ -71,6 +72,7 @@ const AIChatBot = () => {
   const bottomRef = useRef();
   const activeChatRef = useRef({ sessionId: null, isActive: false });
   const isClosingSessionRef = useRef(false);
+  const switchInProgressRef = useRef(false);
 
   useEffect(() => {
     activeChatRef.current = {
@@ -128,7 +130,7 @@ const AIChatBot = () => {
     }, 2000);
 
     return () => clearInterval(interval);
-  }, [sessionId, chatBilling?.isChatActive, dispatch]);
+  }, [sessionId, chatFreeUsed, chatBilling?.isChatActive, dispatch]);
 
   // Stop timer and show recharge modal when chat is ended by backend
   useEffect(() => {
@@ -209,6 +211,7 @@ const AIChatBot = () => {
   }, [messages]);
 
   const handleQuestionClick = async (question) => {
+    if (switchInProgressRef.current || isStartingSession || isLoading) return;
     if (!isLoggedIn) {
       setShowLogin(true);
       return;
@@ -268,6 +271,7 @@ const AIChatBot = () => {
   };
 
   const handleSendMessage = async () => {
+    if (switchInProgressRef.current || isStartingSession || isLoading) return;
     if (!isLoggedIn) {
       setShowLogin(true);
       return;
@@ -327,6 +331,28 @@ const AIChatBot = () => {
       } else {
         toast.error(errData?.message || "Failed to send message");
       }
+    }
+  };
+
+  const handleSwitchAstrologer = async (astro, question) => {
+    if (switchInProgressRef.current) return;
+    switchInProgressRef.current = true;
+    isClosingSessionRef.current = true;
+    try {
+      if (sessionId) await dispatch(closeSession(sessionId)).unwrap();
+      activeChatRef.current = { sessionId: null, isActive: false };
+      dispatch(fetchWalletDetails());
+      setElapsedSeconds(0);
+      setShowRechargeModal(false);
+      setRechargeMessage("");
+      setInput(question || "");
+      setShowCustomInput(Boolean(question));
+      navigate(`/ai-chat/${encodeURIComponent(astro.slug)}/${encodeURIComponent(astro.expertise.slug)}`);
+    } catch (err) {
+      isClosingSessionRef.current = false;
+      throw err;
+    } finally {
+      switchInProgressRef.current = false;
     }
   };
 
@@ -556,6 +582,16 @@ const AIChatBot = () => {
                     ) : (
                       <div>
                         <MarkdownRenderer content={msg.message} />
+                        <AstrologerRecommendations
+                          key={`${astrologerSlug}/${expertiseSlug}/${idx}`}
+                          message={msg}
+                          currentSlug={astrologerSlug}
+                          disabled={isLoading || isStartingSession}
+                          onSwitch={(astro) => handleSwitchAstrologer(
+                            astro,
+                            messages.slice(0, idx).reverse().find((item) => item.sender === "user")?.message,
+                          )}
+                        />
                         {formatMessageTime(msg.created_at) && (
                           <div className="mt-1 text-right text-[10px] text-gray-400">
                             {formatMessageTime(msg.created_at)}
@@ -669,11 +705,11 @@ const AIChatBot = () => {
                   //  It should auto-focus when this appears.
                   autoFocus
                   className="field-sizing-content max-h-32 flex-1 resize-none overflow-y-auto rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm placeholder:text-xs focus:outline-none focus:ring-2 focus:ring-amber-400"
-                  disabled={isLoading}
+                  disabled={isLoading || isStartingSession}
                 />
                 <button
                   onClick={handleSendMessage}
-                  disabled={isLoading}
+                  disabled={isLoading || isStartingSession}
                   aria-label="Send message"
                   className="cursor-pointer rounded-full bg-amber-500 p-3 text-white shadow-sm transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-50"
                 >
