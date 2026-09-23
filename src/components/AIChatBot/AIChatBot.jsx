@@ -339,7 +339,9 @@ const AIChatBot = () => {
     switchInProgressRef.current = true;
     isClosingSessionRef.current = true;
     try {
-      if (sessionId) await dispatch(closeSession(sessionId)).unwrap();
+      if (sessionId && chatBilling?.isChatActive) {
+        await dispatch(closeSession(sessionId)).unwrap();
+      }
       activeChatRef.current = { sessionId: null, isActive: false };
       dispatch(fetchWalletDetails());
       setElapsedSeconds(0);
