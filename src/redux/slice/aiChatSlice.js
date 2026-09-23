@@ -63,7 +63,7 @@ export const startSession = createAsyncThunk(
         expertise_slug: expertiseSlug,
       });
       const sessionId = response.data?.session_id || response.data?.data?.id;
-      const chatFreeUsed = response?.data?.chat_free_used || response.data?.data?.chat_free_used;
+      const chatFreeUsed = response?.data?.chat_free_used ?? response.data?.data?.chat_free_used;
       if (!sessionId) throw new Error("No session ID returned");
       return { sessionId, chatFreeUsed };
     } catch (error) {
@@ -77,6 +77,9 @@ export const closeSession = createAsyncThunk(
   async (sessionId, { rejectWithValue }) => {
     try {
       const response = await api.post(`/user/ai-chat/stop-chat/${sessionId}`);
+      if (response.data?.status === false) {
+        return rejectWithValue(response.data.message || "Failed to close session");
+      }
 
       console.log("CLOSE SESSION RESPONSE:", response);
       return sessionId;
@@ -124,9 +127,16 @@ export const sendChatMessage = createAsyncThunk(
         response.data?.message ||
         "Sorry, I couldn't reply.";
       const remainingQuestions = response.data?.remaining_questions || [];
-      const chatFreeUsed = response.data?.chat_free_used || response.data?.data?.chat_free_used;
+      const chatFreeUsed = response.data?.chat_free_used ?? response.data?.data?.chat_free_used;
       const createdAt = response.data?.created_at;
-      return { reply, remainingQuestions, chatFreeUsed, createdAt };
+      return {
+        reply,
+        remainingQuestions,
+        chatFreeUsed,
+        createdAt,
+        scope_limited: response.data?.scope_limited === true,
+        alternative_astrologers: response.data?.alternative_astrologers || [],
+      };
     } catch (error) {
       return rejectWithValue(error.response?.data);
     }
@@ -265,6 +275,10 @@ const aiChatSlice = createSlice({
 
       // start session
       .addCase(startSession.pending, (state) => {
+        // Clear the previous astrologer's session before opening the next chat.
+        state.sessionId = null;
+        state.chatBilling = { chatActiveSince: null, isChatActive: false };
+        state.followUpQuestions = [];
         state.isStartingSession = true;
         state.messages = []; // clear old messages
       })
@@ -291,6 +305,8 @@ const aiChatSlice = createSlice({
         state.messages.push({
           sender: "assistant",
           message: action.payload.reply,
+          scope_limited: action.payload.scope_limited,
+          alternative_astrologers: action.payload.alternative_astrologers,
           created_at: action.payload.createdAt || new Date().toISOString(),
         });
         //  नया: Remaining Questions को SessionQuestions में Set करें
@@ -330,6 +346,8 @@ const aiChatSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchChatHistory.fulfilled, (state, action) => {
+        // A previous chat's history can arrive after switching astrologers.
+        if (state.sessionId !== action.meta.arg) return;
         state.isHistoryLoading = false;
         // मान लें कि API से मिला data: { messages: [...], sessionId, ... }
         state.messages = action.payload.messages || [];
@@ -344,6 +362,8 @@ const aiChatSlice = createSlice({
       })
       // ----- chat status -----
       .addCase(fetchChatStatus.fulfilled, (state, action) => {
+        // Ignore polling responses from the chat we have already left.
+        if (state.sessionId !== action.meta.arg) return;
         const status = action.payload;
         console.log("Chat status response:", status);
 
