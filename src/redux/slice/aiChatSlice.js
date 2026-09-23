@@ -84,6 +84,10 @@ export const closeSession = createAsyncThunk(
       console.log("CLOSE SESSION RESPONSE:", response);
       return sessionId;
     } catch (error) {
+      // Inactivity may have stopped the chat before this request arrived.
+      if (error.response?.status === 422 && error.response?.data?.type === "session_closed") {
+        return sessionId;
+      }
       return rejectWithValue(
         error.response?.data?.message || "Failed to close session",
       );
