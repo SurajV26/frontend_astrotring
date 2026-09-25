@@ -31,6 +31,7 @@ import MarkdownRenderer from "./MarkdownRenderer";
 import AstrologerRecommendations from "./AstrologerRecommendations";
 import { BeatLoader } from "react-spinners";
 import UserLogin from "@/components/UserLogin";
+import AstrologerReviewDialog from "./AstrologerReviewDialog";
 
 const AIChatBot = () => {
   // console.log("chatbotloading....................");
@@ -68,6 +69,17 @@ const AIChatBot = () => {
   const [rechargeMessage, setRechargeMessage] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [reviewTarget, setReviewTarget] = useState(null);
+  const [reviewedSessions, setReviewedSessions] = useState([]);
+
+  const reviewKey = (target) => JSON.stringify([target.astrologerSlug, target.expertiseSlug, target.sessionId]);
+  const currentReviewTarget = {
+    astrologerId: astrologerDetails?.slug === astrologerSlug ? astrologerDetails.id : null,
+    astrologerSlug,
+    expertiseSlug,
+    sessionId,
+    name: astrologerDetails?.slug === astrologerSlug ? astrologerDetails.name : astrologerSlug,
+  };
 
   const bottomRef = useRef();
   const activeChatRef = useRef({ sessionId: null, isActive: false });
@@ -75,6 +87,17 @@ const AIChatBot = () => {
   const switchInProgressRef = useRef(false);
 
   useEffect(() => {
+    const previous = activeChatRef.current;
+    // Prompt when the current active chat ends, not on initial inactive state.
+    if (
+      previous.sessionId === sessionId && previous.isActive &&
+      chatBilling?.isChatActive === false && chatEndType &&
+      !isClosingSessionRef.current && !switchInProgressRef.current &&
+      isLoggedIn && astrologerDetails?.slug === astrologerSlug && astrologerDetails?.id
+    ) {
+      const target = { sessionId, astrologerSlug, expertiseSlug, astrologerId: astrologerDetails.id, name: astrologerDetails.name };
+      if (!reviewedSessions.includes(reviewKey(target))) setReviewTarget(target);
+    }
     activeChatRef.current = {
       sessionId,
       isActive: Boolean(chatBilling?.isChatActive),
@@ -83,7 +106,7 @@ const AIChatBot = () => {
     if (chatBilling?.isChatActive) {
       isClosingSessionRef.current = false;
     }
-  }, [chatBilling?.isChatActive, sessionId]);
+  }, [chatBilling?.isChatActive, sessionId, chatEndType, isLoggedIn, astrologerDetails, astrologerSlug, expertiseSlug, reviewedSessions]);
 
   // End an active chat when this route is unmounted (for example, navigating away).
   useEffect(() => {
@@ -120,11 +143,11 @@ const AIChatBot = () => {
 
   // Poll the active session so billing/end-of-chat updates are reflected promptly.
   useEffect(() => {
-    if (!sessionId || !chatFreeUsed ) {
+    if (!sessionId || !chatFreeUsed) {
       return;
     }
 
-    dispatch(fetchChatStatus(sessionId ));
+    dispatch(fetchChatStatus(sessionId));
     const interval = setInterval(() => {
       dispatch(fetchChatStatus(sessionId));
     }, 2000);
@@ -347,6 +370,7 @@ const AIChatBot = () => {
       setElapsedSeconds(0);
       setShowRechargeModal(false);
       setRechargeMessage("");
+      setReviewTarget(null);
       setInput(question || "");
       setShowCustomInput(Boolean(question));
       navigate(`/ai-chat/${encodeURIComponent(astro.slug)}/${encodeURIComponent(astro.expertise.slug)}`);
@@ -359,13 +383,17 @@ const AIChatBot = () => {
   };
 
   // Close session
-  const handleManualCloseSession = async () => {
+  const handleManualCloseSession = async (promptReview = false) => {
     if (sessionId) {
+      const target = { ...currentReviewTarget };
       isClosingSessionRef.current = true;
       try {
         await dispatch(closeSession(sessionId)).unwrap();
         dispatch(fetchWalletDetails());
         toast.success("Chat ended successfully");
+        if (promptReview && target.astrologerId && !reviewedSessions.includes(reviewKey(target))) {
+          setReviewTarget(target);
+        }
       } catch (err) {
         isClosingSessionRef.current = false;
         toast.error(err || "Something went wrong");
@@ -642,7 +670,7 @@ const AIChatBot = () => {
           </div>
 
           {/* Recharge Modal */}
-          {showRechargeModal && (
+          {showRechargeModal && !reviewTarget && (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in duration-200">
                 <button
@@ -723,7 +751,7 @@ const AIChatBot = () => {
 
           {chatBilling?.isChatActive && (
             <button
-              onClick={handleManualCloseSession}
+              onClick={() => handleManualCloseSession(true)}
               className="absolute bottom-20 right-4 z-30 rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 cursor-pointer sm:bottom-24"
             >
               End Chat
@@ -765,6 +793,19 @@ const AIChatBot = () => {
           </a>
         </div>
       </div>
+
+      {isLoggedIn && reviewTarget && reviewTarget.astrologerSlug === astrologerSlug && reviewTarget.expertiseSlug === expertiseSlug && (
+        <AstrologerReviewDialog
+          key={reviewKey(reviewTarget)}
+          target={reviewTarget}
+          onClose={() => setReviewTarget(null)}
+          onSubmitted={(target) => {
+            setReviewedSessions((previous) => [...previous, reviewKey(target)]);
+            setReviewTarget(null);
+            toast.success("Thank you for your review!");
+          }}
+        />
+      )}
 
       {showLogin && (
         <UserLogin

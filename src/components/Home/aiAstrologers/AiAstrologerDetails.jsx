@@ -9,6 +9,7 @@ import {
 } from "@/redux/slice/aiChatSlice";
 import Loader from "@/components/common/Loader";
 import { toast } from "react-toastify";
+import AiAstrologerReviews from "./AiAstrologerReviews";
 
 const AiAstrologerDetails = () => {
   const { slug } = useParams();
@@ -239,6 +240,10 @@ const AiAstrologerDetails = () => {
               </div>
             </div>
           </div>
+
+          {astro.slug === slug && astro.id && (
+            <AiAstrologerReviews astrologerId={astro.id} />
+          )}
 
           {/* LANGUAGES KNOWN CARD */}
           {/* <div className="mb-12">

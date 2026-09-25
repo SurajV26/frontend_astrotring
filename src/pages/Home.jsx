@@ -14,12 +14,14 @@ import ZodiacPredictions from '@/components/Home/ZodiacPredictions'
 import TestmonialCard from '@/components/TestmonialCard'
 import { AirVent } from 'lucide-react'
 import React from 'react'
+import HomeWelcomePopup from '@/components/Home/HomeWelcomePopup'
 
 const Home = () => {
   return (
     <>
 
       <Banner />
+      <HomeWelcomePopup />
       <BannerSlider />
       <AiAstrologers />
       {/* <Astrologers /> */}
