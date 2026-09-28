@@ -47,7 +47,7 @@ const FreeKundliBanner = () => {
                 <div className="w-full h-0.5 mb-10 bg-secondary">
                     <img src={faviconlogo} className='mx-auto h-13 -translate-y-[50%]' alt="" />
                 </div>
-                <p className='text-center clear-start text-sm'>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsam aspernatur nesciunt laboriosam dolor qui quasi quas quam molestiae beatae aut!Lorem ipsum dolor sit amet consectetur, adipisicing elit. Cumque, ad? Aliquid ut quisquam incidunt vel voluptatibus, consequatur officiis minima aut, neque soluta ipsum enim, facilis commodi optio blanditiis voluptate veritatis.</p>
+                <p className='text-center clear-start text-sm'>Astrotring's free online kundli tool will help you generate a detailed Janam Kundli instantly. Based on the principles of Vedic Astrology, this tool provides accurate details of the planetary positions, houses, doshas, dashas, nakshatras, etc., in your birth chart. If you are curious about your future or want to work through past traumas, this free kundali online tool is the right choice for you</p>
 
 
                 <div className="grid lg:grid-cols-3 grid-cols-1 gap-6 mt-10">

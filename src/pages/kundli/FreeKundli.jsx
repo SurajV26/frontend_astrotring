@@ -4,7 +4,8 @@ import React from 'react'
 const FreeKundli = () => {
   return (
     <>
-    <FreeKundliBanner />
+      <FreeKundliBanner />
+   
     </>
   )
 }

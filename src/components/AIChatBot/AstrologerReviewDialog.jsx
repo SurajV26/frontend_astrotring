@@ -4,7 +4,7 @@ import { Star } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { clearReviewError, submitAiAstrologerReview } from "@/redux/slice/aiAstrologerReviewSlice";
 
-export default function AstrologerReviewDialog({ target, onClose, onSubmitted }) {
+export default function AstrologerReviewDialog({ astrologerId, astrologerName, onClose, onSubmitted }) {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const dispatch = useDispatch();
@@ -16,15 +16,15 @@ export default function AstrologerReviewDialog({ target, onClose, onSubmitted })
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (submitting.current || pending) return;
-    if (!target.astrologerId || !target.astrologerSlug || !rating || !review.trim() || review.length > 1000) return;
+    if (!astrologerId || !rating || !review.trim() || review.length > 1000) return;
     submitting.current = true;
     try {
       await dispatch(submitAiAstrologerReview({
-        astrologer_id: target.astrologerId,
+        astrologer_id: astrologerId,
         rating,
         review: review.trim(),
       })).unwrap();
-      onSubmitted(target);
+      onSubmitted();
     } catch {
       // The slice exposes the API error; preserve the form for retry.
     } finally {
@@ -35,11 +35,11 @@ export default function AstrologerReviewDialog({ target, onClose, onSubmitted })
   return (
     <Dialog open onOpenChange={(open) => { if (!open && !submitting.current) onClose(); }}>
       <DialogContent className="max-h-[90dvh] overflow-y-auto bg-white" showCloseButton={!pending}>
-        <DialogTitle className="pr-8">Rate {target.name}</DialogTitle>
+        <DialogTitle className="pr-8">Rate {astrologerName}</DialogTitle>
         <DialogDescription>How was your consultation? Share your rating and review.</DialogDescription>
         <form onSubmit={handleSubmit} className="space-y-4" aria-busy={pending}>
           <fieldset disabled={pending}>
-            <legend className="mb-2 text-sm font-medium">Your rating (required)</legend>
+            <legend className="mb-2 text-sm font-medium">Your rating <span className="text-red-600" aria-hidden="true">*</span></legend>
             <div className="flex gap-2">
               {[1, 2, 3, 4, 5].map((value) => (
                 <label key={value} className="cursor-pointer rounded p-1 has-focus-visible:ring-2 has-focus-visible:ring-amber-500">
@@ -50,7 +50,7 @@ export default function AstrologerReviewDialog({ target, onClose, onSubmitted })
             </div>
           </fieldset>
           <div>
-            <label htmlFor="astrologer-review" className="text-sm font-medium">Your review (required)</label>
+            <label htmlFor="astrologer-review" className="text-sm font-medium">Your review <span className="text-red-600" aria-hidden="true">*</span></label>
             <textarea id="astrologer-review" required maxLength={1000} rows={4} value={review} disabled={pending} onChange={(event) => setReview(event.target.value)} placeholder="Tell us about your experience..." className="mt-2 w-full resize-y rounded-xl border border-amber-200 p-3 text-sm focus:outline-none focus:ring-2 focus:ring-amber-400" aria-describedby="review-count" />
             <p id="review-count" className="text-right text-xs text-gray-500">{review.length}/1,000</p>
           </div>

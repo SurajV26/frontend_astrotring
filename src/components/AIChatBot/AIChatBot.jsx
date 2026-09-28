@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import logo from "@/assets/logo.png";
@@ -69,44 +69,99 @@ const AIChatBot = () => {
   const [rechargeMessage, setRechargeMessage] = useState("");
   const [showLogin, setShowLogin] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
-  const [reviewTarget, setReviewTarget] = useState(null);
-  const [reviewedSessions, setReviewedSessions] = useState([]);
-
-  const reviewKey = (target) => JSON.stringify([target.astrologerSlug, target.expertiseSlug, target.sessionId]);
-  const currentReviewTarget = {
-    astrologerId: astrologerDetails?.slug === astrologerSlug ? astrologerDetails.id : null,
-    astrologerSlug,
-    expertiseSlug,
-    sessionId,
-    name: astrologerDetails?.slug === astrologerSlug ? astrologerDetails.name : astrologerSlug,
-  };
+  const [showReview, setShowReview] = useState(false);
 
   const bottomRef = useRef();
   const activeChatRef = useRef({ sessionId: null, isActive: false });
   const isClosingSessionRef = useRef(false);
   const switchInProgressRef = useRef(false);
+  const leaveAfterReviewRef = useRef(null);
+  const hasChattedRef = useRef(false);
+  const reviewHandledRef = useRef(false);
+  const canAskReviewRef = useRef(false);
+
+  const canAskReview =
+    isLoggedIn &&
+    Boolean(astrologerDetails?.id) &&
+    astrologerDetails?.slug === astrologerSlug;
+  canAskReviewRef.current = canAskReview;
+
+  // The single gate for every way a chat visit can finish (End Chat, backend end,
+  // back, logo, recharge dismissed). Ask at most once per visit, and only after
+  // the user actually chatted.
+  // thenLeave: true → go back once the dialog closes; a function → run it instead.
+  const askReview = useCallback(
+    ({ thenLeave = null } = {}) => {
+      if (
+        reviewHandledRef.current ||
+        !hasChattedRef.current ||
+        !canAskReviewRef.current
+      ) {
+        return false;
+      }
+      // Never drop a leave that a previous trigger already queued.
+      if (thenLeave) {
+        leaveAfterReviewRef.current =
+          thenLeave === true ? () => navigate(-1) : thenLeave;
+      }
+      setRechargeMessage("");
+      setShowRechargeModal(false);
+      setShowReview(true);
+      return true;
+    },
+    [navigate],
+  );
+
+  // Skip and submit both mean "already asked": never ask again on this visit.
+  const finishReview = useCallback(() => {
+    reviewHandledRef.current = true;
+    setShowReview(false);
+    const leave = leaveAfterReviewRef.current;
+    leaveAfterReviewRef.current = null;
+    if (leave) leave();
+  }, []);
+
+  // A different astrologer or expertise is a new visit.
+  const resetReviewGate = useCallback(() => {
+    setShowReview(false);
+    hasChattedRef.current = false;
+    reviewHandledRef.current = false;
+    leaveAfterReviewRef.current = null;
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      hasChattedRef.current = true;
+    }
+  }, [messages]);
 
   useEffect(() => {
     const previous = activeChatRef.current;
-    // Prompt when the current active chat ends, not on initial inactive state.
-    if (
-      previous.sessionId === sessionId && previous.isActive &&
-      chatBilling?.isChatActive === false && chatEndType &&
-      !isClosingSessionRef.current && !switchInProgressRef.current &&
-      isLoggedIn && astrologerDetails?.slug === astrologerSlug && astrologerDetails?.id
-    ) {
-      const target = { sessionId, astrologerSlug, expertiseSlug, astrologerId: astrologerDetails.id, name: astrologerDetails.name };
-      if (!reviewedSessions.includes(reviewKey(target))) setReviewTarget(target);
-    }
-    activeChatRef.current = {
-      sessionId,
-      isActive: Boolean(chatBilling?.isChatActive),
-    };
+    const isActive = Boolean(chatBilling?.isChatActive);
 
-    if (chatBilling?.isChatActive) {
+    // Backend ended an active chat. User-ended chats ask from their own handler.
+    if (
+      previous.isActive &&
+      !isActive &&
+      previous.sessionId &&
+      previous.sessionId === sessionId &&
+      !switchInProgressRef.current &&
+      !isClosingSessionRef.current &&
+      chatEndType !== "insufficient_balance"
+    ) {
+      askReview();
+    }
+
+    activeChatRef.current = { sessionId, isActive };
+
+    if (isActive) {
       isClosingSessionRef.current = false;
     }
-  }, [chatBilling?.isChatActive, sessionId, chatEndType, isLoggedIn, astrologerDetails, astrologerSlug, expertiseSlug, reviewedSessions]);
+  }, [askReview, chatBilling?.isChatActive, sessionId, chatEndType]);
+
+  useEffect(() => {
+    resetReviewGate();
+  }, [astrologerSlug, expertiseSlug, resetReviewGate]);
 
   // End an active chat when this route is unmounted (for example, navigating away).
   useEffect(() => {
@@ -370,9 +425,9 @@ const AIChatBot = () => {
       setElapsedSeconds(0);
       setShowRechargeModal(false);
       setRechargeMessage("");
-      setReviewTarget(null);
       setInput(question || "");
       setShowCustomInput(Boolean(question));
+      resetReviewGate();
       navigate(`/ai-chat/${encodeURIComponent(astro.slug)}/${encodeURIComponent(astro.expertise.slug)}`);
     } catch (err) {
       isClosingSessionRef.current = false;
@@ -382,23 +437,18 @@ const AIChatBot = () => {
     }
   };
 
-  // Close session
-  const handleManualCloseSession = async (promptReview = false) => {
-    if (sessionId) {
-      const target = { ...currentReviewTarget };
-      isClosingSessionRef.current = true;
-      try {
-        await dispatch(closeSession(sessionId)).unwrap();
-        dispatch(fetchWalletDetails());
-        toast.success("Chat ended successfully");
-        if (promptReview && target.astrologerId && !reviewedSessions.includes(reviewKey(target))) {
-          setReviewTarget(target);
-        }
-      } catch (err) {
-        isClosingSessionRef.current = false;
-        toast.error(err || "Something went wrong");
-        // console.log("Close session error:", err);
-      }
+  const handleManualCloseSession = async () => {
+    if (!sessionId) return false;
+    isClosingSessionRef.current = true;
+    try {
+      await dispatch(closeSession(sessionId)).unwrap();
+      dispatch(fetchWalletDetails());
+      toast.success("Chat ended successfully");
+      return true;
+    } catch (err) {
+      isClosingSessionRef.current = false;
+      toast.error(err || "Something went wrong");
+      return false;
     }
   };
 
@@ -485,12 +535,22 @@ const AIChatBot = () => {
                 strokeWidth={2.5}
                 className="text-gray-500 cursor-pointer"
                 onClick={() => {
-                  navigate(-1);
                   handleManualCloseSession();
+                  if (!askReview({ thenLeave: true })) {
+                    navigate(-1);
+                  }
                 }}
               />
               <div className="flex flex-col items-start">
-                <Link to="/">
+                <Link
+                  to="/"
+                  onClick={(event) => {
+                    handleManualCloseSession();
+                    if (askReview({ thenLeave: () => navigate("/") })) {
+                      event.preventDefault();
+                    }
+                  }}
+                >
                   <img
                     src={logo}
                     alt="logo"
@@ -670,11 +730,13 @@ const AIChatBot = () => {
           </div>
 
           {/* Recharge Modal */}
-          {showRechargeModal && !reviewTarget && (
+          {showRechargeModal && !showReview && (
             <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 relative animate-in fade-in zoom-in duration-200">
                 <button
                   onClick={() => {
+                    // Closing recharge is not a finish event: the user is still reading
+                    // the answer. Leaving later (back or logo) asks through askReview.
                     setShowRechargeModal(false);
                     setRechargeMessage("");
                   }}
@@ -751,7 +813,10 @@ const AIChatBot = () => {
 
           {chatBilling?.isChatActive && (
             <button
-              onClick={() => handleManualCloseSession(true)}
+              onClick={async () => {
+                const ended = await handleManualCloseSession();
+                if (ended) askReview();
+              }}
               className="absolute bottom-20 right-4 z-30 rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white shadow-lg transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-offset-2 cursor-pointer sm:bottom-24"
             >
               End Chat
@@ -794,15 +859,14 @@ const AIChatBot = () => {
         </div>
       </div>
 
-      {isLoggedIn && reviewTarget && reviewTarget.astrologerSlug === astrologerSlug && reviewTarget.expertiseSlug === expertiseSlug && (
+      {showReview && (
         <AstrologerReviewDialog
-          key={reviewKey(reviewTarget)}
-          target={reviewTarget}
-          onClose={() => setReviewTarget(null)}
-          onSubmitted={(target) => {
-            setReviewedSessions((previous) => [...previous, reviewKey(target)]);
-            setReviewTarget(null);
+          astrologerId={astrologerDetails?.id}
+          astrologerName={astrologerDetails?.name}
+          onClose={finishReview}
+          onSubmitted={() => {
             toast.success("Thank you for your review!");
+            finishReview();
           }}
         />
       )}
